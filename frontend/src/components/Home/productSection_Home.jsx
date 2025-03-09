@@ -54,7 +54,7 @@ export default function ProductSection() {
 
                 ))}
                 <Link
-                    to="/pages/Shop"
+                    to="/Shop"
                     className="flex flex-col items-center justify-center  text-gray-800 hover:bg-gray-500 hover:text-white  px-4 py-2 rounded-full min-w-[80px] h-20 transition-all duration-200"
                 >
                     <IoArrowForwardCircleOutline size={24} />

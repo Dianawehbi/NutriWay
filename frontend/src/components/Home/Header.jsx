@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import NavBar from "./NavBar";
-import myImage from "../assets/logo.png";
+import NavBar from "../NavBar";
+import myImage from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 
 // Custom hook to detect if element is in view
