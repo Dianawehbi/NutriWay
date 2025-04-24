@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
+import Select from "react-select";
+import "leaflet/dist/leaflet.css";
 
-const DietitianAddRecipePage = () => {
+export default function EditRecipes() {
   const [recipe, setRecipe] = useState({
     name: "",
     image: "",
     description: "",
     price: "",
     calories: "",
+    categories: [],
     ingredients: [],
     nutrition: {
       carbs: "",
@@ -47,6 +50,12 @@ const DietitianAddRecipePage = () => {
       setStep("");
     }
   };
+  const Options = [
+    { value: "Breakfast", label: "Breakfast" },
+    { value: "Lunch", label: "Lunch" },
+    { value: "Dinner", label: "Dinner" },
+    { value: "Snack", label: "Snack" },
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,6 +68,7 @@ const DietitianAddRecipePage = () => {
       description: "",
       price: "",
       calories: "",
+      categories: [],
       ingredients: [],
       nutrition: {
         carbs: "",
@@ -68,6 +78,7 @@ const DietitianAddRecipePage = () => {
       preparation: [],
     });
   };
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex justify-center">
@@ -107,6 +118,14 @@ const DietitianAddRecipePage = () => {
                   className="w-full p-3 border border-gray-300 rounded-md"
                   required
                 />
+              </div>
+
+              <div className="my-3 space-y-1">
+                <label htmlFor="name" className="block text-lg font-medium mb-2">
+                  Categories
+                </label>
+                <Select isMulti options={Options} onChange={(selected) => setRecipe({ ...recipe, categories: selected })} className="w-full" />
+
               </div>
 
               {/* Recipe Image */}
@@ -279,4 +298,3 @@ const DietitianAddRecipePage = () => {
   );
 };
 
-export default DietitianAddRecipePage;

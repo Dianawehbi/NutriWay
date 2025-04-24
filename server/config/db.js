@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
 // we dont use dotnv because we use --env-file=.env in package.json
-
 // Connect to MongoDB
 
 const connectDB = async () => {

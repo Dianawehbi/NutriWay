@@ -201,9 +201,17 @@ const DietitianAppointmentsPage = () => {
                     </>
                   )}
                   {appointment.status === "Completed" && (
-                    <span className="inline-block mt-2 px-3 py-1 text-sm font-bold rounded-full bg-gray-300 text-gray-700">
-                      Completed
-                    </span>
+                    <div className="flex flex-row space-x-3">
+                      <span className="inline-block mt-2 px-3 py-1 text-sm font-bold rounded-full bg-gray-300 text-gray-700">
+                        Completed
+                      </span>
+                      <Link to={'/DietitianAddClientInfoPage'}>
+                        <span className="bg-blue-500 text-white inline-block mt-2 px-3 py-1 text-sm font-bold rounded-full  hover:bg-blue-700">
+                          Add Client information
+                        </span>
+                      </Link>
+
+                    </div>
                   )}
                 </div>
               </div>

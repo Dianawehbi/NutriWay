@@ -28,12 +28,12 @@ const CaloriesOverview = () => {
           </div>
         ))}
       </div>
-      <div className="mt-12 text-center">
+      {/* <div className="mt-12 text-center">
         <Link to={'/caloriesoverview'} className="text-gray-500 hover:text-green-700 font-semibold text-xl">
           Access more food
 
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

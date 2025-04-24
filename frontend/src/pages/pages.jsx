@@ -15,25 +15,26 @@ export default function Pages() {
                     <tbody>
                         <tr>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/Home" className="text-green-600 hover:underline">Dashboard</Link>
+                                <Link to="/Login" className="text-green-600 hover:underline">Login</Link>
+                            </td>
+
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/DietitianDashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianDashboard" className="text-yellow-600 hover:underline">Dashboard</Link>
-                            </td>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/AdminDashboard" className="text-yellow-600 hover:underline">Dashboard</Link>
+                                <Link to="/AdminDashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
                         </tr>
                         <tr>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/UserProfile" className="text-green-600 hover:underline">Profile</Link>
                             </td>
-                            
+
                             <td className="py-2 px-6 border-b">
                                 <Link to="/DietitianProfile" className="text-green-600 hover:underline">Profile</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/ManageUsers" className="text-yellow-600 hover:underline">Manage Users</Link>
+                                <Link to="/ManageUsers" className="text-green-600 hover:underline">Manage Users</Link>
                             </td>
                         </tr>
                         <tr>
@@ -44,7 +45,7 @@ export default function Pages() {
                                 <Link to="/dietitianappointment" className="text-green-600 hover:underline">Appointments</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/pages" className="text-red-600 hover:underline">Manage Settings</Link>
+                                <Link to="/OrderManagementPage" className="text-green-600 hover:underline">OrderManagementPage</Link>
                             </td>
                         </tr>
                         <tr>
@@ -54,49 +55,77 @@ export default function Pages() {
                             <td className="py-2 px-6 border-b">
                                 <Link to="/DietitianAddClientInfoPage" className="text-green-600 hover:underline">Add Client Information</Link>
                             </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/SalesPage" className="text-green-600 hover:underline">Sales Page</Link>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/DietitianProfile" className="text-green-600 hover:underline">Dietitian Profile</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/DietitianRegister" className="text-green-600 hover:underline">Registration</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/AppointmentAdminPage" className="text-green-600 hover:underline">Manage Appoitments</Link>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/Home" className="text-green-600 hover:underline">Dashboard</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/DietitianManageProfile" className="text-green-600 hover:underline">Manage Profile</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/ManageProduct" className="text-green-600 hover:underline">Add product</Link>
+                            </td>
                         </tr>
                         <tr>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/MealsPage" className="text-green-600 hover:underline">Meals</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianAddRecipes" className="text-green-600 hover:underline">Add Receipt</Link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/MealDetail" className="text-green-600 hover:underline">Meal Details</Link>
+                                <Link to="/add-recipes" className="text-blue-600 hover:underline">Add Recipe</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianRegister" className="text-green-600 hover:underline">Registration</Link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/Login" className="text-green-600 hover:underline">Login</Link>
-                            </td>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianRegister" className="text-red-600 hover:underline">Manage Profile</Link>
+                                <Link to="/add-recipes" className="text-blue-600 hover:underline">Add Recipe</Link>
                             </td>
                         </tr>
                         <tr>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/SignUp" className="text-green-600 hover:underline">Register</Link>
                             </td>
-                        </tr>
-                        <tr>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/caloriesoverview" className="text-green-600 hover:underline">Calories Overview</Link>
+                                <Link to="/recipes" className="text-blue-600 hover:underline">Recipes</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/recipes" className="text-blue-600 hover:underline">Recipes</Link>
                             </td>
                         </tr>
+
                         <tr>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/Appointment" className="text-green-600 hover:underline">Appointments</Link>
                             </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/edit-recipes/2" className="text-blue-600 hover:underline">Edit Recipe</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/edit-recipes/2" className="text-blue-600 hover:underline">Edit Recipe</Link>
+                            </td>
                         </tr>
                         <tr>
+
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianProfile" className="text-green-600 hover:underline">Dietitian Profile</Link>
+                                <Link to="/recipe/2" className="text-green-600 hover:underline">Recipes Details</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/recipe/2" className="text-blue-600 hover:underline">Recipes Details</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/recipe/2" className="text-blue-600 hover:underline">Recipes Details</Link>
                             </td>
                         </tr>
                         <tr>
@@ -109,7 +138,11 @@ export default function Pages() {
                                 <Link to="/ProfileManagementPage" className="text-green-600 hover:underline">Manage Profile</Link>
                             </td>
                         </tr>
-
+                        {/* <tr>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/caloriesoverview" className="text-green-600 hover:underline">Calories Overview</Link>
+                            </td>
+                        </tr> */}
                         <tr>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/userinformation" className="text-green-600 hover:underline">Add Your Information</Link>
@@ -126,20 +159,17 @@ export default function Pages() {
                 <div className="h-10">
                 </div>
                 <div class="text-green-500 font-semibold text-lg mb-2">
-                    🟢 <span class="">Done</span>
+                    🟢 <span class="">you shoould start working on this </span>
                 </div>
                 <div class="text-blue-500 font-semibold text-lg mb-2">
-                    🔵 <span class="">Small Update in Progress</span>
+                    🔵 <span class="">Small Update have done</span>
                 </div>
                 <div class="text-yellow-500 font-semibold text-lg mb-2">
-                    🟡 <span class="">Design update</span>
+                    🟡 <span class="">under building</span>
                 </div>
                 <div class="text-red-500 font-semibold text-lg mb-2">
-                    🔴 <span class="">Waiting to Be Built</span>
+                    🔴 <span class="">Fnish</span>
                 </div>
-
-
-
             </div>
         </div>
     );

@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import DietitianNavBar from "../../components/Dietitian/NavBar";
+import DietitianHeader from "../../components/Dietitian/Header";
+import MealsManager from "../../components/MealsManager";
+import ManageAppt from "../../components/Dietitian/ManageAppoitment";
+import Footer from "../../components/Footer";
+import Dietitian from "../../components/Home/DietianSection";
 const DietitianDashboard = () => {
     const [appointments, setAppointments] = useState([]);
     const [clients, setClients] = useState([]);
@@ -30,59 +35,31 @@ const DietitianDashboard = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Navbar */}
-            <nav className="bg-green-700 text-white p-4 flex justify-between">
-                <div className="text-xl font-semibold">NutriWay Dashboard</div>
-                <div>
-                    <Link to="/" className="text-white px-4">Home</Link>
-                    <Link to="/profile" className="text-white px-4">Profile</Link>
-                    <Link to="/logout" className="text-white px-4">Logout</Link>
-                </div>
-            </nav>
+            <DietitianNavBar />
 
+            <DietitianHeader />
             {/* Dashboard Content */}
-            <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Summary Boxes */}
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-semibold text-gray-700">Appointments</h3>
-                        <p className="text-3xl font-bold text-green-700">{appointments.length}</p>
-                        <Link to="/appointments" className="text-blue-500">View All</Link>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-semibold text-gray-700">Clients</h3>
-                        <p className="text-3xl font-bold text-green-700">{clients.length}</p>
-                        <Link to="/clients" className="text-blue-500">View All</Link>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-semibold text-gray-700">Diet Plans</h3>
-                        <p className="text-3xl font-bold text-green-700">{dietPlans.filter(plan => plan.status === "Active").length}</p>
-                        <Link to="/diet-plans" className="text-blue-500">View All</Link>
-                    </div>
-                </div>
 
-                {/* Task Overview */}
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Upcoming Appointments</h3>
-                    {appointments.map(appointment => (
-                        <div key={appointment.id} className="mb-4">
-                            <p className="font-medium text-gray-700">Date: {appointment.date}</p>
-                            <p className="text-gray-500">Client: {appointment.clientName}</p>
-                        </div>
-                    ))}
-                </div>
+
+
+            <div className="p-6 space-y-6 mt-20">
+                <ManageAppt />
+                <MealsManager />
 
                 {/* Quick Actions */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <h3 className="text-xl font-semibold text-gray-700">Add New Service</h3>
-                        <Link to="/add-service" className="text-green-500 hover:underline">Add Service</Link>
+                        <h3 className="text-xl font-semibold text-gray-700">Go to My Profile</h3>
+                        <Link to="/DietitianProfile" className="text-green-500 hover:underline">Go to My Profile</Link>
                     </div>
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <h3 className="text-xl font-semibold text-gray-700">Manage Recipes</h3>
-                        <Link to="/recipes" className="text-green-500 hover:underline">Manage Recipes</Link>
+                        <h3 className="text-xl font-semibold text-gray-700">Manage Profile</h3>
+                        <Link to="/DietitianManageProfile" className="text-green-500 hover:underline">Manage Profile</Link>
                     </div>
                 </div>
             </div>
+            <Dietitian/>
+            <Footer />
         </div>
     );
 };

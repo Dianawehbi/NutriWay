@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import img from '../../assets/avocado.jpg'
-export default function MealDetail() {
+export default function RecipeDetails() {
   const meal = {
     name: 'Grilled Chicken Salad',
     image: 'path/to/meal.jpg',

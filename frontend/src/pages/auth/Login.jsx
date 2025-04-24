@@ -1,16 +1,52 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import axios from 'axios'
+import AuthContext, { useAuth } from "../../context/authContext";
 
 export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
-
-    const handleSubmit = (e) => {
+    const [error, setError] = useState(null);
+    const {login} = useAuth();
+    const navigate = useNavigate()
+    
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ email, password, rememberMe });
+        try {
+            const response = await axios.post(
+                'http://localhost:5000/api/auth/login',
+                { email, password }
+            );
+
+            // after succesful login we need to store the user information
+            if (response.data.success) {
+                login(response.data.user);
+                localStorage.setItem("token", response.data.token)
+                if (response.data.user.role === "admin") {
+                    // it should move to the admin dashboard using navigate
+                    navigate('/AdminDashboard')
+                } else if (response.data.user.role === "dietitian") {
+                    // navigate to change the route
+                    navigate('/DietitianDashboard')
+                } else if (response.data.user.role === "client") {
+                    navigate('/Home')
+                }else{
+                    alert('error')
+                    navigate('/login')
+                }
+            }
+        } catch (error) {
+            alert(error)
+            if (error.response && !error.response.data.success) {
+                setError(error.response.data.error);
+            } else {
+                setError("Server Error");
+            }
+            console.log(error);
+        }
     };
 
     const foodIcons = ["🥑", "NutriWay"];
@@ -46,19 +82,24 @@ export default function Login() {
                 <h2 className="text-3xl font-bold font-serif text-center text-green-700 mb-6 animate-fadeIn">NutriWay Login</h2>
                 <p className="text-center text-gray-600 mb-4 animate-slideUp">Access your nutrition appointments and healthy plans</p>
                 <form onSubmit={handleSubmit} className="animate-fadeInUp">
+                    <div>
+                        {error && <p className="text-red-500">{error}</p>}
+                    </div>
                     <div className="mb-4">
                         <label className="block text-green-700 font-medium">Email</label>
                         <input
                             type="email"
+                            placeholder="enter your email"
                             className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 ease-in-out hover:shadow-md"
                             value={email}
-                            onChange={(e) => email.current(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
                     <div className="mb-4">
                         <label className="block text-green-700 font-medium">Password</label>
                         <input
+                            placeholder="******"
                             type="password"
                             className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300 ease-in-out hover:shadow-md"
                             value={password}
