@@ -33,7 +33,7 @@ export const recipesRoute = [
     {
         path: '/recipe/:id', element:
             <PrivateRoutes>
-                <RoleBaseRoutes requiredRole={["admin", "dietitian" , "client"]}>
+                <RoleBaseRoutes requiredRole={["admin", "dietitian", "client"]}>
                     <RecipeDetails />
                 </RoleBaseRoutes>
             </PrivateRoutes>

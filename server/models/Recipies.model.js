@@ -6,7 +6,7 @@ const RecipeSchema = new mongoose.Schema({
   description: { type: String },
   calories: { type: Number },
   categories: [{ type: String }],
-  ingredients: [{ type: String }],
+  ingredients: { type: String },
   nutrition: {
     carbs: Number,
     protein: Number,

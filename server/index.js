@@ -1,26 +1,25 @@
 import express from 'express';
 import connectDB from './config/db.js';
-import userRoute from './routes/user.route.js'
-import User from './models/User.model.js';
-import authRouter from './routes/auth.route.js'
-import cors from 'cors'
+import userRoute from './routes/user.route.js';
+import authRouter from './routes/auth.route.js';
+import recipeRouter from './routes/recipe.route.js';
+import cors from 'cors';
 
-// CORS tells the browser:
-// It's okay to let this frontend app (from 5173) access this server (on 5000)"
+const app = express(); // ✅ First, create app
 
-const app = express();
-app.use(express.json())
-app.use(cors())
-app.use('/users', userRoute)
+// THEN use middlewares
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
+app.use(cors());
 
-app.use('/api/auth', authRouter)
+// Routes
+app.use('/users', userRoute);
+app.use('/api/auth', authRouter);
+app.use('/api/recipe', recipeRouter);
 
-app.get('/', function (req, res ) {
-    res.send("jo")
-})
-
+// Connect to DB and start server
 connectDB().then(() => {
-    app.listen(process.env.PORT , () => {
-        console.log(`server is running on port ${process.env.PORT}`)
-    })
-})
+    app.listen(process.env.PORT, () => {
+        console.log(`Server is running on port ${process.env.PORT}`);
+    });
+});

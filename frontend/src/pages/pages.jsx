@@ -15,19 +15,19 @@ export default function Pages() {
                     <tbody>
                         <tr>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/Login" className="text-green-600 hover:underline">Login</Link>
+                                <Link to="/Login" className="text-yellow-600 hover:underline">Login</Link>
                             </td>
-
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianDashboard" className="text-green-600 hover:underline">Dashboard</Link>
+                                <Link to="/DietitianRegister" className="text-blue-600 hover:underline">Registration</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/AdminDashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
                         </tr>
                         <tr>
+
                             <td className="py-2 px-6 border-b">
-                                <Link to="/UserProfile" className="text-green-600 hover:underline">Profile</Link>
+                                <Link to="/SignUp" className="text-blue-600 hover:underline">Register</Link>
                             </td>
 
                             <td className="py-2 px-6 border-b">
@@ -65,7 +65,7 @@ export default function Pages() {
                                 <Link to="/DietitianProfile" className="text-green-600 hover:underline">Dietitian Profile</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianRegister" className="text-green-600 hover:underline">Registration</Link>
+                                <Link to="/DietitianDashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/AppointmentAdminPage" className="text-green-600 hover:underline">Manage Appoitments</Link>
@@ -87,21 +87,21 @@ export default function Pages() {
                                 <Link to="/MealsPage" className="text-green-600 hover:underline">Meals</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/add-recipes" className="text-blue-600 hover:underline">Add Recipe</Link>
+                                <Link to="/add-recipes" className="text-red-600 hover:underline">Add Recipe 'error: click twice to get access</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/add-recipes" className="text-blue-600 hover:underline">Add Recipe</Link>
+                                <Link to="/add-recipes" className="text-red-600 hover:underline">Add Recipe</Link>
                             </td>
                         </tr>
                         <tr>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/SignUp" className="text-green-600 hover:underline">Register</Link>
+                                <Link to="/UserProfile" className="text-green-600 hover:underline">Profile</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/recipes" className="text-blue-600 hover:underline">Recipes</Link>
+                                <Link to="/recipes" className="text-red-600 hover:underline">Recipes</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/recipes" className="text-blue-600 hover:underline">Recipes</Link>
+                                <Link to="/recipes" className="text-red-600 hover:underline">Recipes</Link>
                             </td>
                         </tr>
 
@@ -110,10 +110,10 @@ export default function Pages() {
                                 <Link to="/Appointment" className="text-green-600 hover:underline">Appointments</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/edit-recipes/2" className="text-blue-600 hover:underline">Edit Recipe</Link>
+                                <Link to="/edit-recipes/2" className="text-red-600 hover:underline">Edit Recipe</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/edit-recipes/2" className="text-blue-600 hover:underline">Edit Recipe</Link>
+                                <Link to="/edit-recipes/2" className="text-red-600 hover:underline">Edit Recipe</Link>
                             </td>
                         </tr>
                         <tr>
@@ -122,10 +122,10 @@ export default function Pages() {
                                 <Link to="/recipe/2" className="text-green-600 hover:underline">Recipes Details</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/recipe/2" className="text-blue-600 hover:underline">Recipes Details</Link>
+                                <Link to="/recipe/2" className="text-red-600 hover:underline">Recipes Details</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/recipe/2" className="text-blue-600 hover:underline">Recipes Details</Link>
+                                <Link to="/recipe/2" className="text-red-600 hover:underline">Recipes Details</Link>
                             </td>
                         </tr>
                         <tr>
@@ -138,11 +138,6 @@ export default function Pages() {
                                 <Link to="/ProfileManagementPage" className="text-green-600 hover:underline">Manage Profile</Link>
                             </td>
                         </tr>
-                        {/* <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/caloriesoverview" className="text-green-600 hover:underline">Calories Overview</Link>
-                            </td>
-                        </tr> */}
                         <tr>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/userinformation" className="text-green-600 hover:underline">Add Your Information</Link>
@@ -158,6 +153,7 @@ export default function Pages() {
 
                 <div className="h-10">
                 </div>
+                <div>maybe i will remove the e commerce age : this will lead to delete 5 pages </div>
                 <div class="text-green-500 font-semibold text-lg mb-2">
                     🟢 <span class="">you shoould start working on this </span>
                 </div>

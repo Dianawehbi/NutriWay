@@ -1,12 +1,18 @@
 import express from 'express';
-
-
+import verifyUser from '../middleware/authMiddleware.js';
+import { addRecipe, getRecipes, deleteRecipe, getRecipeById ,updateRecipe} from '../controllers/recipe.controller.js';
 
 const router = express.Router()
 
-router.post('/login', Login)
-router.get('/verify', verifyUser, verify);
-// for example in recipes i have :
-// update / add / delete / select all  / select by id / 
+router.get('/', getRecipes);
 
-export default router;
+router.get('/:id', getRecipeById);
+
+router.post('/add', addRecipe);
+
+router.put('/update/:id' , updateRecipe);
+
+router.post('/delete/:id', deleteRecipe);
+// update / delete / select by id / 
+
+export default router; 

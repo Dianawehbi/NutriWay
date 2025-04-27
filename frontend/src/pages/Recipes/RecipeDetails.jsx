@@ -1,43 +1,52 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
-import img from '../../assets/avocado.jpg'
+import { useEffect, useState } from "react";
+import axios from 'axios';
+import LoadingPage from "../auth/LoadingPage";
+
 export default function RecipeDetails() {
-  const meal = {
-    name: 'Grilled Chicken Salad',
-    image: 'path/to/meal.jpg',
-    description: 'A healthy grilled chicken salad with fresh greens, cherry tomatoes, and a light vinaigrette.',
-    price: '$12',
-    calories: '450 kcal',
-    ingredients: [
-      'Grilled Chicken Breast',
-      'Lettuce',
-      'Cherry Tomatoes',
-      'Cucumber',
-      'Olive Oil',
-      'Lemon Juice',
-      'Salt & Pepper',
-    ],
-    nutrition: {
-      carbs: '30g',
-      protein: '40g',
-      fats: '10g',
-    },
-    preparation: [
-      'Grill the chicken breast until fully cooked.',
-      'Chop the lettuce, tomatoes, and cucumber.',
-      'Mix all the vegetables in a bowl.',
-      'Slice the grilled chicken and add to the salad.',
-      'Drizzle with olive oil and lemon juice.',
-      'Season with salt and pepper.',
-    ],
-  };
+  const { id } = useParams(); // Get the id from the URL
+  const [meal, setMeal] = useState(null); // State to store meal data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Fetch meal details from API based on ID
+    const fetchMealDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/recipe/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (response.data.success) {
+          setMeal(response.data.recipe);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (error.response && !error.response.data.success) {
+          setError("Failed to fetch meal details ||" + error);
+        }
+        setMeal(null);
+        setLoading(true);
+        navigate('/recipes');
+      }
+    };
+    fetchMealDetails();
+  }, [id]);
+
+  if (loading) {
+    return <LoadingPage />;
+  }
+
 
   return (
     <div className="min-h-screen flex flex-row bg-gray-100 p-6 font-serif">
 
       {/* Fixed Header with High z-index */}
-      <div className="fixed bg-white rounded-b-2xl font-serif  top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
+      <div className="fixed bg-white rounded-b-2xl font-serif top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
         <div className="flex gap-3 items-center m-2">
           <Link to={'/MealsPage'}>
             <IoMdArrowRoundBack />
@@ -53,14 +62,19 @@ export default function RecipeDetails() {
 
       <div className="bg-white mt-15 shadow-lg flex flex-col lg:flex-row lg:justify-around rounded-lg p-6 w-full ">
         <div>
-          <img src={img} alt={meal.name} className="w-full max-w-2xl h-60 lg:h-80 object-cover rounded-md mb-4" />
-          <h2 className="text-3xl text-[#234403] font-semibold  capitalize mb-4">{meal.name}</h2>
+          {/* Dynamic Image */}
+          <img
+            src={meal.image}  // Use the meal image from API or fallback to static image
+            alt={meal.name}
+            className="w-full max-w-2xl h-60 lg:h-80 object-cover rounded-md mb-4"
+          />
+          <h2 className="text-3xl text-[#234403] font-semibold capitalize mb-4">{meal.name}</h2>
           <p className="text-gray-700">{meal.description}</p>
-
+          
           <div className="mt-4">
             <h2 className="text-xl font-semibold text-gray-800">🛒 Ingredients:</h2>
             <ul className="list-disc list-inside text-gray-700">
-              {meal.ingredients.map((item, index) => (
+              {meal.ingredients.split('-' || '_').map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
             </ul>
@@ -68,16 +82,20 @@ export default function RecipeDetails() {
         </div>
 
         <div className="space-y-5">
-        <div className="mt-4">
+          <div className="mt-4">
             <h2 className="text-xl lg:text-2xl font-semibold text-[#234403]"> Preparation Steps:</h2>
             <ol className="list-decimal list-inside text-gray-700">
-              {meal.preparation.map((step, index) => (
-                <li key={index}>{step}</li>
-              ))}
+              {meal.preparation
+                .split('\n') // Split by new line
+                .filter(step => step.trim() !== "") // Remove empty lines
+                .map((step, index) => (
+                  <li key={index}>{step.trim()}</li> // Trim spaces
+                ))}
             </ol>
+
           </div>
           <div className="mt-4">
-            <h2 className="text-xl lg:text-2xl  font-semibold text-[#234403]"> Nutritional Facts:</h2>
+            <h2 className="text-xl lg:text-2xl font-semibold text-[#234403]"> Nutritional Facts:</h2>
             <p>🍞 Carbs: {meal.nutrition.carbs}</p>
             <p>🥩 Protein: {meal.nutrition.protein}</p>
             <p>🛢️ Fats: {meal.nutrition.fats}</p>

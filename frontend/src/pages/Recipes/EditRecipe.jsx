@@ -1,295 +1,211 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import Select from "react-select";
-import "leaflet/dist/leaflet.css";
+import axios from 'axios';
 
-export default function EditRecipes() {
+const EditRecipes = () => {
   const [recipe, setRecipe] = useState({
     name: "",
     image: "",
     description: "",
-    price: "",
     calories: "",
     categories: [],
-    ingredients: [],
-    nutrition: {
-      carbs: "",
-      protein: "",
-      fats: "",
-    },
-    preparation: [],
+    ingredients: "",
+    nutrition: { carbs: "", protein: "", fats: "" },
+    preparation: "",
   });
 
-  const [ingredient, setIngredient] = useState("");
-  const [step, setStep] = useState("");
+  const navigate = useNavigate();
+  const { id } = useParams(); // get recipe id from URL
+  const [error, setError] = useState('');
+
+  const Options = [
+    { value: "Breakfast", label: "Breakfast" },
+    { value: "Lunch", label: "Lunch" },
+    { value: "Dinner", label: "Dinner" },
+    { value: "Snacks", label: "Snack" },
+  ];
+
+  useEffect(() => {
+    // Fetch the recipe to edit
+    const fetchRecipe = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/recipe/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (response.data.recipe) {
+          const fetchedRecipe = response.data.recipe;
+          setRecipe({
+            ...fetchedRecipe,
+            categories: fetchedRecipe.categories || [],
+            nutrition: fetchedRecipe.nutrition || { carbs: "", protein: "", fats: "" },
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load recipe.");
+      }
+    };
+    fetchRecipe();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "carbs" || name === "protein" || name === "fats") {
-      setRecipe({
-        ...recipe,
-        nutrition: { ...recipe.nutrition, [name]: value },
-      });
+    if (["carbs", "protein", "fats"].includes(name)) {
+      setRecipe({ ...recipe, nutrition: { ...recipe.nutrition, [name]: value } });
     } else {
       setRecipe({ ...recipe, [name]: value });
     }
   };
 
-  const handleAddIngredient = () => {
-    if (ingredient) {
-      setRecipe({ ...recipe, ingredients: [...recipe.ingredients, ingredient] });
-      setIngredient("");
-    }
-  };
-
-  const handleAddStep = () => {
-    if (step) {
-      setRecipe({ ...recipe, preparation: [...recipe.preparation, step] });
-      setStep("");
-    }
-  };
-  const Options = [
-    { value: "Breakfast", label: "Breakfast" },
-    { value: "Lunch", label: "Lunch" },
-    { value: "Dinner", label: "Dinner" },
-    { value: "Snack", label: "Snack" },
-  ];
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Log the recipe data (you can replace this with an API call to save it)
-    console.log("Recipe Submitted:", recipe);
-    // Reset the form after submission
-    setRecipe({
-      name: "",
-      image: "",
-      description: "",
-      price: "",
-      calories: "",
-      categories: [],
-      ingredients: [],
-      nutrition: {
-        carbs: "",
-        protein: "",
-        fats: "",
-      },
-      preparation: [],
-    });
+    try {
+      const response = await axios.put(`http://localhost:5000/api/recipe/update/${id}`, recipe, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.data.success) {
+        setError('');
+        navigate("/recipes");
+      }
+    } catch (error) {
+      if (error.response && !error.response.data.success) {
+        alert(error.response.data.error);
+      } else {
+        setError(error.message || "Something went wrong");
+      }
+    }
   };
-
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex justify-center">
-      {/* Fixed Header with High z-index */}
-      <div className="fixed rounded-b-2xl font-serif bg-white top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
-        <div className="flex gap-3 items-center m-2">
-          <Link to={'/Home'}>
-            <IoMdArrowRoundBack />
-          </Link>
-          <span>Add Meal</span>
+    <div className="min-h-screen bg-gray-50 px-4 pt-24 pb-10 flex justify-center">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm h-16 flex items-center justify-between px-6">
+        <div className="flex items-center space-x-2 text-green-700 font-semibold text-lg">
+          <Link to="/recipes" className="text-2xl"><IoMdArrowRoundBack /></Link>
+          <span>Edit Meal</span>
         </div>
-        <div className="flex gap-3 items-center m-2 text-black">
-          <Link to={'/UserProfile'}>
-            <CgProfile />
-          </Link>
-        </div>
+        <Link to="/UserProfile" className="text-2xl text-green-700"><CgProfile /></Link>
       </div>
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full my-15 mx-4">
-        <h1 className="text-3xl font-extrabold text-[#234403] mb-4 text-center">
-          Add New Recipe
-        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-col xl:flex-row xl:justify-between xl:gap-10">
-            <div className="xl:w-6/12">
-              {/* Recipe Name */}
-              <div>
-                <label htmlFor="name" className="block text-lg font-medium mb-2">
-                  Recipe Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={recipe.name}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md"
-                  required
-                />
-              </div>
+      {/* Main Form Card */}
+      <div className="w-full max-w-6xl bg-white shadow-md rounded-3xl p-8">
+        <h1 className="text-3xl font-bold text-center text-green-800 mb-6">Edit Your Recipe</h1>
 
-              <div className="my-3 space-y-1">
-                <label htmlFor="name" className="block text-lg font-medium mb-2">
-                  Categories
-                </label>
-                <Select isMulti options={Options} onChange={(selected) => setRecipe({ ...recipe, categories: selected })} className="w-full" />
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Column */}
+          <div className="space-y-5">
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Recipe Name</label>
+              <input type="text" name="name" value={recipe.name} onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required />
+            </div>
 
-              </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Categories</label>
+              <Select
+                isMulti
+                options={Options}
+                value={Options.filter((option) => recipe.categories.includes(option.value))}
+                onChange={(selected) =>
+                  setRecipe({ ...recipe, categories: selected.map((option) => option.value) })
+                }
+              />
+            </div>
 
-              {/* Recipe Image */}
-              <div>
-                <label htmlFor="image" className="block text-lg font-medium mb-2">
-                  Image URL
-                </label>
-                <input
-                  type="text"
-                  id="image"
-                  name="image"
-                  value={recipe.image}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md"
-                />
-              </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Description</label>
+              <input type="text" name="description" value={recipe.description}
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required
+                onChange={handleChange} />
+            </div>
 
-              {/* Description */}
-              <div>
-                <label htmlFor="description" className="block text-lg font-medium mb-2">
-                  Recipe Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={recipe.description}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md"
-                  rows="4"
-                  required
-                />
-              </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Calories</label>
+              <input type="number" name="calories" value={recipe.calories} onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required />
+            </div>
 
-              {/* Calories */}
-              <div>
-                <label htmlFor="calories" className="block text-lg font-medium mb-2">
-                  Calories
-                </label>
-                <input
-                  type="text"
-                  id="calories"
-                  name="calories"
-                  value={recipe.calories}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md"
-                  required
-                />
-              </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Add Ingredient</label>
+              <input type="text" name="ingredients" value={recipe.ingredients} onChange={handleChange} required
+                placeholder="tomato - cucumber - bread"
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+              />
+            </div>
 
-              {/* Ingredients */}
-              <div>
-                <label htmlFor="ingredient" className="block text-lg font-medium mb-2">
-                  Add Ingredient
-                </label>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    id="ingredient"
-                    value={ingredient}
-                    onChange={(e) => setIngredient(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddIngredient}
-                    className="bg-green-700 text-white p-3 rounded-md"
-                  >
-                    Add
-                  </button>
-                </div>
-                <ul className="list-disc list-inside mt-4 text-gray-700">
-                  {recipe.ingredients.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Add Preparation Step</label>
+              <textarea name="preparation" value={recipe.preparation} onChange={handleChange} rows="4"
+                placeholder="1 - Add two cups of rice 2 - Put them..."
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-5">
+            <div>
+              <h2 className="text-lg font-semibold text-green-800 mb-2">Nutritional Info</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {["carbs", "protein", "fats"].map((field) => (
+                  <div key={field}>
+                    <label className="block mb-1 text-sm font-medium capitalize text-gray-700">{field} / gram</label>
+                    <input type="number" min={0} name={field} value={recipe.nutrition[field]} onChange={handleChange} required
+                      className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" />
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="xl:w-6/12">
-              {/* Nutritional Facts */}
-              <div>
-                <h2 className="text-xl font-semibold text-[#234403] mb-4">Nutritional Facts</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="carbs" className="block text-lg font-medium mb-2">
-                      Carbs
-                    </label>
-                    <input
-                      type="text"
-                      id="carbs"
-                      name="carbs"
-                      value={recipe.nutrition.carbs}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="protein" className="block text-lg font-medium mb-2">
-                      Protein
-                    </label>
-                    <input
-                      type="text"
-                      id="protein"
-                      name="protein"
-                      value={recipe.nutrition.protein}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="fats" className="block text-lg font-medium mb-2">
-                      Fats
-                    </label>
-                    <input
-                      type="text"
-                      id="fats"
-                      name="fats"
-                      value={recipe.nutrition.fats}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Preparation Steps */}
-              <div>
-                <label htmlFor="step" className="block text-lg font-medium mb-2">
-                  Add Preparation Step
-                </label>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    id="step"
-                    value={step}
-                    onChange={(e) => setStep(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md"
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    if (!file.type.startsWith("image/")) {
+                      alert("Please upload a valid image file.");
+                      return;
+                    }
+                    if (file.size > 1024 * 1024 * 3) { // 3MB
+                      alert("Image must be less than 3MB in size.");
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setRecipe({ ...recipe, image: reader.result });
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+              />
+              {recipe.image && (
+                <div className="mt-3">
+                  <img
+                    src={recipe.image}
+                    alt="Preview"
+                    className="w-full max-h-64 object-cover rounded-xl border"
                   />
-                  <button
-                    type="button"
-                    onClick={handleAddStep}
-                    className="bg-green-700 text-white p-3 rounded-md"
-                  >
-                    Add
-                  </button>
                 </div>
-                <ol className="list-decimal list-inside mt-4 text-gray-700">
-                  {recipe.preparation.map((step, index) => (
-                    <li key={index}>{step}</li>
-                  ))}
-                </ol>
-              </div>
+              )}
             </div>
           </div>
 
           {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              className="w-full p-3 bg- bg-green-700 text-white font-semibold rounded-md hover:bg-green-600"
-            >
-              Submit Recipe
+          <div className="col-span-1 md:col-span-2 mt-1">
+            <div className="text-red-600 pb-3">{error}</div>
+            <button type="submit"
+              className="w-full py-3 bg-green-700 text-white rounded-xl text-lg font-semibold hover:bg-green-600 transition">
+              Update Recipe
             </button>
           </div>
         </form>
@@ -298,3 +214,4 @@ export default function EditRecipes() {
   );
 };
 
+export default EditRecipes;

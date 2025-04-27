@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import Select from "react-select";
-import "leaflet/dist/leaflet.css";
+import axios from 'axios';
+import { handleImageUpload } from "../../utils/imageUtils";
 
 const AddRecipes = () => {
   const [recipe, setRecipe] = useState({
@@ -12,26 +13,19 @@ const AddRecipes = () => {
     description: "",
     calories: "",
     categories: [],
-    ingredients: [],
+    ingredients: "",
     nutrition: { carbs: "", protein: "", fats: "" },
     preparation: "",
   });
 
-  const [ingredient, setIngredient] = useState("");
-
+  const navigate = useNavigate()
+  const [error, setError] = useState('');
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (["carbs", "protein", "fats"].includes(name)) {
       setRecipe({ ...recipe, nutrition: { ...recipe.nutrition, [name]: value } });
     } else {
       setRecipe({ ...recipe, [name]: value });
-    }
-  };
-
-  const handleAddIngredient = () => {
-    if (ingredient.trim()) {
-      setRecipe({ ...recipe, ingredients: [...recipe.ingredients, ingredient] });
-      setIngredient("");
     }
   };
 
@@ -42,19 +36,44 @@ const AddRecipes = () => {
     { value: "Snack", label: "Snack" },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Recipe Submitted:", recipe);
+    try {
+      //send data to the server side   
+      const response = await axios.post('http://localhost:5000/api/recipe/add', recipe, {
+        Headers: {
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.data.success) {
+        setError(' ')
+        navigate("/recipes");
+      }
+    } catch (error) {
+      if (error.response && !error.response.data.success) {
+        alert(error.response.data.error)
+      } else {
+        setError(error.message || "Something went wrong");
+      }
+    }
     setRecipe({
       name: "",
       image: "",
       description: "",
       calories: "",
       categories: [],
-      ingredients: [],
+      ingredients: "",
       nutrition: { carbs: "", protein: "", fats: "" },
       preparation: "",
     });
+  };
+
+  const onImageChange = async (e) => {
+    const resizedImage = await handleImageUpload(e.target.files);
+    if (resizedImage) {
+      setRecipe({ ...recipe, image: resizedImage });
+    }
   };
 
   return (
@@ -62,7 +81,7 @@ const AddRecipes = () => {
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm h-16 flex items-center justify-between px-6">
         <div className="flex items-center space-x-2 text-green-700 font-semibold text-lg">
-          <Link to="/Home" className="text-2xl"><IoMdArrowRoundBack /></Link>
+          <Link to="/recipes" className="text-2xl"><IoMdArrowRoundBack /></Link>
           <span>Add Meal</span>
         </div>
         <Link to="/UserProfile" className="text-2xl text-green-700"><CgProfile /></Link>
@@ -83,104 +102,44 @@ const AddRecipes = () => {
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">Categories</label>
-              <Select isMulti options={Options} onChange={(selected) => setRecipe({ ...recipe, categories: selected })} />
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Upload Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    // Validate type (must start with image/)
-                    if (!file.type.startsWith("image/")) {
-                      alert("Please upload a valid image file (jpg, png, etc).");
-                      return;
-                    }
-
-                    // Validate size (less than 1MB = 1 * 1024 * 1024 bytes)
-                    if (file.size > 1024 * 1024) {
-                      alert("Image must be less than 1MB in size.");
-                      return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      setRecipe({ ...recipe, image: reader.result });
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
-                className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+              <Select
+                isMulti
+                options={Options}
+                value={Options.filter((option) => recipe.categories.includes(option.value))}
+                onChange={(selected) =>
+                  setRecipe({ ...recipe, categories: selected.map((option) => option.value) })
+                }
               />
-              {recipe.image && (
-                <div className="mt-3">
-                  <img
-                    src={recipe.image}
-                    alt="Preview"
-                    className="w-full max-h-64 object-cover rounded-xl border"
-                  />
-                </div>
-              )}
             </div>
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">Description</label>
-              <input type="text"
-                className="flex-1 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" />
+              <input type="text" name="description" value={recipe.description}
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required
+                onChange={handleChange} />
             </div>
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">Calories</label>
-              <input type="text" name="calories" value={recipe.calories} onChange={handleChange}
+              <input type="number" name="calories" value={recipe.calories} onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required />
             </div>
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">Add Ingredient</label>
               <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={ingredient}
-                  onChange={(e) => setIngredient(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddIngredient();
-                    }
-                  }}
+                <input type="text" name="ingredients" value={recipe.ingredients} onChange={handleChange} required placeholder="tomato - cucumber - bread"
                   className="flex-1 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
                 />
-                <button
-                  type="button"
-                  onClick={handleAddIngredient}
-                  className="bg-green-600 text-white px-4 rounded-lg hover:bg-green-500 transition"
-                >
-                  Add
-                </button>
               </div>
-
-              <ul className="list-disc list-inside text-sm text-gray-700 mt-2 space-y-1">
-                {recipe.ingredients.map((ing, idx) => (
-                  <li key={idx} className="flex justify-between items-center">
-                    <span>{ing}</span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setRecipe({
-                          ...recipe,
-                          ingredients: recipe.ingredients.filter((_, i) => i !== idx),
-                        })
-                      }
-                      className="text-red-500 hover:text-red-700 text-xs"
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Add Preparation Step</label>
+              <div className="flex space-x-2">
+                <textarea name="preparation" value={recipe.preparation} onChange={handleChange} rows="4"
+                  placeholder="1 -Add two cups of rice 2- put them..."
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required />
+              </div>
             </div>
           </div>
 
@@ -191,33 +150,48 @@ const AddRecipes = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {["carbs", "protein", "fats"].map((field) => (
                   <div key={field}>
-                    <label className="block mb-1 text-sm font-medium capitalize text-gray-700">{field}</label>
-                    <input type="text" name={field} value={recipe.nutrition[field]} onChange={handleChange}
+                    <label className="block mb-1 text-sm font-medium capitalize text-gray-700">{field} / gram</label>
+                    <input type="number" min={0} name={field} value={recipe.nutrition[field]} onChange={handleChange} required
                       className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" />
                   </div>
                 ))}
               </div>
             </div>
 
+
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Add Preparation Step</label>
-              <div className="flex space-x-2">
-                <textarea name="preparation" value={recipe.preparation} onChange={handleChange} rows="4"
-                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" required />
-              </div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                required
+                onChange={onImageChange}
+                className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+              />
             </div>
+            {recipe.image && (
+              <div className="mt-3">
+                <img
+                  src={recipe.image}
+                  alt="Preview"
+                  className="w-full max-h-64 object-cover rounded-xl border"
+                />
+              </div>
+            )}
           </div>
 
+
           {/* Submit Button */}
-          <div className="col-span-1 md:col-span-2 mt-4">
+          <div className="col-span-1 md:col-span-2 mt-1">
+            <div className="text-red-600 pb-3">{error}</div>
             <button type="submit"
               className="w-full py-3 bg-green-700 text-white rounded-xl text-lg font-semibold hover:bg-green-600 transition">
               Submit Recipe
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
