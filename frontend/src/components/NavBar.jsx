@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { AiOutlineUser } from "react-icons/ai"; // Ant Design icons
 import { IoMdMenu } from "react-icons/io";
 import MobileMenu from "./MobileMenu";
-import logiImg from '../assets/logo.png';
 import { IoBagOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
-import { IoMdSearch } from "react-icons/io";
 
 export default function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +14,9 @@ export default function NavBar() {
         <div>
             <nav className=" fixed right-0 text-gray-700 left-0 top-0 z-50 bg-white flex justify-between items-center rounded-b-2xl p-3 font-serif ">
                 <div className="flex flex-row items-center gap-2">
-                    <div>
+                    {/* <div>
                         <img src={logiImg} alt="" className="w-15" />
-                    </div>
+                    </div> */}
                     <div>
                         <span className="text-2xl  font-bold">NutriWay</span>
                     </div>

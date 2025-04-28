@@ -1,8 +1,8 @@
 import React from 'react';
-import NavBar from '../../components/NavBar';
+// import DietitianNavBar from '../../components/Dietitian/NavBar.jsx';
 import DietitianServicesSection from '../../components/profile/dietitian_services_section';
 import ProfileSection from '../../components/profile/profileSection';
-import img from '../../assets/beforandafetr.jpg'
+
 const DietitianProfile = () => {
 
   // for the dietitian it self , there is a setting buutton , this button lead dietitan to manage there account 
@@ -11,7 +11,7 @@ const DietitianProfile = () => {
 
   return (
     <div className="bg-gray-100">
-      <NavBar />
+      {/* <NavBar /> */}
       <div className="min-h-screen  flex flex-col items-center p-6 mt-20 font-serif">
         {/* Profile Section */}
         <ProfileSection />

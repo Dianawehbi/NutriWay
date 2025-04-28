@@ -40,7 +40,7 @@ const appointmentsData = [
   },
 ];
 
-const DietitianAppointmentsPage = () => {
+const DietitianManageAppointment = () => {
   const [availability, setAvailability] = useState({ day: "", time: "" });
   const [scheduledAppointments, setScheduledAppointments] = useState([]);
   const [mode, setMode] = useState("");
@@ -225,4 +225,4 @@ const DietitianAppointmentsPage = () => {
   );
 };
 
-export default DietitianAppointmentsPage;
+export default DietitianManageAppointment;

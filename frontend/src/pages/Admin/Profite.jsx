@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../../components/NavBar";
 import { FaBox, FaUserMd } from "react-icons/fa"; // Icons for product and consultation sections
 
-const SalesPage = () => {
+const Profite = () => {
     const [productSales, setProductSales] = useState([]);
     const [appointmentSales, setAppointmentSales] = useState([]);
     const [totalProductSales, setTotalProductSales] = useState(0);
@@ -134,4 +134,4 @@ const SalesPage = () => {
     );
 };
 
-export default SalesPage;
+export default Profite;

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logiImg from '../../assets/logo.png';
 import { CgProfile } from "react-icons/cg";
 
 export default function DietitianNavBar() {
@@ -10,7 +9,7 @@ export default function DietitianNavBar() {
             <nav className=" fixed right-0 text-gray-700 left-0 top-0 z-50 bg-white flex justify-between items-center rounded-b-2xl p-3 font-serif ">
                 <div className="flex flex-row items-center gap-2">
                     <div>
-                        <img src={logiImg} alt="" className="w-15" />
+                        <img src=" " alt="" className="w-15" />
                     </div>
                     <div>
                         <span className="text-2xl  font-bold">NutriWay</span>

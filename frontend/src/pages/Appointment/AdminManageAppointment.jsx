@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 
-const AppointmentAdminPage = () => {
+const AdminAppointmentPage = () => {
   const [appointments, setAppointments] = useState([
     {
       id: 1,
@@ -131,4 +131,4 @@ const AppointmentAdminPage = () => {
   );
 };
 
-export default AppointmentAdminPage;
+export default AdminAppointmentPage;

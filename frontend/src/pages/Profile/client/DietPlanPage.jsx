@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
-import logo_img from '../../assets/logo.png'
 
 // Sample expanded diet plan data with additional details
 const dietPlan = {

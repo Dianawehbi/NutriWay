@@ -15,7 +15,7 @@ const services = [
   "Nutritional Therapy",
 ];
 
-const AppointmentPage = () => {
+const MakesAppointment = () => {
   const [appointments, setAppointments] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedService, setSelectedService] = useState("");
@@ -200,4 +200,4 @@ const AppointmentPage = () => {
   );
 };
 
-export default AppointmentPage;
+export default MakesAppointment;

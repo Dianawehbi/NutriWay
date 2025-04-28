@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({
-    clientID: { type: int, required: true, default: true },
+const clientSchema = mongoose.Schema({
+    user_id: { type: String, required: true },
     age: { type: String, required: true },
     gender: { type: String, required: true },
     height: { type: String, required: true },
-    weight: { type: String, enum: ["admin", "client", "dietitian"], required: true },
+    weight: { type: String, required: true },
     goal: { type: String },
-    acitivityLevel: { type: String },
+    activityLevel: { type: String },
     waterIntake: { type: String },
-    dietType: { type: String },
     dietPlan: { type: String },
-})
+});
 
-const User = mongoose.model("User", userSchema);
-export default User;
+
+const Client = mongoose.model("Client", clientSchema);
+
+export default Client;

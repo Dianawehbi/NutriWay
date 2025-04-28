@@ -1,21 +1,32 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-
-const UserInformationPage = () => {
+import axios from 'axios'
+const ClientInformationPage = () => {
   const [userInfo, setUserInfo] = useState({
-    weight: "",
-    height: "",
-    activity: "",
-    waterIntake: "",
-    dietType: "",
+    user_id: "",
     age: "",
     gender: "",
-    bodyFat: "",
+    weight: "",
+    height: "",
+    activityLevel: "",
+    waterIntake: "",
     goal: "",
-    lifestyleNote: "",
   });
+  const [error, setError] = useState(' ')
+  const navigate = useNavigate()
+  const userId = JSON.parse(localStorage.getItem("user"))._id;
+
+  if (!userId) {
+    alert("You dont have an ID !!! Error during Login Phase");
+    navigate('/login');
+  }
+
+  useEffect(() => {
+    setUserInfo((prevState) => ({ ...prevState, user_id: userId }));
+  }, [userId]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,10 +36,27 @@ const UserInformationPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you can handle the form submission (e.g., send the data to the server)
     console.log("User Information Submitted: ", userInfo);
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/api/client/client-add-information', userInfo);
+      console.log(response)
+      alert(response)
+      if (response.data.success) {
+        alert('done')
+        setError(" ")
+        navigate('/Home'); // Redirect to login page after signup
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response && !error.response.data.success) {
+        setError(error.response.data.error);
+      } else {
+        setError(error);
+      }
+    }
   };
   const foodIcons = ["🥑", "NutriWay"];
 
@@ -63,7 +91,7 @@ const UserInformationPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6 mx-auto bg-white p-6">
           <div className="flex flex-col">
-            <label htmlFor="weight" className="text-xl font-medium text-gray-700 mb-2">Weight (kg)</label>
+            <label htmlFor="weight" className="text-xl font-medium text-gray-700 mb-2">Weight (kg) *</label>
             <input
               type="number"
               id="weight"
@@ -77,7 +105,7 @@ const UserInformationPage = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="height" className="text-xl font-medium text-gray-700 mb-2">Height (cm)</label>
+            <label htmlFor="height" className="text-xl font-medium text-gray-700 mb-2">Height (cm) *</label>
             <input
               type="number"
               id="height"
@@ -91,11 +119,11 @@ const UserInformationPage = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="activity" className="text-xl font-medium text-gray-700 mb-2">Activity Level</label>
+            <label htmlFor="activity" className="text-xl font-medium text-gray-700 mb-2">Activity Level *</label>
             <select
               id="activity"
-              name="activity"
-              value={userInfo.activity}
+              name="activityLevel"
+              value={userInfo.activityLevel}
               onChange={handleChange}
               required
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -110,7 +138,7 @@ const UserInformationPage = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="waterIntake" className="text-xl font-medium text-gray-700 mb-2">Water Intake (liters)</label>
+            <label htmlFor="waterIntake" className="text-xl font-medium text-gray-700 mb-2">Water Intake (liters) *</label>
             <input
               type="number"
               id="waterIntake"
@@ -124,26 +152,7 @@ const UserInformationPage = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="dietType" className="text-xl font-medium text-gray-700 mb-2">Diet Type</label>
-            <select
-              id="dietType"
-              name="dietType"
-              value={userInfo.dietType}
-              onChange={handleChange}
-              required
-              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">Select your diet type</option>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="vegan">Vegan</option>
-              <option value="keto">Keto</option>
-              <option value="paleo">Paleo</option>
-              <option value="omnivore">Omnivore</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="age" className="text-xl font-medium text-gray-700 mb-2">Age</label>
+            <label htmlFor="age" className="text-xl font-medium text-gray-700 mb-2">Age *</label>
             <input
               type="number"
               id="age"
@@ -158,7 +167,7 @@ const UserInformationPage = () => {
 
           {/* New Fields */}
           <div className="flex flex-col">
-            <label htmlFor="gender" className="text-xl font-medium text-gray-700 mb-2">Gender</label>
+            <label htmlFor="gender" className="text-xl font-medium text-gray-700 mb-2">Gender *</label>
             <select
               id="gender"
               name="gender"
@@ -170,25 +179,11 @@ const UserInformationPage = () => {
               <option value="">Select your gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
-              <option value="other">Other</option>
             </select>
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="bodyFat" className="text-xl font-medium text-gray-700 mb-2">Body Fat Percentage (%)</label>
-            <input
-              type="number"
-              id="bodyFat"
-              name="bodyFat"
-              value={userInfo.bodyFat}
-              onChange={handleChange}
-              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter your body fat percentage"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="goal" className="text-xl font-medium text-gray-700 mb-2">Fitness Goal</label>
+            <label htmlFor="goal" className="text-xl font-medium text-gray-700 mb-2">Fitness Goal *</label>
             <select
               id="goal"
               name="goal"
@@ -205,18 +200,7 @@ const UserInformationPage = () => {
             </select>
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="lifestyleNote" className="text-xl font-medium text-gray-700 mb-2">Lifestyle Note (Optional)</label>
-            <textarea
-              id="lifestyleNote"
-              name="lifestyleNote"
-              value={userInfo.lifestyleNote}
-              onChange={handleChange}
-              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Add any preferences or lifestyle notes"
-              rows="4"
-            />
-          </div>
+          <div className="text-red-600">{error}</div>
 
           <div className="mt-6 flex justify-center">
             <button
@@ -234,4 +218,4 @@ const UserInformationPage = () => {
   );
 };
 
-export default UserInformationPage;
+export default ClientInformationPage;

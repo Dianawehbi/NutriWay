@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTrashAlt, FaUserEdit } from "react-icons/fa"; // Icons for delete and edit actions
 import NavBar from "../../components/NavBar"; // Assuming you have a NavBar component
 
-const UserManagementPage = () => {
+const AdminManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("clients"); // 'clients' or 'dietitians'
@@ -178,4 +178,4 @@ const UserManagementPage = () => {
     );
 };
 
-export default UserManagementPage;
+export default AdminManageUsers;

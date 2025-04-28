@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../../components/NavBar";
 
-const ManageAccount = () => {
+const ClientManageProfile = () => {
     const navigate = useNavigate();
-    
+    // put  on chat gpt userinfo page and this page and then write that you need to make the pprofile managment look like user information , then 
+    // add also the user general information 
     const [user, setUser] = useState({
         name: "Jane Smith",
         email: "janesmith@example.com",
@@ -148,4 +149,4 @@ const ManageAccount = () => {
     );
 };
 
-export default ManageAccount;
+export default ClientManageProfile;

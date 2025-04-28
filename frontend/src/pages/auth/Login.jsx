@@ -23,8 +23,8 @@ export default function Login() {
 
             // after succesful login we need to store the user information
             if (response.data.success) {
-                login(response.data.user);
                 localStorage.setItem("token", response.data.token)
+                localStorage.setItem("user",JSON.stringify(response.data.user))
                 if (response.data.user.role === "admin") {
                     // it should move to the admin dashboard using navigate
                     navigate('/AdminDashboard')
@@ -32,7 +32,7 @@ export default function Login() {
                     // navigate to change the route
                     navigate('/DietitianDashboard')
                 } else if (response.data.user.role === "client") {
-                    navigate('/Home')
+                    navigate('/clientdashboard')
                 }else{
                     alert('error')
                     navigate('/login')

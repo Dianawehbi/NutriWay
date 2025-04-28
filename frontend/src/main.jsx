@@ -8,13 +8,13 @@ import Login from './pages/auth/Login.jsx'
 import SignUp from './pages/auth/SignUp.jsx'
 import Pages from './pages/pages.jsx'
 
-
-import { adminRoutes } from './routes/adminRoutes.jsx'
-import { clientRoutes } from './routes/clientRoutes.jsx'
-import { dietitianRoutes } from './routes/dietitianRoutes.jsx'
-import { authRoutes } from './routes/authRoutes.jsx'
-import { recipesRoute } from './routes/recipes.jsx'
 import AuthContext from './context/authContext.jsx'
+import { recipesRoute } from './routes/recipes.jsx'
+import { dashboardRoutes } from './routes/dashboardRoutes.jsx'
+import { authRoutes } from './routes/authRoutes.jsx'
+import { appoinmentRoutes } from './routes/appointmentRoutes.jsx'
+import { adminRoutes } from './routes/adminRoutes.jsx'
+// import { profiles } from './routes/profileRoutes.jsx'
 
 const baseRoutes = [
   { path: '/', element: <App />, errorElement: <NotFoundPage /> },
@@ -26,11 +26,12 @@ const baseRoutes = [
 // Combine all route groups into a single router
 const router = createBrowserRouter([
   ...baseRoutes,
-  ...adminRoutes,
-  ...clientRoutes,
-  ...dietitianRoutes,
+  ...recipesRoute,
+  ...dashboardRoutes,
   ...authRoutes,
-  ...recipesRoute
+  ...appoinmentRoutes,
+  ...adminRoutes,
+  // ...profiles
 ]);
 
 

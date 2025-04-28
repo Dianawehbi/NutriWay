@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../../components/NavBar";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import DietitianServicesSection from "../../components/profile/dietitian_services_section";
-import ProfileSection from "../../components/profile/profileSection";
+import DietitianServicesSection from "../../../components/profile/dietitian_services_section";
+import ProfileSection from "../../../components/profile/profileSection";
 
 const DietitianManageProfile = () => {
     const [location, setLocation] = useState([34.4143186, 35.8221472]); // Default location
