@@ -45,7 +45,7 @@ export default function Pages() {
                                 <Link to="/dietitianappointment" className="text-green-600 hover:underline">Appointments</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/OrderManagementPage" className="text-black-600 hover:underline">OrderManagementPage</Link>
+                                <Link to="/services" className="text-green-600 hover:underline">ManageServicesPage</Link>
                             </td>
                         </tr>
                         <tr>
@@ -56,7 +56,7 @@ export default function Pages() {
                                 <Link to="/DietitianAddClientInfoPage" className="text-green-600 hover:underline">Add Client Information</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/SalesPage" className="text-black-600 hover:underline">Sales Page</Link>
+                                <Link to="/SalesPage" className="text-green-600 hover:underline">Profit Page</Link>
                             </td>
                         </tr>
 
@@ -69,7 +69,7 @@ export default function Pages() {
                                 <Link to="/DietitianManageProfile" className="text-blue-600 hover:underline">Manage Profile</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/ManageProduct" className="text-black-600 hover:underline">Add product</Link>
+                                <Link to="/AppointmentAdminPage" className="text-green-600 hover:underline">Manage Appoitments</Link>
                             </td>
                         </tr>
                         <tr>
@@ -125,9 +125,7 @@ export default function Pages() {
                             <td className="py-2 px-6 border-b">
                                 <Link to="/DietitianDashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/AppointmentAdminPage" className="text-green-600 hover:underline">Manage Appoitments</Link>
-                            </td>
+                
                         </tr>
                         
                         <tr>

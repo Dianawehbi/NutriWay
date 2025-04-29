@@ -23,11 +23,11 @@ export default function AdminNavBar() {
                     <Link to="/AppointmentAdminPage" className="hover:text-green-700 hover:border-b-2 hover:border-green-700  transition-all duration-300">
                         Appointment
                     </Link>
-                    <Link to="/ManageMeals" className="hover:text-green-700 hover:border-b-2 hover:border-green-700  transition-all duration-300">
-                        Meals
+                    <Link to="/recipes" className="hover:text-green-700 hover:border-b-2 hover:border-green-700  transition-all duration-300">
+                        Recipe
                     </Link>
                     <Link to="/ManageProduct" className="hover:text-green-700 hover:border-b-2 hover:border-green-700  transition-all duration-300">
-                        Products
+                        Services
                     </Link>
                 </div>
 

@@ -1,5 +1,7 @@
 import Profite from '../pages/Admin/Profite.jsx';
 import AdminManageUsers from '../pages/Admin/ManageUsers.jsx'
+import AddServicePage from '../pages/Admin/AddServicePage.jsx';
+import ManageServicesPage from '../pages/Admin/ManageServicesPage.jsx';
 
 import PrivateRoutes from '../utils/PrivateRoutes.jsx';
 import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx';
@@ -15,5 +17,12 @@ export const adminRoutes = [
         path: '/AdminManageUsers',
         element: <AdminManageUsers />
     },
-
+    {
+        path: '/add-service',
+        element: <AddServicePage />
+    },
+    {
+        path: '/services',
+        element: <ManageServicesPage />
+    },
 ];
