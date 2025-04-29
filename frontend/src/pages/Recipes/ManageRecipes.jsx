@@ -87,9 +87,18 @@ export default function ManageRecipes() {
                         </div>
                         <div className="flex gap-3 items-center m-2 text-black">
                             <IoMdSearch />
-                            <Link to={'/UserProfile'}>
-                                <CgProfile />
-                            </Link>
+                            {role == "client" &&
+                                <Link to={'/UserProfile'}>
+                                    <CgProfile />
+                                </Link>
+                            }
+                            {role == "dietitian" &&
+                                <Link to={'/UserProfile'}>
+                                    <CgProfile />
+                                </Link>
+
+                            }
+
                         </div>
                     </div>
 

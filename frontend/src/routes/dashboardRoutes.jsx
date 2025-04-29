@@ -1,26 +1,32 @@
 import AdminDashboard from '../pages/Dashboard/AdminDashboard.jsx';
 import ClientDashboard from '../pages/Dashboard/ClientDashboard.jsx';
 import DietitianDashboard from '../pages/Dashboard/DietitianDashboard.jsx'
-
+import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx';
 import PrivateRoutes from '../utils/PrivateRoutes.jsx';
 
 export const dashboardRoutes = [
     {
         path: '/DietitianDashboard', element:
             <PrivateRoutes>
-                <DietitianDashboard />
+                <RoleBaseRoutes requiredRole={["dietitian"]}>
+                    <DietitianDashboard />
+                </RoleBaseRoutes>
             </PrivateRoutes>
     },
     {
         path: '/ClientDashboard', element:
             <PrivateRoutes>
-                <ClientDashboard />
+                <RoleBaseRoutes requiredRole={["client"]}>
+                    <ClientDashboard />
+                </RoleBaseRoutes>
             </PrivateRoutes>
     },
     {
         path: '/AdminDashboard', element:
             <PrivateRoutes>
-                <AdminDashboard />
+                <RoleBaseRoutes requiredRole={["admin"]}>
+                    <AdminDashboard />
+                </RoleBaseRoutes>
             </PrivateRoutes>
     },
 ];

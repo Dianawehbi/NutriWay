@@ -18,6 +18,8 @@ const LocationPicker = ({ setLocation }) => {
 const DietitianRegistration = () => {
     const [formData, setFormData] = useState({
         fullName: "",
+        email: "",
+        phone: "",
         certification: "",
         clientsWorkedWith: "",
         education: "",
@@ -28,12 +30,19 @@ const DietitianRegistration = () => {
         location: { lat: 37.7749, lng: -122.4194 },
         profilePicture: "",
     });
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
+    // const dietitianSchema = mongoose.Schema({
     //     specialization: { type: String, required: true },
     //     experience: { type: String, required: true },
-    //     certification: { type: String, required: true },
-    //     profile_img: { type: String },  // Image URL or file path to dietitian's profile picture
-    //     clinic_address: { type: String },  // Clinic address
+    //     profilePicture: { type: String },  // Image URL or file path to dietitian's profile picture
+    //     location: { type: String },  // Clinic address
+    // languages
+    //services
+    // clientsWorkedWith
+    //education
+    // });
+
+
     const [error, setError] = useState('');
 
     const languageOptions = [
