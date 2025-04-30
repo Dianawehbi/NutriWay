@@ -5,11 +5,12 @@ import ProfileSection from '../../../components/Dietitian/profileSection.jsx';
 import img from '../../../assets/beforandafetr.jpg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import LoadingPage from '../../auth/LoadingPage.jsx';
 const DietitianProfile = () => {
   const [dietitian, setDietitian] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchDietitianInfo = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -39,25 +40,29 @@ const DietitianProfile = () => {
 
     fetchDietitianInfo();
   }, []);
+
   if (error) {
     return <div className="text-center mt-10">{error}</div>;
   }
+
   if (!dietitian) {
-    return <p className="text-center mt-10">Loading profile... </p>;
+    return <LoadingPage />;
   }
 
 
+  const role = JSON.parse(localStorage.getItem("user")).role
+  const user_id = JSON.parse(localStorage.getItem("user"))._id
+  const dietitian_id = dietitian.user_id;
+
   return (
     <div className="bg-gray-100">
-      <DietitianNavBar />
+      <DietitianNavBar role={role} user_id={user_id} dietitian_id={dietitian_id} />
       <div className="min-h-screen flex flex-col items-center p-6 mt-20 font-serif">
 
-        {/* Profile Section */}
-        <ProfileSection dietitian={dietitian} />
+        <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} />
 
-        {/* Services Section */}
         <div className="bg-white shadow-xl rounded-3xl p-8 w-11/12 mt-8">
-          <DietitianService services={dietitian.services} />
+          <DietitianService services={dietitian.services} role={role} user_id={user_id} dietitian_id={dietitian_id} />
         </div>
 
         {/* Before/After Images */}
@@ -76,14 +81,15 @@ const DietitianProfile = () => {
           <h2 className="text-xl font-semibold mb-4">Our Location</h2>
           <iframe
             className="w-full h-64 rounded-xl"
-            src={`https://maps.google.com/maps?q=${encodeURIComponent(dietitian.clinic_address.city || "Beirut")}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+            src={`https://maps.google.com/maps?q=${dietitian.clinic_address.lat},${dietitian.clinic_address.lng}&z=15&output=embed`}
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
+
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

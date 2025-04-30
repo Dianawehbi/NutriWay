@@ -46,10 +46,12 @@ const DietitianRegistration = () => {
             try {
                 const res = await axios.get("http://localhost:5000/api/services");
                 if (res.data.success) {
+                    setError(null);
                     setAvailableServices(res.data.services || []);
                 }
             } catch (err) {
                 console.error("Failed to fetch services", err);
+                setError("Failed to fetch services , Please Reload the page !")
             }
         };
         fetchServices();
@@ -64,16 +66,29 @@ const DietitianRegistration = () => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     }
+
     const handleServiceChange = (index, field, value) => {
-        const updated = [...formData.services];
-        updated[index] = { ...updated[index], [field]: value };
-        setFormData({ ...formData, services: updated });
+        try {
+            const updated = [...formData.services];
+            updated[index] = { ...updated[index], [field]: value };
+            if (field === "serviceId") {
+                const selectedService = availableServices.find(service => service._id == value);
+                if (selectedService) {
+                    updated[index].name = selectedService.name;
+                    updated[index].duration = selectedService.duration || "";
+                }
+            }
+            setFormData({ ...formData, services: updated });
+        } catch (err) {
+            console.log(err);
+        }
     };
+
 
     const addService = () => {
         setFormData({
             ...formData,
-            services: [...formData.services, { serviceId: "", price: "", mode: "" }],
+            services: [...formData.services, { serviceId: "", price: "", mode: "", name: "", duration: "" }],
         });
     };
 
@@ -131,9 +146,6 @@ const DietitianRegistration = () => {
 
     return (
         <div className="relative flex min-h-screen items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 overflow-hidden">
-            <div className="absolute inset-0 flex flex-wrap opacity-30">
-
-            </div>
 
             <div className="lg:w-full w-xsl max-w-3xl my-15 mx-2 p-8 bg-white rounded-2xl shadow-xl border border-green-200 transform transition duration-500 ease-in-out hover:scale-105 relative z-10">
                 <h2 className="text-3xl font-serif font-bold text-center text-green-700 mb-6">
@@ -186,14 +198,16 @@ const DietitianRegistration = () => {
                             </button>
 
                             <select
-                                value={service.serviceId}
-                                onChange={(e) => handleServiceChange(index, "serviceId", e.target.value)}
+                                value={String(service.serviceId)}
+                                onChange={(e) => {
+                                    handleServiceChange(index, "serviceId", e.target.value);
+                                }}
                                 required
                                 className="input mb-2"
                             >
                                 <option value="">Select a Service</option>
                                 {availableServices.map((srv) => (
-                                    <option key={srv._id} value={srv._id}>
+                                    <option key={srv._id} value={String(srv._id)}>
                                         {srv.name}
                                     </option>
                                 ))}

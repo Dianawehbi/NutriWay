@@ -1,25 +1,126 @@
-export default function ProfileSection({ dietitian }) {
+export default function ProfileSection({ dietitian, role, user_id, dietitian_id }) {
     return (
-        <div className="bg-white shadow-xl rounded-3xl p-8 mx-6 w-11/12 flex flex-col lg:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-8">
-            <div className="flex-shrink-0 flex items-center justify-center">
-                <img
-                    className="w-32 h-32 rounded-full border-4 border-green-500 shadow-md transform transition-transform hover:scale-105"
-                    src={dietitian.profile_img || "/default.jpg"} // fallback image if null
-                    alt="User"
-                />
-            </div>
-            <div className="flex flex-col sm:flex-row sm:justify-between p-6 w-full space-y-4 sm:space-y-0">
-                <div className="flex-grow text-center sm:text-left">
-                    <h2 className="text-2xl font-bold mt-4">{dietitian.name || "Dietitian"}</h2>
-                    <p className="text-gray-600 mt-1">📜 {dietitian.certification}</p>
-                    <p className="text-gray-600 mt-1">⭐ {dietitian.rate || 'N/A'} / 5</p>
-                    <p className="text-gray-600 mt-1">👥 Clients Worked With: {dietitian.clientsWorkedWith}</p>
+        <div className="bg-white shadow-lg w-11/12 mt-8 rounded-3xl overflow-hidden mx-auto transition-all duration-300 hover:shadow-xl">
+            <div className="flex flex-col lg:flex-row">
+                {/* Profile Image Section */}
+                <div className="lg:w-1/3 p-6 flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+                    <div className="relative group">
+                        <img
+                            className="w-40 h-40 rounded-full object-cover border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-105"
+                            src={dietitian.profile_img}
+                            alt={dietitian.username || "Dietitian profile"}
+                            onError={(e) => {
+                                e.target.src = "/default-profile.jpg";
+                            }}
+                        />
+                        {dietitian.rate && (
+                            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-md flex items-center">
+                                <span className="text-yellow-500 mr-1">★</span>
+                                <span className="font-semibold text-gray-800">
+                                    {dietitian.rate.toFixed(1)}/5
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    <h2 className="mt-6 text-2xl font-bold text-gray-800">
+                        {dietitian.username || "Dietitian"}
+                    </h2>
+                    <p className="text-green-600 font-medium mt-1">
+                        {dietitian.certification}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                        {dietitian.languages?.map((language) => (
+                            <span
+                                key={language}
+                                className="px-3 py-1 bg-white text-sm rounded-full shadow-sm border border-green-100"
+                            >
+                                {language}
+                            </span>
+                        ))}
+                    </div>
                 </div>
-                <div className="mt-4 sm:mt-0 sm:ml-8 space-y-2 text-gray-600 text-lg">
-                    <p><strong>🎓 Education:</strong> {dietitian.education}</p>
-                    <p><strong>🩺 Specialization:</strong> {dietitian.specialization}</p>
-                    <p><strong>💼 Experience:</strong> {dietitian.experience} years</p>
-                    <p><strong>🗣️ Languages Spoken:</strong> {dietitian.languages.join(', ')}</p>
+
+                {/* Profile Details Section */}
+                <div className="lg:w-2/3 p-6 lg:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Left Column */}
+                        <div className="space-y-4">
+                            <div className="bg-green-50 rounded-lg p-4">
+                                <h3 className="font-semibold text-green-700 flex items-center">
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    Education
+                                </h3>
+                                <p className="mt-1 text-gray-700">{dietitian.education || "Not specified"}</p>
+                            </div>
+
+                            <div className="bg-green-50 rounded-lg p-4">
+                                <h3 className="font-semibold text-green-700 flex items-center">
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                    Specialization
+                                </h3>
+                                <p className="mt-1 text-gray-700">{dietitian.specialization || "Not specified"}</p>
+                            </div>
+                        </div>
+
+                        {/* Right Column */}
+                        <div className="space-y-4">
+                            <div className="bg-green-50 rounded-lg p-4">
+                                <h3 className="font-semibold text-green-700 flex items-center">
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Experience
+                                </h3>
+                                <p className="mt-1 text-gray-700">
+                                    {dietitian.experience ? `${dietitian.experience} years` : "Not specified"}
+                                </p>
+                            </div>
+
+                            <div className="bg-green-50 rounded-lg p-4">
+                                <h3 className="font-semibold text-green-700 flex items-center">
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    Clients Worked With
+                                </h3>
+                                <p className="mt-1 text-gray-700">{dietitian.clientsWorkedWith || "Not specified"}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
+                        {user_id !== dietitian_id && (
+                            <button className="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors flex items-center">
+                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                Book Appointment
+                            </button>
+                        )}
+                        {user_id === dietitian_id && role === "dietitian" && (
+                            <button className="px-6 py-2 border border-green-600 text-green-600 rounded-full hover:bg-green-50 transition-colors flex items-center">
+                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                Dietitian:  Appointment History
+                            </button>
+                        )}
+                        {user_id === dietitian_id && role === "dietitian" && (
+                            <button className="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors flex items-center">
+                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                Dietitian : Manage Profile
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

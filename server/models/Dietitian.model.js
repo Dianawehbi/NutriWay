@@ -14,10 +14,13 @@ const dietitianSchema = mongoose.Schema({
   services: [
     {
       serviceId: { type: String, required: true },
-      mode: { type: String },
+      name: { type: String, required: true },
       price: { type: String, required: true },
+      mode: { type: String },
+      duration: { type: String, required: true },
     }
   ],
+
 
   clientsWorkedWith: { type: String },
   education: { type: String },
