@@ -5,7 +5,7 @@ import { IoMdSearch } from "react-icons/io";
 import MealCard from "../../components/MealCard";
 
 export default function MealPage() {
-  const receipts = {
+  const recipes = {
     breakfast: [
       {}, {}, {}, {}, {}, {},
     ],
@@ -55,7 +55,7 @@ export default function MealPage() {
       <div className="flex flex-col mt-12 items-start px-3 pt-3 space-y-4 w-full overflow-hidden">
 
         <div className="flex flex-col space-x-3 overflow-auto max-w-full">
-          {Object.entries(receipts).map(([category, items]) => (
+          {Object.entries(recipes).map(([category, items]) => (
             <div key={category} className="mb-8">
               <h2 className="text-2xl text-[#234403] font-semibold  capitalize mb-4">{category}</h2>
               <div className="flex flex-row space-x-3 overflow-auto max-w-full">

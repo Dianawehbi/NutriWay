@@ -20,7 +20,6 @@ const addRecipe = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, error: "add recipe server error" })
     }
-
 }
 
 const getRecipes = async (req, res) => {

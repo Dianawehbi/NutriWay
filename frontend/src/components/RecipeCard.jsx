@@ -36,7 +36,7 @@ export default function RecipeCard(item) {
 
                 { (role =="admin" || role =="dietitian") &&
                     <div className="flex flex-row items-center space-x-3">
-                        <Link to={`/edit-recipes/${recipe._id}`} className="p-2 rounded-full bg-gray-500 hover:bg-gray-600 text-white transition duration-200">
+                        <Link to={`/edit-recipes/${recipe._id}`} className="p-2 rounded-full bg-gray-400 hover:bg-gray-600 text-white transition duration-200">
                             <FaUserEdit className="w-5 h-5" recipe={recipe} />
                         </Link>
 

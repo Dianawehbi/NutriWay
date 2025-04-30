@@ -178,8 +178,8 @@ const DietPlanPage = () => {
       .reduce((total, item) => total + item.calories, 0);
 
   return (
-<div className="bg-gradient-to-l from-[#c6d3c6] to-[#3ee11e96]  p-4 min-h-screen font-serif flex flex-col">
-{/* Fixed Header with High z-index */}
+    <div className="bg-gradient-to-l from-[#c6d3c6] to-[#3ee11e96]  p-4 min-h-screen font-serif flex flex-col">
+      {/* Fixed Header with High z-index */}
       <div className="fixed bg-white rounded-b-2xl font-serif  top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
         <div className="flex gap-3 items-center m-2">
           <Link to={'/Home'}>

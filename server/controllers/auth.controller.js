@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 import bcrypt from 'bcrypt'
+import Dietitian from "../models/dietitian.model.js";
 
 export const Login = async (req, res) => {
     try {
@@ -65,39 +66,55 @@ export const userRegister = async (req, res) => {
     }
 };
 
-const registerDietitian = async (req, res) => {
+
+export const dietitianRegister = async (req, res) => {
+    let newUser;
     try {
-        const { username, email, password, phone, specialization, experience, certification, profile_img, clinic_address } = req.body;
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            return res.status(400).json({ success: false, error: "Email already registered." });
+        }
 
-        // Create a new User with role 'dietitian'
-        const user = new User({
-            username,
-            email,
-            password, // Hash the password before saving (make sure to hash it)
-            role: 'dietitian',
-            phone,
+        // Hash password
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        newUser = await new User({
+            username: req.body.fullName,
+            email: req.body.email,
+            password: hashedPassword,
+            phone: req.body.phone,
+            role: "dietitian"
+        }).save();
+
+        const newDietitian = new Dietitian({
+            specialization: req.body.specialization,
+            experience: req.body.experience,
+            certification: req.body.certification,
+            profile_img: req.file?.filename || null, // Multer handles this
+            clinic_address: {
+                "lat": req.body.location.lat,
+                "lng": req.body.location.lng
+            },
+            languages: req.body.languages,
+            services: req.body.services,
+            clientsWorkedWith: req.body.clientsWorkedWith,
+            education: req.body.education,
+            user_id: newUser._id,
+            status: "pending"
         });
 
-        await user.save(); // Save user first
+        await newDietitian.save();
 
-        // Now create the Dietitian document and link it to the User
-        const dietitian = new Dietitian({
-            user: user._id,  // Link to user
-            specialization,
-            experience,
-            certification,
-            profile_img,  // Profile image URL/path
-            clinic_address,
-        });
-
-        await dietitian.save(); // Save dietitian
-
-        res.status(201).json({ success: true, message: 'Dietitian registered successfully' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        return res.status(201).json({ success: true, message: "Dietitian registered successfully" });
+    } catch (err) {
+        if (newUser?._id) {
+            await User.findByIdAndDelete(newUser._id);
+        }
+        console.error(err);
+        return res.status(500).json({ success: false, error: "Registration failed, user rolled back." + err });
     }
-};
 
+};
 
 export const verify = async (req, res) => {
     return res.status(200).json({ success: true, user: req.user })

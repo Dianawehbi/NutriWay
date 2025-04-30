@@ -18,11 +18,19 @@ export const adminRoutes = [
         element: <AdminManageUsers />
     },
     {
-        path: '/add-service',
-        element: <AddServicePage />
+        path: '/add-service', element:
+            <PrivateRoutes>
+                <RoleBaseRoutes requiredRole={["admin"]}>
+                    <AddServicePage />
+                </RoleBaseRoutes>
+            </PrivateRoutes>
     },
     {
-        path: '/services',
-        element: <ManageServicesPage />
+        path: '/services', element:
+            <PrivateRoutes>
+                <RoleBaseRoutes requiredRole={["admin"]}>
+                    <ManageServicesPage />
+                </RoleBaseRoutes>
+            </PrivateRoutes>
     },
 ];

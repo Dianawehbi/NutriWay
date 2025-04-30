@@ -39,31 +39,23 @@ export default function Pages() {
                         <tr>
 
                             <td className="py-2 px-6 border-b">
-                                <Link to="/userinformation" className="text-red-600 hover:underline">Add Your Information</Link>
+                                <Link to="/ClientInformationPage" className="text-red-600 hover:underline">Add Your Information</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/dietitianappointment" className="text-green-600 hover:underline">Appointments</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/services" className="text-green-600 hover:underline">ManageServicesPage</Link>
+                                <Link to="/services" className="text-red-600 hover:underline">ManageServicesPage</Link>
                             </td>
                         </tr>
                         <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/Card" className="text-black-600 hover:underline">Shopping Cart</Link>
-                            </td>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianAddClientInfoPage" className="text-green-600 hover:underline">Add Client Information</Link>
-                            </td>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/SalesPage" className="text-green-600 hover:underline">Profit Page</Link>
-                            </td>
+
                         </tr>
 
-                      
+
                         <tr>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/Home" className="text-green-600 hover:underline">Dashboard</Link>
+                                <Link to="/clientdashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/DietitianManageProfile" className="text-blue-600 hover:underline">Manage Profile</Link>
@@ -119,37 +111,30 @@ export default function Pages() {
                             </td>
                         </tr>
                         <tr>
-                        <td className="py-2 px-6 border-b">
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/clientmanageprofile" className="text-blue-600 hover:underline">Manage Profile</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/DietitianAddClientInfoPage" className="text-green-600 hover:underline">Add Client Information</Link>
+                            </td>
+                            <td className="py-2 px-6 border-b">
+                                <Link to="/SalesPage" className="text-green-600 hover:underline">Profit Page</Link>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="py-2 px-6 border-b">
                                 <Link to="/DietPlan" className="text-green-600 hover:underline">Diet Plan</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/DietitianDashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
-                
-                        </tr>
-                        
-                        <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/Shop" className="text-black-500 hover:underline">Shopping Page</Link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/clientmanageprofile" className="text-blue-600 hover:underline">Manage Profile</Link>
-                            </td>
-                        </tr>
 
-                        <tr>
-                            <td className="py-2 px-6 border-b">
-                                <Link to="/CheckoutPage" className="text-black-600 hover:underline">CheckOut</Link>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div className="h-10">
                 </div>
-                <div>maybe i will remove the e commerce age : this will lead to delete 5 pages </div>
                 <div class="text-green-500 font-semibold text-lg mb-2">
                     🟢 <span class="">you shoould start working on this </span>
                 </div>

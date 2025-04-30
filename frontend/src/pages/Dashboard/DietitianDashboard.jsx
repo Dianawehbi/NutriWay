@@ -5,7 +5,7 @@ import DietitianHeader from "../../components/Dietitian/Header";
 import MealsManager from "../../components/MealsManager";
 import ManageAppt from "../../components/Dietitian/ManageAppoitment";
 import Footer from "../../components/Footer";
-import Dietitian from "../../components/Home/DietianSection";
+import Dietitian from "../../components/Client/DietianSection";
 const DietitianDashboard = () => {
     const [appointments, setAppointments] = useState([]);
     const [clients, setClients] = useState([]);
@@ -36,12 +36,14 @@ const DietitianDashboard = () => {
         <div className="min-h-screen bg-gray-50">
             {/* Navbar */}
             <DietitianNavBar />
-
+ 
             <DietitianHeader />
             {/* Dashboard Content */}
 
 
-
+            <div>her i should check the ststus of dietitian  if pendig then
+                display a new page , or other thing
+            </div>
             <div className="p-6 space-y-6 mt-20">
                 <ManageAppt />
                 <MealsManager />
@@ -58,7 +60,7 @@ const DietitianDashboard = () => {
                     </div>
                 </div>
             </div>
-            <Dietitian/>
+            <Dietitian />
             <Footer />
         </div>
     );

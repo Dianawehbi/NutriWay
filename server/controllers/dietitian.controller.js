@@ -1,3 +1,6 @@
+import Dietitian from "../models/dietitian.model.js";
+import User from "../models/User.model.js";
+
 const updateDietitianProfile = async (req, res) => {
     try {
         const dietitianId = req.params.dietitianId;
@@ -19,17 +22,44 @@ const updateDietitianProfile = async (req, res) => {
     }
 };
 
-const getDietitianInfo = async (dietitianId) => {
-    try {
-        const dietitian = await Dietitian.findOne({ user: dietitianId }).populate("user");
 
-        if (!dietitian) {
-            throw new Error("Dietitian not found");
-        }
-
-        return dietitian;
-    } catch (error) {
-        throw new Error(error.message);
+export const GetDietitianInfo = async (req, res) => {
+  try {
+    const dietitianUserId = req.query.id;
+    // Find dietitian by user_id
+    const dietitian = await Dietitian.findOne({ user_id: dietitianUserId });
+    if (!dietitian) {
+      return res.status(400).json({ success: false, message: "Dietitian not found" });
     }
+
+    // Find the related user
+    const user = await User.findById(dietitian.user_id);
+    if (!user) {
+      return res.status(400).json({ success: false, message: "User not found" });
+    }
+
+    // Combine data
+    const combinedData = {
+      userId: user._id,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      specialization: dietitian.specialization,
+      experience: dietitian.experience,
+      certification: dietitian.certification,
+      profile_img: dietitian.profile_img,
+      clinic_address: dietitian.clinic_address,
+      languages: dietitian.languages,
+      services: dietitian.services,
+      clientsWorkedWith: dietitian.clientsWorkedWith,
+      education: dietitian.education,
+      status: dietitian.status,
+    };
+
+    return res.status(200).json({ success: true, dietitian: combinedData });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error while fetching dietitian information  ||  " + error });
+  }
 };
 

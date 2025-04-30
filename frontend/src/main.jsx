@@ -13,8 +13,8 @@ import { recipesRoute } from './routes/recipes.jsx'
 import { dashboardRoutes } from './routes/dashboardRoutes.jsx'
 import { authRoutes } from './routes/authRoutes.jsx'
 import { appoinmentRoutes } from './routes/appointmentRoutes.jsx'
-import { adminRoutes } from './routes/adminRoutes.jsx'
-// import { profiles } from './routes/profileRoutes.jsx'
+// import { adminRoutes } from './routes/adminRoutes.jsx'
+import { profiles } from './routes/profileRoutes.jsx'
 
 const baseRoutes = [
   { path: '/', element: <App />, errorElement: <NotFoundPage /> },
@@ -30,8 +30,8 @@ const router = createBrowserRouter([
   ...dashboardRoutes,
   ...authRoutes,
   ...appoinmentRoutes,
-  ...adminRoutes,
-  // ...profiles
+  // ...adminRoutes,
+  ...profiles
 ]);
 
 

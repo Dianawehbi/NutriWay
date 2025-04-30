@@ -34,12 +34,10 @@ export default function Login() {
                 } else if (response.data.user.role === "client") {
                     navigate('/clientdashboard')
                 }else{
-                    alert('error')
                     navigate('/login')
                 }
             }
         } catch (error) {
-            alert(error)
             if (error.response && !error.response.data.success) {
                 setError(error.response.data.error);
             } else {

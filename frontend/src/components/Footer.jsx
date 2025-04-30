@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 export default function Footer() {
   return (
     <motion.div
+     
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="bg-[#D0DBC2]  text-gray-700 py-10 px-6 mt-20 font-serif w-full"
     >
-      <div className="max-w-screen-xl mx-auto">
+      <div className="max-w-screen-xl mx-auto"  id="about">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
           <div className="space-y-4">

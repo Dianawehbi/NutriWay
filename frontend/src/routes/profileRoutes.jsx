@@ -1,25 +1,24 @@
-// import DietitianProfile from '../pages/Profile/dietitian/Profile.jsx';
-import ClientProfile from '../pages/Profile/client/Profile.jsx'
+import DietitianProfile from '../pages/Profile/dietitian/Profile.jsx';
+// import ClientProfile from '../pages/Profile/client/Profile.jsx'
 // import DietitianManageProfile from '../pages/Profile/dietitian/ManageProfile.jsx';
 // import ClientManageProfile from '../pages/Profile/client/ManageProfile.jsx'
 // import ClientInformationPage from '../pages/Profile/client/ClientInformationPage.jsx';
-// import dietPlan from '../pages/Profile/client/DietPlanPage.jsx'
-
+// import DietPlanPage from '../pages/Profile/client/DietPlanPage.jsx';
 import PrivateRoutes from '../utils/PrivateRoutes.jsx';
 
 export const profiles = [
-    // {
-    //     path: '/dietitianprofile', element:
-    //         <PrivateRoutes>
-    //             <DietitianProfile />
-    //         </PrivateRoutes>
-    // },
     {
-        path: '/clientprofile', element:
+        path: '/dietitianprofile', element:
             <PrivateRoutes>
-                <ClientProfile />
+                <DietitianProfile />
             </PrivateRoutes>
     },
+    // {
+    //     path: '/clientprofile', element:
+    //         <PrivateRoutes>
+    //             <ClientProfile />
+    //         </PrivateRoutes>
+    // },
     // {
     //     path: '/dietitianmanageprofile', element:
     //         <PrivateRoutes>
@@ -39,9 +38,9 @@ export const profiles = [
     //         </PrivateRoutes>
     // },
     // {
-    //     path: '/dietPlan', element:
+    //     path: '/diet-plan', element:
     //         <PrivateRoutes>
-    //             <dietPlan />
+    //             <DietPlanPage/>
     //         </PrivateRoutes>
     // },
 ];

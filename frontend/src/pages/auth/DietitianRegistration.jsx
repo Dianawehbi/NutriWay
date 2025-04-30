@@ -1,25 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import { motion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
-
-const LocationPicker = ({ setLocation }) => {
-    useMapEvents({
-        click(e) {
-            setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
-        },
-    });
-    return null;
-};
-// i should also add all things for user himself 
-// to att the same time add info for =dietitian and user 
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { handleImageUpload } from "../../utils/imageUtils";
 
 const DietitianRegistration = () => {
+    const navigate = useNavigate();
+    const [availableServices, setAvailableServices] = useState([]);
+    const [error, setError] = useState("");
+
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         phone: "",
+        password: "",
         certification: "",
         clientsWorkedWith: "",
         education: "",
@@ -27,53 +23,62 @@ const DietitianRegistration = () => {
         experience: "",
         languages: [],
         services: [],
-        location: { lat: 37.7749, lng: -122.4194 },
-        profilePicture: "",
+        location: { "lat": 34.3749, "lng": 35.8194 },
+        profilePicture: null,
     });
 
-    // const dietitianSchema = mongoose.Schema({
-    //     specialization: { type: String, required: true },
-    //     experience: { type: String, required: true },
-    //     profilePicture: { type: String },  // Image URL or file path to dietitian's profile picture
-    //     location: { type: String },  // Clinic address
-    // languages
-    //services
-    // clientsWorkedWith
-    //education
-    // });
-
-
-    const [error, setError] = useState('');
-
     const languageOptions = [
+        { value: "Arabic", label: "Arabic" },
         { value: "English", label: "English" },
         { value: "Spanish", label: "Spanish" },
         { value: "French", label: "French" },
-        { value: "Arabic", label: "Arabic" }
     ];
 
-    const handleChange = (e) => {
-        const { name, value, type, files } = e.target;
-        if (type === "file") {
-            setFormData({ ...formData, [name]: files[0] });
-        } else {
-            setFormData({ ...formData, [name]: value });
+    const onImageChange = async (e) => {
+        const resizedImage = await handleImageUpload(e.target.files);
+        if (resizedImage) {
+            setFormData({ ...formData, image: resizedImage });
         }
     };
 
+    useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const res = await axios.get("http://localhost:5000/api/services");
+                if (res.data.success) {
+                    setAvailableServices(res.data.services || []);
+                }
+            } catch (err) {
+                console.error("Failed to fetch services", err);
+            }
+        };
+        fetchServices();
+    }, []);
+
+    const removeService = (indexToRemove) => {
+        const updated = formData.services.filter((_, index) => index !== indexToRemove);
+        setFormData({ ...formData, services: updated });
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    }
     const handleServiceChange = (index, field, value) => {
-        const updatedServices = [...formData.services];
-        updatedServices[index] = { ...updatedServices[index], [field]: value };
-        setFormData({ ...formData, services: updatedServices });
+        const updated = [...formData.services];
+        updated[index] = { ...updated[index], [field]: value };
+        setFormData({ ...formData, services: updated });
     };
 
     const addService = () => {
-        setFormData({ ...formData, services: [...formData.services, { name: "", price: "", type: "" }] });
+        setFormData({
+            ...formData,
+            services: [...formData.services, { serviceId: "", price: "", mode: "" }],
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (formData.services.length === 0) {
             alert("Please add at least one service.");
             return;
@@ -83,21 +88,37 @@ const DietitianRegistration = () => {
             alert("Please select at least one language.");
             return;
         }
+
         try {
+            console.log(formData)
             const response = await axios.post(
-                'http://localhost:5000/api/auth/dietitianRegister',
-                { username, phoneNumber, email, password }
+                "http://localhost:5000/api/auth/dietitianRegister",
+                formData, {
+                Headers: {
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                }
+            }
             );
-            // specialization: { type: String, required: true },
-            // experience: { type: String, required: true },
-            // certification: { type: String, required: true },
-            // profile_img: { type: String },
-            // clinic_address: { type: String },
+            console.log(response);
             if (response.data.success) {
                 alert("Registration successful! Please wait to be accepted.");
-                navigate('/Login'); // Redirect to login page after signup
+                navigate("/Login");
+                setFormData({
+                    fullName: "",
+                    email: "",
+                    phone: "",
+                    password: "",
+                    certification: "",
+                    clientsWorkedWith: "",
+                    education: "",
+                    specialization: "",
+                    experience: "",
+                    languages: [],
+                    services: [],
+                    location: { "lat": 37.7749, "lng": -122.4194 },
+                    profilePicture: null,
+                })
             }
-
         } catch (err) {
             console.log(err);
             if (err.response && !err.response.data.success) {
@@ -111,59 +132,40 @@ const DietitianRegistration = () => {
     return (
         <div className="relative flex min-h-screen items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 overflow-hidden">
             <div className="absolute inset-0 flex flex-wrap opacity-30">
-                {Array.from({ length: 6 }).map((_, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ y: -20, opacity: 1 }}
-                        animate={{ y: [10, -10, 10], opacity: 1 }}
-                        transition={{
-                            duration: 3 + Math.random() * 2,
-                            repeat: Infinity,
-                            repeatType: "reverse",
-                            ease: "easeInOut",
-                        }}
-                        className="absolute text-4xl"
-                        style={{
-                            top: `${Math.random() * 85 + 5}%`,
-                            left: `${Math.random() * 85 + 5}%`,
-                            padding: "20px",
-                        }}
-                    >
-                        🥑 NutriWay
-                    </motion.div>
-                ))}
+
             </div>
 
             <div className="lg:w-full w-xsl max-w-3xl my-15 mx-2 p-8 bg-white rounded-2xl shadow-xl border border-green-200 transform transition duration-500 ease-in-out hover:scale-105 relative z-10">
-                <h2 className="text-3xl font-serif font-bold text-center text-green-700 mb-6 animate-fadeIn">Dietitian Registration</h2>
+                <h2 className="text-3xl font-serif font-bold text-center text-green-700 mb-6">
+                    Dietitian Registration
+                </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4 animate-fadeInUp">
-                    <input type="text" name="fullName" placeholder="Full Name" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" name="fullName" placeholder="Full Name" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="email" name="email" placeholder="Email Address" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="text" name="phone" placeholder="Phone Number" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="password" name="password" placeholder="Create Password" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="text" name="certification" placeholder="Professional Certification" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="number" name="clientsWorkedWith" placeholder="Clients You've Worked With" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="text" name="education" placeholder="Highest Education Level" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="text" name="specialization" placeholder="Your Specialization" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                        <input type="number" name="experience" placeholder="Years of Experience" onChange={handleChange} required className="input rounded-xl border px-4 py-2" />
+                    </div>
 
-                    <input type="text" name="certification" placeholder="Certification" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-
-                    <input type="number" name="clientsWorkedWith" placeholder="Clients Worked With" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-
-                    <input type="text" name="education" placeholder="Education" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-
-                    <input type="text" name="specialization" placeholder="Specialization" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-
-                    <input type="number" name="experience" placeholder="Years of Experience" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-
-                    {/* Languages */}
                     <label className="block font-semibold">Languages Spoken:</label>
                     <Select
                         isMulti
                         options={languageOptions}
-                        onChange={(selected) => setFormData({ ...formData, languages: selected.map(option => option.value) })}
+                        onChange={(selected) =>
+                            setFormData({ ...formData, languages: selected.map((option) => option.value) })
+                        }
                         className="w-full"
                     />
 
-                    {/* Profile Picture Upload */}
                     <label className="block font-semibold">Profile Picture:</label>
-                    <input type="file" name="profilePicture" accept="image/*" onChange={handleChange} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" />
+                    <input type="file" name="file" accept="image/*" onChange={onImageChange} className="input" />
 
-                    {/* Services */}
                     <div className="flex items-center justify-between">
                         <label className="block font-semibold">Services Provided:</label>
                         <button type="button" onClick={addService} className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition">
@@ -172,10 +174,46 @@ const DietitianRegistration = () => {
                     </div>
 
                     {formData.services.map((service, index) => (
-                        <div key={index} className="border p-4 rounded-lg mb-4 shadow-md">
-                            <input type="text" placeholder="Service Name" value={service.name} onChange={(e) => handleServiceChange(index, "name", e.target.value)} className="w-full p-2 border rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-                            <input type="number" placeholder="Price ($)" value={service.price} onChange={(e) => handleServiceChange(index, "price", e.target.value)} className="w-full p-2 border rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required />
-                            <select value={service.type} onChange={(e) => handleServiceChange(index, "type", e.target.value)} className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 hover:shadow-md" required>
+                        <div key={index} className="border p-4 rounded-lg mb-4 shadow-md relative">
+                            {/* X Button */}
+                            <button
+                                type="button"
+                                onClick={() => removeService(index)}
+                                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-lg font-bold"
+                                title="Remove"
+                            >
+                                ×
+                            </button>
+
+                            <select
+                                value={service.serviceId}
+                                onChange={(e) => handleServiceChange(index, "serviceId", e.target.value)}
+                                required
+                                className="input mb-2"
+                            >
+                                <option value="">Select a Service</option>
+                                {availableServices.map((srv) => (
+                                    <option key={srv._id} value={srv._id}>
+                                        {srv.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <input
+                                type="number"
+                                placeholder="Price ($)"
+                                value={service.price}
+                                onChange={(e) => handleServiceChange(index, "price", e.target.value)}
+                                required
+                                className="input mb-2"
+                            />
+
+                            <select
+                                value={service.mode}
+                                onChange={(e) => handleServiceChange(index, "mode", e.target.value)}
+                                required
+                                className="input"
+                            >
                                 <option value="">Select Service Type</option>
                                 <option value="Online">Online</option>
                                 <option value="In-Clinic">In-Clinic</option>
@@ -183,21 +221,37 @@ const DietitianRegistration = () => {
                         </div>
                     ))}
 
-                    {/* Location Picker */}
+
                     <label className="block font-semibold">Select Your Location:</label>
-                    <MapContainer center={{ lat: 33.8547, lng: 35.8623 }} zoom={8} style={{ height: "300px", width: "100%" }}>
+                    <MapContainer
+                        center={formData.location} zoom={8} style={{ height: "300px", width: "100%" }}
+                    >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        <LocationPicker setLocation={(location) => setFormData({ ...formData, location })} />
                         <Marker position={formData.location} />
+                        {
+                            (() => {
+                                const LocationHandler = () => {
+                                    useMapEvents({
+                                        click(e) {
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                location: {
+                                                    "lat": e.latlng.lat,
+                                                    "lng": e.latlng.lng,
+                                                },
+                                            }));
+                                        },
+                                    });
+                                    return null;
+                                };
+                                return <LocationHandler />;
+                            })()}
                     </MapContainer>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-600 transition font-semibold mt-4"
-                    >
+                    <button type="submit" className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-600 transition font-semibold mt-4">
                         Register
                     </button>
+                    {error && <p className="text-red-600 mt-2 text-center">{error}</p>}
                 </form>
             </div>
         </div>
