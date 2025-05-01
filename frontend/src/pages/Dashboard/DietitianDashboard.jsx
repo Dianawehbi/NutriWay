@@ -56,7 +56,7 @@ const DietitianDashboard = () => {
                     </div>
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center">
                         <h3 className="text-xl font-semibold text-gray-700">Manage Profile</h3>
-                        <Link to="/DietitianManageProfile" className="text-green-500 hover:underline">Manage Profile</Link>
+                        <Link to="/DietitianManageProfile/123" className="text-green-500 hover:underline">Manage Profile</Link>
                     </div>
                 </div>
             </div>

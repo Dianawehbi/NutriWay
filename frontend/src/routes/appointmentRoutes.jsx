@@ -1,10 +1,9 @@
 import AdminAppointmentPage from '../pages/Appointment/AdminManageAppointment.jsx'
-import { DietitianAppointmentHistory } from '../pages/Appointment/dietitian/ApointmentHistory.jsx'
-import DietitianManageAppointment from '../pages/Appointment/dietitian/ManageApointments.jsx'
+import DietitianAvailability from '../pages/Appointment/dietitian/DietitianAvailability.jsx'
 import DietitianAddClientInfoPage from '../pages/Appointment/dietitian/AddClientInfo.jsx'
 import { AppointmentHistory } from '../pages/Appointment/client/AppointmentHitory.jsx'
 import MakesAppointment from '../pages/Appointment/client/MakesAppointment.jsx'
-
+import DietitianAppointments from '../pages/Appointment/dietitian/DietitianAppointments.jsx'
 import PrivateRoutes from '../utils/PrivateRoutes.jsx'
 import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx'
 
@@ -16,14 +15,14 @@ export const appoinmentRoutes = [
             </PrivateRoutes>
     },
     {
-        path: '/DietitianAppointmentHistory', element:
+        path: '/DietitianAppointments', element:
             <PrivateRoutes>
-                <DietitianAppointmentHistory />
+                <DietitianAppointments />
             </PrivateRoutes>
     }, {
-        path: '/DietitianManageAppointment', element:
+        path: '/DietitianAvailability', element:
             <PrivateRoutes>
-                <DietitianManageAppointment />
+                <DietitianAvailability />
             </PrivateRoutes>
     }, {
         path: '/DietitianAddClientInfoPage', element:

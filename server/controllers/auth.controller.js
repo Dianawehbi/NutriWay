@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 import bcrypt from 'bcrypt'
-import Dietitian from "../models/dietitian.model.js";
+import Dietitian from "../models/Dietitian.model.js";
 
 export const Login = async (req, res) => {
     try {
@@ -90,7 +90,7 @@ export const dietitianRegister = async (req, res) => {
             specialization: req.body.specialization,
             experience: req.body.experience,
             certification: req.body.certification,
-            profile_img: req.file?.filename || null, // Multer handles this
+            profile_img: req.body.profilePicture || null, // Multer handles this
             clinic_address: {
                 "lat": req.body.location.lat,
                 "lng": req.body.location.lng

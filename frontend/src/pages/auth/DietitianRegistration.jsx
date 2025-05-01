@@ -24,7 +24,7 @@ const DietitianRegistration = () => {
         languages: [],
         services: [],
         location: { "lat": 34.3749, "lng": 35.8194 },
-        profilePicture: null,
+        profilePicture: "",
     });
 
     const languageOptions = [
@@ -35,9 +35,12 @@ const DietitianRegistration = () => {
     ];
 
     const onImageChange = async (e) => {
-        const resizedImage = await handleImageUpload(e.target.files);
+        const file = e.target.files[0];
+        if (!file) 
+            return;
+        const resizedImage = await handleImageUpload([file]); // send as array if your function expects it
         if (resizedImage) {
-            setFormData({ ...formData, image: resizedImage });
+            setFormData((prev) => ({ ...prev, profilePicture: resizedImage }));
         }
     };
 
@@ -176,7 +179,7 @@ const DietitianRegistration = () => {
                     />
 
                     <label className="block font-semibold">Profile Picture:</label>
-                    <input type="file" name="file" accept="image/*" onChange={onImageChange} className="input" />
+                    <input type="file" name="files" accept="image/*" onChange={onImageChange} className="input" />
 
                     <div className="flex items-center justify-between">
                         <label className="block font-semibold">Services Provided:</label>

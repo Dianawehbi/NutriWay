@@ -9,6 +9,7 @@ import { useAuth } from '../../context/authContext.jsx';
 export default function DietitianNavBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { logout } = useAuth();
+    const id = JSON.parse(localStorage.getItem('user'))._id
 
     const navLinks = [
         { path: "/DietitianDashboard", label: "Home" },
@@ -61,12 +62,13 @@ export default function DietitianNavBar() {
                 {/* User Actions */}
                 <div className="flex items-center space-x-4">
                     <Link
-                        to="/dietitianprofile"
+                        to={`/dietitianprofile/${id}`}
                         className="p-2 text-gray-700 hover:text-green-700 transition-colors duration-300"
                         aria-label="User Profile"
                     >
                         <CgProfile className="text-2xl" />
                     </Link>
+
 
                     <button
                         className="md:hidden p-2 text-gray-700 hover:text-green-700 transition-colors duration-300"

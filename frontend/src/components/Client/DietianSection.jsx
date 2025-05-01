@@ -5,34 +5,34 @@ import img from '../../assets/dietitianphoto.jpg'
 export default function Dietitian() {
     const dietitians = [
         {
-            id: 1,
+            _id: "68128ac59b68d511ceb4adcd",
             name: 'Dr. Sarah Johnson',
             profilePicture: {img},
             specialization: 'Nutritionist',
             bio: 'Dr. Sarah has over 10 years of experience helping clients maintain healthy lifestyles.',
         },
         {
-            id: 2,
+            _id: 2,
             name: 'Dr. Mark Smith',
             profilePicture: 'path/to/image2.jpg',
             specialization: 'Sports Nutrition',
             bio: 'Dr. Mark specializes in sports nutrition and helps athletes improve their performance through diet.',
         },
         {
-            id: 3,
+            _id: 3,
             name: 'Dr. Emily Davis',
             profilePicture: 'path/to/image3.jpg',
             specialization: 'Dietary Consultant',
             bio: 'Dr. Emily provides personalized dietary plans for weight loss and healthy living.',
         },
         {
-            id: 3,
+            _id: 3,
             name: 'Dr. Emily Davis',
             profilePicture: 'path/to/image3.jpg',
             specialization: 'Dietary Consultant',
             bio: 'Dr. Emily provides personalized dietary plans for weight loss and healthy living.',
         },  {
-            id: 3,
+            _id: 3,
             name: 'Dr. Emily Davis',
             profilePicture: 'path/to/image3.jpg',
             specialization: 'Dietary Consultant',
@@ -49,8 +49,8 @@ export default function Dietitian() {
             <div className="flex flex-row space-x-3 overflow-auto max-w-full">
                 {dietitians.map((dietitian) => (
                     <div>
-                        <Link to={'/DietitianProfile'}>
-                            <div key={dietitian.id} className="bg-white shadow-lg w-100 rounded-lg overflow-hidden">
+                        <Link to={`/DietitianProfile/${dietitian._id}`}>
+                            <div key={dietitian._id} className="bg-white shadow-lg w-100 rounded-lg overflow-hidden">
                                 <img
                                     src={img}
                                     alt={dietitian.name}

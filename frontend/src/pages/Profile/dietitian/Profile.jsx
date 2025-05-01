@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import DietitianNavBar from '../../../components/Dietitian/NavBar.jsx';
 import DietitianService from "../../../components/profile/dietitian_services.jsx";
 import ProfileSection from '../../../components/Dietitian/profileSection.jsx';
-import img from '../../../assets/beforandafetr.jpg';
+import { useNavigate, useParams } from "react-router-dom";
+import Footer from '../../../components/Footer.jsx'
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import LoadingPage from '../../auth/LoadingPage.jsx';
+
 const DietitianProfile = () => {
   const [dietitian, setDietitian] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { id } = useParams();
+
 
   useEffect(() => {
     const fetchDietitianInfo = async () => {
@@ -19,7 +22,7 @@ const DietitianProfile = () => {
         try {
           const res = await axios.get('http://localhost:5000/api/dietitian', {
             params: {
-              id: JSON.parse(localStorage.getItem("user"))._id
+              id: id
             }
           });
           if (res.data.success) {
@@ -29,13 +32,14 @@ const DietitianProfile = () => {
             console.error("Failed to fetch dietitian info: success = false");
           }
         } catch (err) {
-          setError("Failed to fetch dietitian info \n " + err)
+          setError("Failed to fetch dietitian info .  " + err.message)
           console.error("Failed to fetch dietitian info", err);
         }
       } else {
         alert("Error Your LocalStorage Doesnt contain a user \n Please Login")
         navigate('/login')
       }
+
     };
 
     fetchDietitianInfo();
@@ -49,10 +53,14 @@ const DietitianProfile = () => {
     return <LoadingPage />;
   }
 
+  let role, user_id, dietitian_id;
+  if (dietitian) {
+    role = JSON.parse(localStorage.getItem("user")).role
+    user_id = JSON.parse(localStorage.getItem("user"))._id
+    console.log(dietitian)
+    dietitian_id = dietitian.userId;
+  }
 
-  const role = JSON.parse(localStorage.getItem("user")).role
-  const user_id = JSON.parse(localStorage.getItem("user"))._id
-  const dietitian_id = dietitian.user_id;
 
   return (
     <div className="bg-gray-100">
@@ -65,16 +73,6 @@ const DietitianProfile = () => {
           <DietitianService services={dietitian.services} role={role} user_id={user_id} dietitian_id={dietitian_id} />
         </div>
 
-        {/* Before/After Images */}
-        <div className="bg-white shadow-xl rounded-3xl p-8 w-11/12 mt-8">
-          <div className="flex flex-row justify-around gap-4">
-            {[1, 2, 3, 4].map((_, i) => (
-              <div key={i} className={i > 1 ? 'hidden md:flex' : ''}>
-                <img src={img} alt="Before or After" className="max-h-[300px] w-auto rounded-lg" />
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Map Section */}
         <div className="bg-white shadow-xl rounded-3xl p-8 w-11/12 mt-8">
@@ -89,6 +87,7 @@ const DietitianProfile = () => {
 
         </div>
       </div>
+      <Footer />
     </div >
   );
 };

@@ -30,7 +30,7 @@ export default function Pages() {
                             </td>
 
                             <td className="py-2 px-6 border-b">
-                                <Link to="/dietitianprofile" className="text-blue-600 hover:underline">Profile</Link>
+                                <Link to="/dietitianprofile/234" className="text-blue-600 hover:underline">Profile</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/ManageUsers" className="text-green-600 hover:underline">Manage Users</Link>
@@ -58,7 +58,7 @@ export default function Pages() {
                                 <Link to="/clientdashboard" className="text-green-600 hover:underline">Dashboard</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
-                                <Link to="/DietitianManageProfile" className="text-blue-600 hover:underline">Manage Profile</Link>
+                                <Link to="/DietitianManageProfile/123" className="text-blue-600 hover:underline">Manage Profile</Link>
                             </td>
                             <td className="py-2 px-6 border-b">
                                 <Link to="/AppointmentAdminPage" className="text-green-600 hover:underline">Manage Appoitments</Link>

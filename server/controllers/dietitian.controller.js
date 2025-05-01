@@ -1,25 +1,47 @@
-import Dietitian from "../models/dietitian.model.js";
 import User from "../models/User.model.js";
+import Dietitian from "../models/Dietitian.model.js";
 
-const updateDietitianProfile = async (req, res) => {
-    try {
-        const dietitianId = req.params.dietitianId;
-        const { specialization, experience, certification, profile_img, clinic_address } = req.body;
+export const updateDietitian = async (req, res) => {
+  const { id } = req.params;
+  const newDietitian = req.body; // Use consistent casing
 
-        const updatedDietitian = await Dietitian.findOneAndUpdate(
-            { user: dietitianId },
-            { specialization, experience, certification, profile_img, clinic_address },
-            { new: true }
-        );
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      newDietitian,
+      { new: true }
+    );
 
-        if (!updatedDietitian) {
-            return res.status(404).json({ success: false, message: 'Dietitian not found' });
-        }
-
-        res.status(200).json({ success: true, message: 'Profile updated successfully', data: updatedDietitian });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
+
+    const updatedDietitian = await Dietitian.findOneAndUpdate(
+      { user_id: id },
+      newDietitian,
+      { new: true }
+    );
+
+    if (!updatedDietitian) {
+      return res.status(404).json({ success: false, message: "Dietitian not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Dietitian updated successfully",
+      data: {
+        user: updatedUser,
+        dietitian: updatedDietitian
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error during update of Dietitian profile"
+    });
+  }
 };
 
 

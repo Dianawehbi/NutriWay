@@ -1,8 +1,10 @@
 import express from 'express';
-import { GetDietitianInfo} from '../controllers/dietitian.controller.js'
+import { GetDietitianInfo , updateDietitian} from '../controllers/dietitian.controller.js'
 const router = express.Router()
 
 router.get('/' , GetDietitianInfo)
+
+router.put('/update/:id' , updateDietitian);
 
 // router.post('/client-add-information', AddClientInfo);
 
