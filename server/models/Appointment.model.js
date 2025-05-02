@@ -1,13 +1,21 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({
-    appointmen_id: { type: int, required: true, default: true },
-    dietitian_id: { type: String, required: true },
-    client_id: { type: String, required: true },
-    service_id: { type: String, required: true },
-    date: { type: String, required: true },
-    status: { type: String, enum: ["admin", "client", "dietitian"], required: true },
-})
+const appointmentSchema = new mongoose.Schema({
+  dietitian_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Dietitian', required: true },
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  service_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
+  availability_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Availability' },
+  date: { type: Date, required: true },
+  start_time: { type: String, required: true },
+  end_time: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['scheduled', 'completed', 'cancelled', 'no-show'], 
+    default: 'scheduled' 
+  },
+  notes: String,
+  payment_status: { type: String, enum: ['pending', 'paid', 'refunded'], default: 'pending' },
+  meeting_link: String // For virtual appointments
+}, { timestamps: true });
 
-const User = mongoose.model("User", userSchema);
-export default User;
+module.exports = mongoose.model('Appointment', appointmentSchema);

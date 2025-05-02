@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt, FaUserEdit } from "react-icons/fa"; // Icons for delete and edit actions
-import NavBar from "../../components/NavBar"; // Assuming you have a NavBar component
+import NavBar from "../../components/Admin/AdminNavBar.jsx"; // Assuming you have a NavBar component
 
 const AdminManageUsers = () => {
     const [users, setUsers] = useState([]);

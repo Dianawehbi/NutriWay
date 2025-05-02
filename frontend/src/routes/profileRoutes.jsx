@@ -1,6 +1,6 @@
 import DietitianProfile from '../pages/Profile/dietitian/Profile.jsx';
 // import ClientProfile from '../pages/Profile/client/Profile.jsx'
-import DietitianManageProfile from '../pages/Profile/dietitian/ManageProfile.jsx';
+// import DietitianManageProfile from '../pages/Profile/dietitian/ManageProfile.jsx';
 // import ClientManageProfile from '../pages/Profile/client/ManageProfile.jsx'
 // import ClientInformationPage from '../pages/Profile/client/ClientInformationPage.jsx';
 // import DietPlanPage from '../pages/Profile/client/DietPlanPage.jsx';
@@ -19,12 +19,12 @@ export const profiles = [
     //             <ClientProfile />
     //         </PrivateRoutes>
     // },
-    {
-        path: '/dietitianmanageprofile/:id', element:
-            <PrivateRoutes>
-                <DietitianManageProfile />
-            </PrivateRoutes>
-    },
+    // {
+    //     path: '/dietitianmanageprofile/:id', element:
+    //         <PrivateRoutes>
+    //             <DietitianManageProfile />
+    //         </PrivateRoutes>
+    // },
     // {
     //     path: '/clientmanageprofile', element:
     //         <PrivateRoutes>

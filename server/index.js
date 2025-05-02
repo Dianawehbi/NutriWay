@@ -6,6 +6,8 @@ import recipeRouter from './routes/recipe.route.js';
 import clientRouter from './routes/client.route.js'
 import serviceRouter from './routes/service.route.js'
 import dietitianRouter from './routes/dietitian.route.js'
+import availability from './routes/availability.route.js'
+
 import cors from 'cors';
 
 const app = express(); 
@@ -22,6 +24,8 @@ app.use('/api/recipe', recipeRouter);
 app.use('/api/client', clientRouter);
 app.use('/api/dietitian', dietitianRouter);
 app.use('/api/services', serviceRouter);
+app.use('/api/availability', availability);
+
 
 // Connect to DB and start server
 connectDB().then(() => {

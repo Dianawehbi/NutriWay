@@ -1,5 +1,6 @@
 import User from "../models/User.model.js";
 import Dietitian from "../models/Dietitian.model.js";
+import Service from "../models/Services.model.js";
 
 export const updateDietitian = async (req, res) => {
   const { id } = req.params;
@@ -44,7 +45,6 @@ export const updateDietitian = async (req, res) => {
   }
 };
 
-
 export const GetDietitianInfo = async (req, res) => {
   try {
     const dietitianUserId = req.query.id;
@@ -62,6 +62,7 @@ export const GetDietitianInfo = async (req, res) => {
 
     // Combine data
     const combinedData = {
+      _id: dietitian._id,
       userId: user._id,
       username: user.username,
       email: user.email,
@@ -73,7 +74,6 @@ export const GetDietitianInfo = async (req, res) => {
       profile_img: dietitian.profile_img,
       clinic_address: dietitian.clinic_address,
       languages: dietitian.languages,
-      services: dietitian.services,
       clientsWorkedWith: dietitian.clientsWorkedWith,
       education: dietitian.education,
       status: dietitian.status,
@@ -85,3 +85,26 @@ export const GetDietitianInfo = async (req, res) => {
   }
 };
 
+
+export const GetDietitianServices = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+
+    const services = await Service.find({
+      dietitian: {
+        $elemMatch: { dietitian_id: id }
+      }
+    });
+
+    if (!services) {
+      return res.status(400).json({ success: false, message: "This dietitian has no services " })
+    }
+
+    return res.status(200).json({ success: true, services });
+
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error while fetching dietitians services  ||  " + error });
+
+  }
+}

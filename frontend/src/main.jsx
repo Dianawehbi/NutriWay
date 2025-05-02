@@ -26,13 +26,13 @@ const baseRoutes = [
 // Combine all route groups into a single router
 const router = createBrowserRouter([
   ...baseRoutes,
-  ...recipesRoute,
   ...dashboardRoutes,
+  ...recipesRoute,
   ...authRoutes,
   ...appoinmentRoutes,
   ...adminRoutes,
   ...profiles
-  
+
 ]);
 
 

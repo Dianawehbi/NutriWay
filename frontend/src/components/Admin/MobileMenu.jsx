@@ -9,16 +9,16 @@ import { useAuth } from "../../context/authContext.jsx";
 
 export default function MobileMenu({ onClose }) {
   const id = JSON.parse(localStorage.getItem('user'))._id
-  
+
   const menuItems = [
     { path: "/DietitianDashboard", label: "Home", icon: <MdHome className="text-xl" /> },
     { path: `/dietitianprofile/${id}`, label: "Profile", icon: <AiOutlineUser className="text-xl" /> },
-    { path: "/AppointmentHistory", label: "Appointment", icon: <IoCalendarNumberOutline className="text-xl" /> },
+    { path: "/admin-manage-appointments", label: "Appointment", icon: <IoCalendarNumberOutline className="text-xl" /> },
     { path: "/recipes", label: "Recipes", icon: <GiMeal className="text-xl" /> },
-    { path: "/about", label: "About Us", icon: <IoMdInformationCircleOutline className="text-xl" /> },
     { path: "#", label: "Logout", icon: <CiLogin className="text-xl" />, action: true },
   ];
   const { logout } = useAuth();
+
 
   const handleLogout = () => {
     logout();

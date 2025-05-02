@@ -9,7 +9,7 @@ import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx'
 
 export const appoinmentRoutes = [
     {
-        path: '/AdminAppointmentPage', element:
+        path: '/admin-manage-appointments', element:
             <PrivateRoutes>
                 <AdminAppointmentPage />
             </PrivateRoutes>

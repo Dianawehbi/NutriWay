@@ -12,101 +12,130 @@ const AddService = () => {
 
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setService({ ...service, [name]: value });
+    setService({ ...service, [name]: name === "duration" ? parseInt(value) || "" : value });
   };
 
   const durationOptions = [
-    "15 minutes",
-    "30 minutes",
-    "45 minutes",
-    "1 hour",
-    "1 hour 30 minutes",
-    "2 hours",
+    { label: "15 minutes", value: 15 },
+    { label: "30 minutes", value: 30 },
+    { label: "45 minutes", value: 45 },
+    { label: "1 hour", value: 60 },
+    { label: "1.5 hours", value: 90 },
+    { label: "2 hours", value: 120 },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Service Submitted:", service);
+    setIsSubmitting(true);
+    
     try {
-      const response = await axios.post('http://localhost:5000/api/services/add', service);
+      const serviceData = {
+        ...service,
+        duration: Number(service.duration)
+      };
+      
+      const response = await axios.post('http://localhost:5000/api/services/add', serviceData);
 
       if (response.data.success) {
-        setError("");
-        navigate("/services");
+        navigate("/services", { state: { successMessage: "Service added successfully!" } });
       }
     } catch (error) {
-      if (error.response && !error.response.data.success) {
-        alert(error.response.data.error);
-      } else {
-        setError(error.message || "Something went wrong");
-      }
+      setError(error.response?.data?.error || "Failed to add service. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-    setService({
-      name: "",
-      duration: "",
-    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 pt-24 pb-10 flex flex-col items-center">
-      {/* NavBar */}
-      <div className="w-full bg-white shadow-md py-4 px-6 fixed top-0 left-0 right-0 z-50 flex items-center justify-between">
-        <div className="flex items-center space-x-2 text-green-700 font-semibold text-lg">
-          <Link to="/services" className="text-2xl"><IoMdArrowRoundBack /></Link>
-          <span className="text-xl">Add Service</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm py-4 px-6 fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link to="/services" className="text-gray-600 hover:text-green-700 transition">
+              <IoMdArrowRoundBack className="text-2xl" />
+            </Link>
+            <h1 className="text-xl font-semibold text-gray-800">Add New Service</h1>
+          </div>
+          <Link to="/UserProfile" className="text-gray-600 hover:text-green-700 transition">
+            <CgProfile className="text-2xl" />
+          </Link>
         </div>
-        <Link to="/UserProfile" className="text-2xl text-green-700"><CgProfile /></Link>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="w-full max-w-4xl bg-white shadow-md rounded-3xl p-8 mt-20">
-        <h1 className="text-3xl font-bold text-center text-green-800 mb-6">Create a New Service</h1>
+      <main className="max-w-2xl mx-auto pt-24 pb-10 px-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          {/* Form Header */}
+          <div className="bg-green-50 px-6 py-4 border-b border-green-100">
+            <h2 className="text-lg font-medium text-green-800">Service Details</h2>
+            <p className="text-sm text-green-600">Fill in the details for your new service</p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Column */}
-          <div className="space-y-5">
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Service Name</label>
-              <input
-                type="text"
-                name="name"
-                value={service.name}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
-                required
-              />
+          {/* Form Body */}
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            {error && (
+              <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Service Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={service.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
+                  Duration
+                </label>
+                <select
+                  id="duration"
+                  name="duration"
+                  value={service.duration}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                  required
+                >
+                  <option value="">Select duration</option>
+                  {durationOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Duration</label>
-              <select
-                name="duration"
-                value={service.duration}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
-                required
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-3 px-4 rounded-lg font-medium text-white ${
+                  isSubmitting ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
+                } transition`}
               >
-                <option value="">Select Duration</option>
-                {durationOptions.map((duration) => (
-                  <option key={duration} value={duration}>{duration}</option>
-                ))}
-              </select>
+                {isSubmitting ? 'Adding Service...' : 'Add Service'}
+              </button>
             </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="col-span-1 md:col-span-2 mt-4">
-            <div className="text-red-600 pb-3">{error}</div>
-            <button type="submit"
-              className="w-full py-3 bg-green-700 text-white rounded-xl text-lg font-semibold hover:bg-green-600 transition">
-              Submit Service
-            </button>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      </main>
     </div>
   );
 };

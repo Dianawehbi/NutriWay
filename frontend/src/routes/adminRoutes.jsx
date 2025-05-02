@@ -14,7 +14,7 @@ export const adminRoutes = [
         element: <Profite />
     },
     {
-        path: '/AdminManageUsers',
+        path: '/manage-users',
         element: <AdminManageUsers />
     },
     {

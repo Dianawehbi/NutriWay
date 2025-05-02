@@ -9,6 +9,7 @@ import LoadingPage from '../../auth/LoadingPage.jsx';
 
 const DietitianProfile = () => {
   const [dietitian, setDietitian] = useState(null);
+  const [services, setServices] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -18,32 +19,51 @@ const DietitianProfile = () => {
     const fetchDietitianInfo = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user && user._id) {
-
         try {
           const res = await axios.get('http://localhost:5000/api/dietitian', {
-            params: {
-              id: id
-            }
+            params: { id }
           });
           if (res.data.success) {
-            setDietitian(res.data.dietitian); // or res.data.data depending on your backend response
-            setError(null)
+            setDietitian(res.data.dietitian);
+            setError(null);
           } else {
             console.error("Failed to fetch dietitian info: success = false");
           }
         } catch (err) {
-          setError("Failed to fetch dietitian info .  " + err.message)
-          console.error("Failed to fetch dietitian info", err);
+          setError("Failed to fetch dietitian info. " + err.message);
+          console.error("Error:", err);
         }
       } else {
-        alert("Error Your LocalStorage Doesnt contain a user \n Please Login")
-        navigate('/login')
+        alert("LocalStorage does not contain a user. Please login.");
+        navigate('/login');
       }
-
     };
 
     fetchDietitianInfo();
-  }, []);
+  }, [id, navigate]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      if (!dietitian?._id) return;
+      try {
+        const res = await axios.get('http://localhost:5000/api/dietitian/service', {
+          params: { id: dietitian._id }
+        });
+        if (res.data.success) {
+          setServices(res.data.services);
+          setError(null);
+        } else {
+          console.error("Failed to fetch services: success = false");
+        }
+      } catch (err) {
+        setError("Failed to fetch dietitian's services. " + err.message);
+        console.error("Error fetching services:", err);
+      }
+    };
+
+    fetchServices();
+  }, [dietitian]);
+
 
   if (error) {
     return <div className="text-center mt-10">{error}</div>;
@@ -57,7 +77,6 @@ const DietitianProfile = () => {
   if (dietitian) {
     role = JSON.parse(localStorage.getItem("user")).role
     user_id = JSON.parse(localStorage.getItem("user"))._id
-    console.log(dietitian)
     dietitian_id = dietitian.userId;
   }
 
@@ -70,7 +89,7 @@ const DietitianProfile = () => {
         <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} />
 
         <div className="bg-white shadow-xl rounded-3xl p-8 w-11/12 mt-8">
-          <DietitianService services={dietitian.services} role={role} user_id={user_id} dietitian_id={dietitian_id} />
+          <DietitianService services={services} role={role} user_id={user_id} dietitian_id={dietitian_id} />
         </div>
 
 

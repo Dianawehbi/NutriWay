@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { IoMdMenu } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import MobileMenu from "./MobileMenu";
-import logo from '../assets/logo.png'
-import { useAuth } from '../context/authContext.jsx';
+import logo from '../../assets/logo.png'
+import { useAuth } from '../../context/authContext.jsx';
 
-export default function NavBar() {
+export default function ClientNavbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { logout } = useAuth();

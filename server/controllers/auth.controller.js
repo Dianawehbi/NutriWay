@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 import bcrypt from 'bcrypt'
 import Dietitian from "../models/Dietitian.model.js";
+import Service from "../models/Services.model.js";
 
 export const Login = async (req, res) => {
     try {
@@ -96,14 +97,29 @@ export const dietitianRegister = async (req, res) => {
                 "lng": req.body.location.lng
             },
             languages: req.body.languages,
-            services: req.body.services,
             clientsWorkedWith: req.body.clientsWorkedWith,
             education: req.body.education,
             user_id: newUser._id,
             status: "pending"
         });
-
         await newDietitian.save();
+
+        const services = req.body.services;
+        await Promise.all(
+            services.map(async (item) => {
+                const update = {
+                    deititian_id: newDietitian._id,
+                    price: item.price,
+                    mode: item.mode,
+                };
+
+                await Service.findByIdAndUpdate(
+                    item.serviceId, // you had serviceID (case-sensitive mistake)
+                    { $push: { dietitian: update } },
+                    { new: true }
+                );
+            })
+        );
 
         return res.status(201).json({ success: true, message: "Dietitian registered successfully" });
     } catch (err) {

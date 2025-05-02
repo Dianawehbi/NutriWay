@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/Admin/AdminNavBar.jsx";
 import { FaBox, FaUserMd } from "react-icons/fa"; // Icons for product and consultation sections
 
 const Profite = () => {

@@ -36,7 +36,7 @@ const DietitianRegistration = () => {
 
     const onImageChange = async (e) => {
         const file = e.target.files[0];
-        if (!file) 
+        if (!file)
             return;
         const resizedImage = await handleImageUpload([file]); // send as array if your function expects it
         if (resizedImage) {
@@ -108,7 +108,7 @@ const DietitianRegistration = () => {
         }
 
         try {
-            console.log(formData)
+            console.log(formData);
             const response = await axios.post(
                 "http://localhost:5000/api/auth/dietitianRegister",
                 formData, {

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { CgProfile } from "react-icons/cg";
+import AdminNavBar from "../../components/Admin/AdminNavBar";
+import { FaCalendarCheck, FaTrashAlt, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 const AdminAppointmentPage = () => {
   const [appointments, setAppointments] = useState([
@@ -28,103 +27,109 @@ const AdminAppointmentPage = () => {
       phone: "987-654-3210",
     },
   ]);
+  
   const [showScheduled, setShowScheduled] = useState(true);
 
-  const handleConfirmAppointment = (appointmentId) => {
-    setAppointments(
-      appointments.map((app) =>
-        app.id === appointmentId ? { ...app, status: "Confirmed" } : app
-      )
-    );
+  const handleConfirm = (id) => {
+    setAppointments(appointments.map(app => 
+      app.id === id ? {...app, status: "Confirmed"} : app
+    ));
   };
 
-  const handleRemoveAppointment = (appointmentId) => {
-    setAppointments(appointments.filter((app) => app.id !== appointmentId));
+  const handleRemove = (id) => {
+    if (window.confirm("Are you sure you want to remove this appointment?")) {
+      setAppointments(appointments.filter(app => app.id !== id));
+    }
   };
 
-  const scheduledAppointments = appointments.filter(
-    (app) => app.status === "Scheduled"
-  );
-  const pastAppointments = appointments.filter(
-    (app) => app.status === "Completed"
+  const filteredAppointments = appointments.filter(app => 
+    showScheduled ? app.status === "Scheduled" : app.status === "Completed"
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 font-serif">
-      <div className="fixed rounded-b-2xl font-serif bg-white top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
-        <div className="flex gap-3 items-center m-2">
-          <Link to={'/Home'}>
-            <IoMdArrowRoundBack />
-          </Link>
-          <span>Admin Appointment Management</span>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <AdminNavBar />
+      
+      <div className="max-w-6xl mt-18 mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Manage Appointments
+        </h1>
+
+        <div className="flex justify-center gap-2 mb-6">
+          <button
+            onClick={() => setShowScheduled(true)}
+            className={`px-4 py-2 rounded-lg font-medium ${showScheduled ? "bg-green-600 text-white" : "bg-gray-200"}`}
+          >
+            Scheduled
+          </button>
+          <button
+            onClick={() => setShowScheduled(false)}
+            className={`px-4 py-2 rounded-lg font-medium ${!showScheduled ? "bg-green-600 text-white" : "bg-gray-200"}`}
+          >
+            Completed
+          </button>
         </div>
-        <div className="flex gap-3 items-center m-2 text-black">
-          <Link to={'/UserProfile'}>
-            <CgProfile />
-          </Link>
-        </div>
-      </div>
 
-      <h1 className="text-4xl mt-16 font-extrabold text-[#234403] mb-8 text-center">
-        Manage Appointments
-      </h1>
+        <div className="bg-white rounded-lg shadow p-4">
+          <h2 className="text-xl font-semibold mb-4">
+            {showScheduled ? "Scheduled Appointments" : "Completed Appointments"}
+          </h2>
 
-      <div className="flex justify-center gap-4 mb-4">
-        <button
-          onClick={() => setShowScheduled(true)}
-          className={`p-3 rounded-lg font-bold ${showScheduled ? "bg-green-600 text-white" : "bg-gray-300"}`}
-        >
-          Scheduled Appointments
-        </button>
-        <button
-          onClick={() => setShowScheduled(false)}
-          className={`p-3 rounded-lg font-bold ${!showScheduled ? "bg-green-600 text-white" : "bg-gray-300"}`}
-        >
-          Completed Appointments
-        </button>
-      </div>
-
-      <div className="bg-white shadow-lg p-6 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">
-          {showScheduled ? "Scheduled Appointments" : "Completed Appointments"}
-        </h2>
-
-        {showScheduled && scheduledAppointments.length === 0 && (
-          <p className="text-gray-500">No scheduled appointments.</p>
-        )}
-        {!showScheduled && pastAppointments.length === 0 && (
-          <p className="text-gray-500">No completed appointments.</p>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {(showScheduled ? scheduledAppointments : pastAppointments).map((appointment, index) => (
-            <div key={index} className="border p-4 rounded-lg shadow-sm bg-gray-50">
-              <p className="text-lg font-semibold">{appointment.service}</p>
-              <p className="text-gray-600">Client: {appointment.client}</p>
-              <p className="text-gray-600">Dietitian: {appointment.dietitian}</p>
-              <p className="text-gray-600">Date: {appointment.date} | Time: {appointment.time}</p>
-              <p className="text-gray-600">Address: {appointment.address}</p>
-              <p className="text-gray-600">Phone: {appointment.phone}</p>
-
-              <div className="mt-2 flex gap-4">
-                {appointment.status === "Scheduled" && (
-                  <>
-                    <button
-                      onClick={() => handleRemoveAppointment(appointment.id)}
-                      className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  </>
-                )}
-                {appointment.status === "Completed" && (
-                  <span className="inline-block mt-2 px-3 py-1 text-sm font-bold rounded-full bg-gray-300 text-gray-700">
-                    Completed
-                  </span>
-                )}
-              </div>
+          {filteredAppointments.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <FaCalendarCheck className="mx-auto text-4xl mb-2" />
+              No {showScheduled ? "scheduled" : "completed"} appointments
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredAppointments.map(appointment => (
+                <div key={appointment.id} className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-lg">{appointment.service}</h3>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      appointment.status === "Scheduled" ? "bg-yellow-100 text-yellow-800" : 
+                      appointment.status === "Completed" ? "bg-green-100 text-green-800" : ""
+                    }`}>
+                      {appointment.status}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 space-y-2">
+                    <p><span className="font-medium">Client:</span> {appointment.client}</p>
+                    <p><span className="font-medium">Dietitian:</span> {appointment.dietitian}</p>
+                    <p><span className="font-medium">Date:</span> {appointment.date} at {appointment.time}</p>
+                    <p className="flex items-center">
+                      <FaPhone className="mr-2 text-gray-500" />
+                      {appointment.phone}
+                    </p>
+                    <p className="flex items-start">
+                      <FaMapMarkerAlt className="mr-2 mt-1 text-gray-500" />
+                      {appointment.address}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-2 border-t">
+                    {appointment.status === "Scheduled" && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleConfirm(appointment.id)}
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => handleRemove(appointment.id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 flex items-center"
+                        >
+                          <FaTrashAlt className="mr-1" /> Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

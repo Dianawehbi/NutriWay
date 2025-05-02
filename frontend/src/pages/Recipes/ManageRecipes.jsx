@@ -1,15 +1,19 @@
 import { Link } from "react-router-dom";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { CgProfile } from "react-icons/cg";
-import { IoMdSearch } from "react-icons/io";
-import RecipeCard from "../../components/RecipeCard.jsx";
+import { FiPlus, FiSearch } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingPage from "../auth/LoadingPage";
+import RecipeCard from "../../components/RecipeCard.jsx";
+import AdminNavBar from "../../components/Admin/AdminNavBar.jsx";
+import DietitianNavBar from "../../components/Dietitian/NavBar.jsx";
+import ClientNavbar from "../../components/Client/NavBar.jsx";
+import EmptyState from "../../components/EmptyState.jsx";
 
 export default function ManageRecipes() {
-    const [recLoading, setRecipeLoading] = useState(false);
-    const role = JSON.parse(localStorage.getItem("user")).role;
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [activeCategory, setActiveCategory] = useState("all");
+    const user = JSON.parse(localStorage.getItem("user"));
     const [recipes, setRecipes] = useState({
         breakfast: [],
         lunch: [],
@@ -19,9 +23,8 @@ export default function ManageRecipes() {
 
     useEffect(() => {
         const fetchRecipes = async () => {
-            setRecipeLoading(true);
+            setLoading(true);
             try {
-
                 const response = await axios.get('http://localhost:5000/api/recipe', {
                     headers: {
                         "Authorization": `Bearer ${localStorage.getItem('token')}`
@@ -36,11 +39,11 @@ export default function ManageRecipes() {
                         snacks: [],
                     };
 
-                    response.data.recipes.forEach((rec) => {
-                        // for example: if recipe has categories ["Breakfast"]
-                        rec.categories.forEach((cat) => {
-                            if (categorizedRecipes[cat.toLowerCase()]) {
-                                categorizedRecipes[cat.toLowerCase()].push(rec);
+                    response.data.recipes.forEach((recipe) => {
+                        recipe.categories.forEach((category) => {
+                            const lowerCategory = category.toLowerCase();
+                            if (categorizedRecipes[lowerCategory]) {
+                                categorizedRecipes[lowerCategory].push(recipe);
                             }
                         });
                     });
@@ -48,92 +51,137 @@ export default function ManageRecipes() {
                     setRecipes(categorizedRecipes);
                 }
             } catch (error) {
-                if (error.response && !error.response.data.success) {
-                    alert(error.response.data.error);
-                }
+                console.error("Error fetching recipes:", error);
+                alert(error.response?.data?.error || "Failed to load recipes");
             } finally {
-                setRecipeLoading(false);
+                setLoading(false);
             }
         };
 
         fetchRecipes();
     }, []);
 
+    const filteredRecipes = (category) => {
+        if (searchTerm) {
+            return recipes[category]?.filter(recipe => 
+                recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                recipe.description.toLowerCase().includes(searchTerm.toLowerCase())
+            ) || [];
+        }
+        return recipes[category] || [];
+    };
+
+    const allRecipes = Object.values(recipes).flat();
+
+    const categories = [
+        { id: "all", name: "All Recipes" },
+        { id: "breakfast", name: "Breakfast" },
+        { id: "lunch", name: "Lunch" },
+        { id: "dinner", name: "Dinner" },
+        { id: "snacks", name: "Snacks" }
+    ];
+
+    const renderNavBar = () => {
+        switch(user?.role) {
+            case "admin": return <AdminNavBar />;
+            case "dietitian": return <DietitianNavBar />;
+            case "client": return <ClientNavbar />;
+            default: return null;
+        }
+    };
+
     return (
-        <>
-            {recLoading ? (
-                <LoadingPage />
-            ) : (
-                <div className="min-h-screen flex flex-row bg-gray-100 p-6 font-serif">
-                    {/* Header */}
-                    <div className="fixed bg-white rounded-b-2xl font-serif top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
-                        <div className="flex gap-3 items-center m-2">
-                            {role == "admin" &&
-                                <Link to={'/AdminDashboard'}>
-                                    <IoMdArrowRoundBack />
+        <div className="flex min-h-screen bg-gray-50">
+            {renderNavBar()}
+            
+            <main className="flex-1 p-6 md:p-8 mt-17">
+                {loading ? (
+                    <LoadingPage />
+                ) : (
+                    <div className="space-y-8">
+                        {/* Header and Actions */}
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-800">Recipe Management</h1>
+                                <p className="text-gray-600">Manage and organize your nutrition recipes</p>
+                            </div>
+                            
+                            {(user?.role === "admin" || user?.role === "dietitian") && (
+                                <Link
+                                    to="/add-recipes"
+                                    className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                                >
+                                    <FiPlus /> Add New Recipe
                                 </Link>
-                            }
-                            {role == "client" &&
-                                <Link to={'/ClientDashboard'}>
-                                    <IoMdArrowRoundBack />
-                                </Link>
-                            }
-                            {role == "dietitian" &&
-                                <Link to={'/DietitianDashboard'}>
-                                    <IoMdArrowRoundBack />
-                                </Link>
-                            }
-                            <span>Meals</span>
+                            )}
                         </div>
-                        <div className="flex gap-3 items-center m-2 text-black">
-                            <IoMdSearch />
-                            {role == "client" &&
-                                <Link to={'/UserProfile'}>
-                                    <CgProfile />
-                                </Link>
-                            }
-                            {role == "dietitian" &&
-                                <Link to={'/UserProfile'}>
-                                    <CgProfile />
-                                </Link>
 
-                            }
-
+                        {/* Search and Filter */}
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="relative flex-1">
+                                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <input
+                                    type="text"
+                                    placeholder="Search recipes..."
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                            
+                            <div className="flex overflow-x-auto scrollbar-hide gap-2 pb-2">
+                                {categories.map((category) => (
+                                    <button
+                                        key={category.id}
+                                        onClick={() => setActiveCategory(category.id)}
+                                        className={`px-4 py-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors ${
+                                            activeCategory === category.id
+                                                ? "bg-green-600 text-white"
+                                                : "bg-white text-gray-700 hover:bg-gray-100"
+                                        }`}
+                                    >
+                                        {category.name}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Content */}
-                    <div className="flex flex-col mt-12 items-start px-3 pt-3 space-y-4 w-full overflow-hidden">
-                        {(role == "admin" || role == "dietitian") &&
-                            <Link
-                                to="/add-recipes"
-                                className="inline-block px-6 py-3 text-white font-semibold bg-green-600 rounded-2xl shadow-md hover:bg-green-700 transition duration-200"
-                            >
-                                Add Meal
-                            </Link>
-                        }
-
-                        <div className="flex flex-col space-x-3 overflow-auto max-w-full">
-                            {Object.entries(recipes).map(([category, items]) => (
-                                <div key={category} className="mb-8">
-                                    <h2 className="text-2xl text-[#234403] font-semibold capitalize mb-4">{category}</h2>
-                                    <div className="flex flex-row space-x-3 overflow-auto max-w-full">
-                                        {items.length > 0 ? (
-                                            items.map((item) => (
-                                                <div key={item._id} className="min-w-70">
-                                                    <RecipeCard recipe={item} role={role} />
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <p className="text-gray-500">No recipes found.</p>
-                                        )}
+                        {/* Recipe Categories */}
+                        {activeCategory === "all" ? (
+                            <div className="space-y-8">
+                                {allRecipes.length === 0 ? (
+                                    <EmptyState 
+                                        title="No recipes found"
+                                        description="Try adding a new recipe or adjusting your search"
+                                    />
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                        {allRecipes.map((recipe) => (
+                                            <RecipeCard key={recipe._id} recipe={recipe} role={user?.role} />
+                                        ))}
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="space-y-8">
+                                {Object.entries(recipes).map(([category, items]) => {
+                                    const filteredItems = filteredRecipes(category);
+                                    return filteredItems.length > 0 && (
+                                        <div key={category} className="space-y-4">
+                                            <h2 className="text-xl font-semibold text-gray-800 capitalize">{category}</h2>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                                {filteredItems.map((recipe) => (
+                                                    <RecipeCard key={recipe._id} recipe={recipe} role={user?.role} />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
-                </div>
-            )}
-        </>
+                )}
+            </main>
+        </div>
     );
 }
