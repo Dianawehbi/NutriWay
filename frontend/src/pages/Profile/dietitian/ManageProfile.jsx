@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import NavBar from "../../../components/NavBar";
+import DietitianNavBar from "../../../components/Dietitian/NavBar";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { FiTrash2, FiMapPin, FiUpload } from "react-icons/fi";
 import { FaUserEdit, FaRegMoneyBillAlt, FaMapMarkerAlt } from "react-icons/fa";
@@ -82,35 +82,6 @@ const DietitianManageProfile = () => {
         fetchAvailableServices();
     }, [id]);
 
-    // useEffect(() => {
-    //     const fetchServices = async () => {
-    //         if (!dietitian?._id) return;
-    //         try {
-    //             const res = await axios.get('http://localhost:5000/api/dietitian/service', {
-    //                 params: { id: dietitian._id }
-    //             });
-    //             if (res.data.success) {
-    //                 const transformed = res.data.services.map(service => {
-    //                     const matchedDietitian = service.dietitian.find(d => d.dietitian_id === dietitian._id);
-    //                     return {
-    //                         serviceId: service._id,
-    //                         name: service.name,
-    //                         duration: service.duration,
-    //                         dietitian: matchedDietitian || { price: '', mode: 'clinic' }
-    //                     };
-    //                 });
-    //                 setServices(transformed);
-    //                 setError(null);
-    //             }
-    //         } catch (err) {
-    //             console.error("Error fetching services:", err);
-    //             setError("Failed to fetch dietitian's services. " + err.message);
-    //         }
-    //     };
-
-    //     fetchServices();
-    // }, [dietitian]);
-
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -170,48 +141,11 @@ const DietitianManageProfile = () => {
         return <Marker position={location} />;
     }
 
-    // const handleServiceChange = (index, field, value) => {
-    //     const updatedServices = [...services];
-    //     if (field == "price" || field == "mode") {
-    //         updatedServices[index].dietitian[field] = value
-    //     } else {
-    //         updatedServices[index][field] = value;
-    //     }
-    //     setServices(updatedServices);
-    // };
-
-    // const handleRemoveService = (index) => {
-    //     setServices(services.filter((_, i) => i !== index));
-    // };
-
-    // const handleAddService = () => {
-    //     const unaddedServices = availableServices.filter(
-    //         service => !services.some(s => s.serviceId === service._id)
-    //     );
-
-    //     if (unaddedServices.length > 0) {
-    //         setServices([
-    //             ...services,
-    //             {
-    //                 serviceId: unaddedServices[0]._id,
-    //                 name: unaddedServices[0].name,
-    //                 dietitian: {
-    //                     price: "",
-    //                     type: "clinic"
-    //                 }
-
-    //             }
-    //         ]);
-    //     } else {
-    //         alert("You've added all available services.");
-    //     }
-    // };
-
     console.log(services)
 
     return (
         <div className="bg-gray-50 min-h-screen">
-            <NavBar />
+            <DietitianNavBar />
             <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center">
                     <FaUserEdit className="mr-2" /> Manage Your Profile
@@ -300,91 +234,6 @@ const DietitianManageProfile = () => {
                             {/* Add other fields similarly */}
                         </div>
                     </div>
-
-                    {/* Services Section */}
-                    {/* <div className="bg-white shadow-lg rounded-xl p-6">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2 flex items-center">
-                            <FaRegMoneyBillAlt className="mr-2" /> Your Services
-                        </h2>
-                        <div className="space-y-4">
-                            {services.map((service, index) => {
-                                return (
-                                    <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-gray-50 p-4 rounded-lg">
-                                        <div className="md:col-span-4">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                                            <div className="p-2 bg-gray-100 rounded-lg border border-gray-200">
-                                                {service.name || "Service not found"}
-                                            </div>
-                                        </div>
-                                        <div className="md:col-span-3">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
-                                            <input
-                                                type="number"
-                                                value={service.dietitian.price}
-                                                onChange={(e) => handleServiceChange(index, "price", e.target.value)}
-                                                className="w-full p-2 border border-gray-300 rounded-lg"
-                                                placeholder="50"
-                                                min="0"
-                                            />
-                                        </div>
-                                        <div className="md:col-span-3">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                                            <select
-                                                value={service.dietitian.mode}
-                                                onChange={(e) => handleServiceChange(index, "type", e.target.value)}
-                                                className="w-full p-2 border border-gray-300 rounded-lg"
-                                            >
-                                                <option value="clinic">In-Clinic</option>
-                                                <option value="online">Online</option>
-                                                <option value="both">Both</option>
-                                            </select>
-                                        </div>
-                                        <div className="md:col-span-2 flex justify-end">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveService(index)}
-                                                className="p-2 text-red-600 hover:bg-red-100 rounded-lg"
-                                            >
-                                                <FiTrash2 />
-                                            </button>
-                                        </div>
-                                    </div>);
-                            })}
-                            <div className="mt-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Add New Service</label>
-                                <select
-                                    onChange={(e) => {
-                                        const selectedService = availableServices.find(s => s._id === e.target.value);
-                                        if (selectedService) {
-                                            setServices([
-                                                ...services,
-                                                {
-                                                    serviceId: selectedService._id,
-                                                    name: selectedService.name,
-                                                    price: "",
-                                                    type: "clinic"
-                                                }
-                                            ]);
-                                        }
-                                    }}
-                                    className="w-full md:w-1/2 p-2 border border-gray-300 rounded-lg mb-2"
-                                    defaultValue=""
-                                >
-                                    <option value="" disabled>Select a service to add</option>
-                                    {availableServices
-                                        .filter(service => !services.some(s => s.serviceId === service._id))
-                                        .map((service) => (
-                                            <option key={service._id} value={service._id}>
-                                                {service.name}
-                                            </option>
-                                        ))}
-                                </select>
-                                {availableServices.filter(service => !services.some(s => s.serviceId === service._id)).length === 0 && (
-                                    <p className="text-sm text-gray-500 mt-1">All available services have been added</p>
-                                )}
-                            </div>
-                        </div>
-                    </div> */}
 
                     {/* Location Section */}
                     <div className="bg-white shadow-lg rounded-xl p-6">

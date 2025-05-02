@@ -25,8 +25,9 @@ const DietitianDashboard = () => {
             <div className="p-6 space-y-6 mt-20">
                 <DietitianAvailabilitySection />
                 <DashboardAppointmentsSection />
-                <RecipeManager />
                 <Dietitian />
+
+                <RecipeManager />
 
             </div>
             <Footer />

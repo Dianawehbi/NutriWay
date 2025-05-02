@@ -43,7 +43,6 @@ const PendingDietitiansPage = () => {
         status: action == 'approved' ? 'approved' : 'rejected'
       });
       if (response.data.success) {
-        alert("Approved")
         setPendingDietitians(prev => prev.filter(diet => diet._id !== id));
         if (selectedDietitian && selectedDietitian._id === id) {
           setSelectedDietitian(null);
