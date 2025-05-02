@@ -86,6 +86,50 @@ export const GetDietitianInfo = async (req, res) => {
 };
 
 
+export const GetAllDietitiansInfo = async (req, res) => {
+  try {
+    // Find all dietitians
+    const dietitians = await Dietitian.find();
+
+    // Fetch all user info in parallel
+    const combinedData = await Promise.all(
+      dietitians.map(async (dietitian) => {
+        const user = await User.findById(dietitian.user_id);
+        if (!user) return null; // Skip if user not found
+
+        return {
+          _id: dietitian._id,
+          userId: user._id,
+          username: user.username,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          specialization: dietitian.specialization,
+          experience: dietitian.experience,
+          certification: dietitian.certification,
+          profile_img: dietitian.profile_img,
+          clinic_address: dietitian.clinic_address,
+          languages: dietitian.languages,
+          clientsWorkedWith: dietitian.clientsWorkedWith,
+          education: dietitian.education,
+          status: dietitian.status,
+        };
+      })
+    );
+
+    // Filter out null results (if user was not found for some dietitians)
+    const filteredData = combinedData.filter(Boolean);
+
+    return res.status(200).json({ success: true, dietitians: filteredData });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching all dietitians information || " + error,
+    });
+  }
+};
+
+
 export const GetDietitianServices = async (req, res) => {
   const { id } = req.params;
 

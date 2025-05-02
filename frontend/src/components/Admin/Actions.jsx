@@ -16,7 +16,7 @@ export default function AdminActions() {
     {
       title: "Manage Appointments",
       description: "Handle bookings and schedules",
-      link: "/admin-manage-appointments",
+      link: "/manage-appointments",
       icon: (
         <svg className="w-10 h-10 mx-auto mb-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />

@@ -1,72 +1,68 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import img from '../../assets/dietitianphoto.jpg'
+import defaultImg from '../../assets/dietitianphoto.jpg';
+import axios from 'axios';
 
 export default function Dietitian() {
-    const dietitians = [
-        {
-            _id: "68128ac59b68d511ceb4adcd",
-            name: 'Dr. Sarah Johnson',
-            profilePicture: {img},
-            specialization: 'Nutritionist',
-            bio: 'Dr. Sarah has over 10 years of experience helping clients maintain healthy lifestyles.',
-        },
-        {
-            _id: 2,
-            name: 'Dr. Mark Smith',
-            profilePicture: 'path/to/image2.jpg',
-            specialization: 'Sports Nutrition',
-            bio: 'Dr. Mark specializes in sports nutrition and helps athletes improve their performance through diet.',
-        },
-        {
-            _id: 3,
-            name: 'Dr. Emily Davis',
-            profilePicture: 'path/to/image3.jpg',
-            specialization: 'Dietary Consultant',
-            bio: 'Dr. Emily provides personalized dietary plans for weight loss and healthy living.',
-        },
-        {
-            _id: 3,
-            name: 'Dr. Emily Davis',
-            profilePicture: 'path/to/image3.jpg',
-            specialization: 'Dietary Consultant',
-            bio: 'Dr. Emily provides personalized dietary plans for weight loss and healthy living.',
-        },  {
-            _id: 3,
-            name: 'Dr. Emily Davis',
-            profilePicture: 'path/to/image3.jpg',
-            specialization: 'Dietary Consultant',
-            bio: 'Dr. Emily provides personalized dietary plans for weight loss and healthy living.',
-        },
-        // Add more dietitians as needed
-    ];
+    const [dietitians, setDietitians] = useState([]);
+
+    useEffect(() => {
+        const fetchDietitians = async () => {
+            try {
+                const { data } = await axios.get("http://localhost:5000/api/dietitian/all");
+                if (data.success) {
+                    // Filter out pending or rejected dietitians
+                    const approvedDietitians = data.dietitians.filter(
+                        dietitian => dietitian.status == "approved"
+                    );
+                    setDietitians(approvedDietitians);
+                }
+            } catch (err) {
+                console.error("Failed to fetch dietitians:", err);
+            }
+        };
+        fetchDietitians();
+    }, []);
 
     return (
         <div className="flex flex-col items-start mt-4 px-6 pt-4 space-y-4 w-full overflow-hidden">
             <div className='mb-7'>
                 <h2 className="text-2xl text-[#234403] font-bold">Meet Our Dietitians</h2>
+                <p className="text-gray-600">Certified nutrition experts ready to help you</p>
             </div>
-            <div className="flex flex-row space-x-3 overflow-auto max-w-full">
-                {dietitians.map((dietitian) => (
-                    <div>
-                        <Link to={`/DietitianProfile/${dietitian._id}`}>
-                            <div key={dietitian._id} className="bg-white shadow-lg w-100 rounded-lg overflow-hidden">
-                                <img
-                                    src={img}
-                                    alt={dietitian.name}
-                                    className="w-full h-56 object-cover"
-                                />
-                                <div className="p-4">
-                                    <h3 className="text-xl font-semibold text-black">{dietitian.name}</h3>
-                                    <p className="text-gray-600">{dietitian.specialization}</p>
-                                    <p className="text-gray-500 mt-2">{dietitian.bio}</p>
+            
+            {dietitians.length === 0 ? (
+                <div className="w-full text-center py-8">
+                    <p className="text-gray-500">No dietitians available at the moment</p>
+                </div>
+            ) : (
+                <div className="flex flex-row space-x-4 overflow-auto max-w-full pb-4">
+                    {dietitians.map((dietitian) => (
+                        <div key={dietitian._id} className="flex-shrink-0 w-64">
+                            <Link to={`/dietitianprofile/${dietitian.userId}`}>
+                                <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full">
+                                    <img
+                                        src={dietitian.profile_img || defaultImg}
+                                        alt={dietitian.username}
+                                        className="w-full h-48 object-cover"
+                                        onError={(e) => {
+                                            e.target.src = defaultImg;
+                                        }}
+                                    />
+                                    <div className="p-4">
+                                        <h3 className="text-lg font-semibold text-black">{dietitian.username}</h3>
+                                        <p className="text-gray-600 text-sm">{dietitian.specialization}</p>
+                                        <div className="flex items-center mt-2">
+                                            <span className="text-yellow-500">★</span>
+                                            <span className="text-gray-500 text-xs ml-1">5+ years experience</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </div>
-                ))}
-            </div>
+                            </Link>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
-};
-
+}

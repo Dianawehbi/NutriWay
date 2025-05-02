@@ -31,13 +31,13 @@ const AddService = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const serviceData = {
         ...service,
         duration: Number(service.duration)
       };
-      
+
       const response = await axios.post('http://localhost:5000/api/services/add', serviceData);
 
       if (response.data.success) {
@@ -61,9 +61,6 @@ const AddService = () => {
             </Link>
             <h1 className="text-xl font-semibold text-gray-800">Add New Service</h1>
           </div>
-          <Link to="/UserProfile" className="text-gray-600 hover:text-green-700 transition">
-            <CgProfile className="text-2xl" />
-          </Link>
         </div>
       </header>
 
@@ -126,9 +123,8 @@ const AddService = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-3 px-4 rounded-lg font-medium text-white ${
-                  isSubmitting ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
-                } transition`}
+                className={`w-full py-3 px-4 rounded-lg font-medium text-white ${isSubmitting ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
+                  } transition`}
               >
                 {isSubmitting ? 'Adding Service...' : 'Add Service'}
               </button>

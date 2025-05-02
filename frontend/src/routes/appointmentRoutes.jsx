@@ -3,32 +3,34 @@ import DietitianAvailability from '../pages/Appointment/dietitian/DietitianAvail
 import DietitianAddClientInfoPage from '../pages/Appointment/dietitian/AddClientInfo.jsx'
 import { AppointmentHistory } from '../pages/Appointment/client/AppointmentHitory.jsx'
 import MakesAppointment from '../pages/Appointment/client/MakesAppointment.jsx'
-import DietitianAppointments from '../pages/Appointment/dietitian/DietitianAppointments.jsx'
+import ManageAppointments from '../pages/Appointment/dietitian/DietitianAppointments.jsx'
 import PrivateRoutes from '../utils/PrivateRoutes.jsx'
 import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx'
 
 export const appoinmentRoutes = [
     {
-        path: '/admin-manage-appointments', element:
+        path: '/manage-appointments', element:
             <PrivateRoutes>
-                <AdminAppointmentPage />
-            </PrivateRoutes>
-    },
-    {
-        path: '/DietitianAppointments', element:
-            <PrivateRoutes>
-                <DietitianAppointments />
+                <RoleBaseRoutes requiredRole={["admin", "dietitian"]}>
+                    <ManageAppointments />
+                </RoleBaseRoutes>
             </PrivateRoutes>
     }, {
-        path: '/DietitianAvailability', element:
+        path: '/dietitian-availability', element:
             <PrivateRoutes>
-                <DietitianAvailability />
+                <RoleBaseRoutes requiredRole={["dietitian"]}>
+                    <DietitianAvailability />
+                </RoleBaseRoutes>
             </PrivateRoutes>
+
     }, {
-        path: '/DietitianAddClientInfoPage', element:
+        path: '/dietitian-add-client-info', element:
             <PrivateRoutes>
-                <DietitianAddClientInfoPage />
+                <RoleBaseRoutes requiredRole={["dietitian"]}>
+                    <DietitianAddClientInfoPage />
+                </RoleBaseRoutes>
             </PrivateRoutes>
+
     }, {
         path: '/AppointmentHistory', element:
             <PrivateRoutes>

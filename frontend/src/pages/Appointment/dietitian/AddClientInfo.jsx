@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
-
+import { FaPlus, FaMinus } from "react-icons/fa";
+import DietitianNavBar from "../../../components/Dietitian/NavBar";
 const DietitianAddClientInfoPage = () => {
   const [clientInfo, setClientInfo] = useState({
-    clientName: "",
-    progress: "",
-    followUpDate: "",
     weight: 70,
     fats: 20,
     water: 50,
     bmi: "normal",
     muscles: 30,
+    includeMealPlan: false, // New state for optional meal plan
     weeklyMealPlan: Array(7).fill({
       breakfast: "",
       lunch: "",
@@ -21,209 +20,159 @@ const DietitianAddClientInfoPage = () => {
     }),
   });
 
-  const handleChange = (e, key) => {
-    setClientInfo({ ...clientInfo, [key]: e.target.value });
+  const handleChange = (e, key, dayIndex, mealType) => {
+    if (dayIndex !== undefined && mealType !== undefined) {
+      // Handle meal plan changes
+      const updatedWeeklyMealPlan = [...clientInfo.weeklyMealPlan];
+      updatedWeeklyMealPlan[dayIndex] = {
+        ...updatedWeeklyMealPlan[dayIndex],
+        [mealType]: e.target.value
+      };
+      setClientInfo({ ...clientInfo, weeklyMealPlan: updatedWeeklyMealPlan });
+    } else {
+      // Handle regular field changes
+      setClientInfo({ ...clientInfo, [key]: e.target.value });
+    }
   };
 
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setClientInfo((prevInfo) => ({
-      ...prevInfo,
-      [name]: value,
-    }));
+  const toggleMealPlan = () => {
+    setClientInfo({
+      ...clientInfo,
+      includeMealPlan: !clientInfo.includeMealPlan
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Client Information Submitted:", clientInfo);
-    setClientInfo({
-      clientName: "",
-      sessionDate: "",
-      sessionNotes: "",
-      progress: "",
-      followUpDate: "",
-      weight: "",
-      fats: "",
-      water: "",
-      bmi: "",
-      muscles: "",
-      weeklyMealPlan: Array(7).fill({
-        breakfast: "",
-        lunch: "",
-        dinner: "",
-        snack: "",
-      }),
-    });
+    const dataToSubmit = { ...clientInfo };
+    if (!clientInfo.includeMealPlan) {
+      delete dataToSubmit.weeklyMealPlan;
+    }
+    console.log("Client Information Submitted:", dataToSubmit);
+    // Reset form logic here
   };
 
   return (
-    <div className="w-full p-6 bg-gray-100">
-      <div className="fixed rounded-b-2xl font-serif bg-white top-0 right-0 left-0 flex justify-between p-3 border-t-2 border-gray-300 text-2xl h-16 z-20 shadow-md">
-        <div className="flex gap-3 items-center m-2">
-          <Link to={'/Home'}>
-            <IoMdArrowRoundBack />
-          </Link>
-          <span>Add Client Information</span>
-        </div>
-        <div className="flex gap-3 items-center m-2 text-black">
-          <Link to={'/UserProfile'}>
-            <CgProfile />
-          </Link>
-        </div>
-      </div>
-      <h1 className="text-4xl font-bold text-[#234403] text-center mb-8 mt-15">
-        Add Client Information After Session
-      </h1>
+    <div>
+      <DietitianNavBar/>
+      <div className=" mx-auto p-4 bg-gray-50">
+        {/* Header */}
+       
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-medium text-[#539c09] mb-2">Client Name - 20/2/2025 - 2:00 PM</h1>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-20 bg-white p-6 rounded-xl shadow-sm">
+          {/* Health Metrics Section */}
+          <section className="space-y-4">
+            <h2 className="text-xl font-semibold text-green-700 border-b pb-2">
+              Health Metrics
+            </h2>
 
-        <div>
-          <label className="block text-lg font-medium mb-2">Client's Progress</label>
-          <textarea
-            value={clientInfo.progress}
-            onChange={(e) => handleChange(e, "progress")}
-            className="w-full p-3 border border-gray-300 rounded-md"
-            rows="4"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-lg font-medium mb-2">Follow-Up Date (if any)</label>
-          <input
-            type="date"
-            value={clientInfo.followUpDate}
-            onChange={(e) => handleChange(e, "followUpDate")}
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* Interactive Health Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Weight */}
-          <div>
-            <label className="block text-lg font-medium mb-2">Weight (kg)</label>
-            <input
-              type="range"
-              min="30"
-              max="150"
-              value={clientInfo.weight}
-              onChange={(e) => handleChange(e, "weight")}
-              className="w-full"
-            />
-            <span>{clientInfo.weight} kg</span>
-          </div>
-
-          {/* Fats */}
-          <div>
-            <label className="block text-lg font-medium mb-2">Fats (%)</label>
-            <input
-              type="range"
-              min="5"
-              max="50"
-              value={clientInfo.fats}
-              onChange={(e) => handleChange(e, "fats")}
-              className="w-full"
-            />
-            <span>{clientInfo.fats}%</span>
-          </div>
-
-          {/* Water */}
-          <div>
-            <label className="block text-lg font-medium mb-2">Water (%)</label>
-            <input
-              type="range"
-              min="30"
-              max="80"
-              value={clientInfo.water}
-              onChange={(e) => handleChange(e, "water")}
-              className="w-full"
-            />
-            <span>{clientInfo.water}%</span>
-          </div>
-
-          {/* BMI */}
-          <div>
-            <label className="block text-lg font-medium mb-2">BMI Category</label>
-            <select
-              value={clientInfo.bmi}
-              onChange={(e) => handleChange(e, "bmi")}
-              className="w-full p-3 border border-gray-300 rounded-md"
-            >
-              <option value="underweight">Underweight</option>
-              <option value="normal">Normal</option>
-              <option value="overweight">Overweight</option>
-              <option value="obese">Obese</option>
-            </select>
-          </div>
-
-          {/* Muscles */}
-          <div>
-            <label className="block text-lg font-medium mb-2">Muscles (%)</label>
-            <input
-              type="range"
-              min="10"
-              max="60"
-              value={clientInfo.muscles}
-              onChange={(e) => handleChange(e, "muscles")}
-              className="w-full"
-            />
-            <span>{clientInfo.muscles}%</span>
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="followUpDate" className="block text-lg font-medium mb-2">
-            Follow-Up Date (if any)
-          </label>
-          <input
-            type="date"
-            id="followUpDate"
-            name="followUpDate"
-            value={clientInfo.followUpDate}
-            onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-bold mt-8">Weekly Meal Plan</h2>
-          <p className="mb-4 text-gray-600">Enter the diet plan for each day of the week</p>
-          {clientInfo.weeklyMealPlan.map((meal, index) => (
-            <div key={index} className="mb-6">
-              <h3 className="text-xl font-semibold mb-4">Day {index + 1}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {['breakfast', 'lunch', 'dinner', 'snack'].map((mealType) => (
-                  <div key={mealType}>
-                    <label htmlFor={`${mealType}-${index}`} className="block text-lg font-medium mb-2">
-                      {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
-                    </label>
-                    <textarea
-                      id={`${mealType}-${index}`}
-                      name={`${mealType}-${index}`}
-                      value={meal[mealType]}
-                      onChange={(e) => handleChange(e, index, mealType)}
-                      className="w-full p-3 border border-gray-300 rounded-md"
-                      rows="3"
-                      required
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "Weight (kg)", key: "weight", min: 30, max: 150, unit: "kg" },
+                { label: "Body Fat %", key: "fats", min: 5, max: 50, unit: "%" },
+                { label: "Water %", key: "water", min: 30, max: 80, unit: "%" },
+                { label: "Muscle %", key: "muscles", min: 10, max: 60, unit: "%" },
+              ].map((metric) => (
+                <div key={metric.key} className="space-y-2">
+                  <label className="block text-lg font-medium text-gray-700">
+                    {metric.label}
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="range"
+                      min={metric.min}
+                      max={metric.max}
+                      value={clientInfo[metric.key]}
+                      onChange={(e) => handleChange(e, metric.key)}
+                      className="flex-1"
                     />
+                    <span className="w-16 text-center font-medium">
+                      {clientInfo[metric.key]}{metric.unit}
+                    </span>
+                  </div>
+                </div>
+              ))}
+
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-1">
+                  BMI Category
+                </label>
+                <select
+                  value={clientInfo.bmi}
+                  onChange={(e) => handleChange(e, "bmi")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                >
+                  <option value="underweight">Underweight</option>
+                  <option value="normal">Normal</option>
+                  <option value="overweight">Overweight</option>
+                  <option value="obese">Obese</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          {/* Optional Meal Plan Section */}
+          <section className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-green-700">
+                Weekly Meal Plan
+              </h2>
+              <button
+                type="button"
+                onClick={toggleMealPlan}
+                className={`flex items-center px-4 py-2 rounded-lg ${clientInfo.includeMealPlan ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
+              >
+                {clientInfo.includeMealPlan ? (
+                  <>
+                    <FaMinus className="mr-2" /> Remove Meal Plan
+                  </>
+                ) : (
+                  <>
+                    <FaPlus className="mr-2" /> Add Meal Plan
+                  </>
+                )}
+              </button>
+            </div>
+
+            {clientInfo.includeMealPlan && (
+              <div className="space-y-6">
+                <p className="text-gray-600">Enter the diet plan for each day of the week</p>
+                {clientInfo.weeklyMealPlan.map((meal, index) => (
+                  <div key={index} className="border rounded-lg p-4">
+                    <h3 className="text-lg font-medium mb-3">Day {index + 1}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {['breakfast', 'lunch', 'dinner', 'snack'].map((mealType) => (
+                        <div key={mealType}>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
+                          </label>
+                          <textarea
+                            value={meal[mealType]}
+                            onChange={(e) => handleChange(e, null, index, mealType)}
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                            rows="3"
+                            placeholder={`What to eat for ${mealType}...`}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          ))}
-        </div>
+            )}
+          </section>
 
-        <div>
-          <button type="submit" className="w-full p-3 bg-green-700 text-white font-semibold rounded-md hover:bg-green-600">
-            Submit Information
-          </button>
-        </div>
-      </form>
+          {/* Submit Button */}
+          <div className="pt-4">
+            <button
+              type="submit"
+              className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-200"
+            >
+              Save Client Information
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

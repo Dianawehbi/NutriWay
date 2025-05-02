@@ -1,188 +1,183 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { CgProfile } from "react-icons/cg";
-import { FiCalendar, FiClock, FiUser, FiVideo, FiHome } from "react-icons/fi";
-import { MdDone, MdCancel } from "react-icons/md";
-import NavBar from "../../../components/Dietitian/NavBar";
-const DietitianAppointments = () => {
-    const [appointments, setAppointments] = useState([]);
-    const [showUpcoming, setShowUpcoming] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
+import { useState } from "react";
+import DietitianNavBar from "../../../components/Dietitian/NavBar";
+import { useNavigate } from "react-router-dom";
 
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            try {
-                // Replace with actual API call
-                // const response = await axios.get('/api/appointments');
-                // setAppointments(response.data);
-
-                // Mock data
-                setTimeout(() => {
-                    setAppointments([
-                        {
-                            id: 1,
-                            client: "John Doe",
-                            service: "Diet Consultation",
-                            date: "2025-03-15",
-                            time: "10:00 AM",
-                            mode: "Online",
-                            status: "Upcoming",
-                            clientId: "123"
-                        },
-                        {
-                            id: 2,
-                            client: "Alice Smith",
-                            service: "Weight Management",
-                            date: "2025-03-12",
-                            time: "2:00 PM",
-                            mode: "In-Clinic",
-                            status: "Completed",
-                            clientId: "456"
-                        },
-                    ]);
-                    setIsLoading(false);
-                }, 1000);
-            } catch (error) {
-                console.error("Failed to fetch appointments:", error);
-                setIsLoading(false);
-            }
-        };
-
-        fetchAppointments();
-    }, []);
+export default function ManageAppointments() {
+    const [appointments, setAppointments] = useState([
+        {
+            id: 1,
+            client: "John Doe",
+            service: "Diet Consultation",
+            date: "2025-03-15",
+            time: "10:00 AM",
+            mode: "Online",
+            status: "Upcoming",
+            clientImage: "https://randomuser.me/api/portraits/men/32.jpg"
+        },
+        {
+            id: 2,
+            client: "Alice Smith",
+            service: "Weight Management",
+            date: "2025-03-12",
+            time: "2:00 PM",
+            mode: "In-Clinic",
+            status: "Completed",
+            clientImage: "https://randomuser.me/api/portraits/women/45.jpg"
+        },
+        {
+            id: 3,
+            client: "Robert Johnson",
+            service: "Meal Planning",
+            date: "2025-03-18",
+            time: "11:30 AM",
+            mode: "Online",
+            status: "Rejected",
+            clientImage: "https://randomuser.me/api/portraits/men/75.jpg"
+        }
+    ]);
+    const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState("upcoming");
 
     const upcomingAppointments = appointments.filter(app => app.status === "Upcoming");
-    const pastAppointments = appointments.filter(app => app.status === "Completed");
+    const completedAppointments = appointments.filter(app => app.status === "Completed");
+    const rejectedAppointments = appointments.filter(app => app.status === "Rejected");
 
-    const handleAcceptAppointment = async (appointmentId) => {
-        try {
-            // API call to accept appointment
-            // await axios.put(`/api/appointments/${appointmentId}/accept`);
-            setAppointments(apps =>
-                apps.map(app =>
-                    app.id === appointmentId ? { ...app, status: "Completed" } : app
-                )
-            );
-        } catch (error) {
-            console.error("Failed to accept appointment:", error);
-        }
+    const handleAcceptAppointment = (id) => {
+        setAppointments(appointments.map(app =>
+            app.id === id ? { ...app, status: "Completed" } : app
+        ));
     };
 
-    const handleCancelAppointment = async (appointmentId) => {
-        try {
-            // API call to cancel appointment
-            // await axios.delete(`/api/appointments/${appointmentId}`);
-            setAppointments(apps => apps.filter(app => app.id !== appointmentId));
-        } catch (error) {
-            console.error("Failed to cancel appointment:", error);
-        }
+    const handleCancelAppointment = (id) => {
+        setAppointments(appointments.map(app =>
+            app.id === id ? { ...app, status: "Rejected" } : app
+        ));
     };
+
+    const handleRescheduleAppointment = (id, newDate, newTime) => {
+        setAppointments(appointments.map(app =>
+            app.id === id ? { ...app, date: newDate, time: newTime } : app
+        ));
+    };
+
+    const renderAppointments = (list, label) => (
+        list.length === 0 ? (
+            <div className="bg-gray-50 rounded-lg p-8 text-center">
+                <p className="text-gray-500 text-lg">No {label} appointments found</p>
+            </div>
+        ) : (
+            list.map(appointment => (
+                <div key={appointment.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                    <div className="p-6">
+                        <div className="flex items-start space-x-4">
+                            <img
+                                src={appointment.clientImage}
+                                alt={appointment.client}
+                                className="w-16 h-16 rounded-full object-cover"
+                            />
+                            <div className="flex-1">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 className="text-xl font-semibold text-gray-800">{appointment.client}</h3>
+                                        <p className="text-blue-600 font-medium">{appointment.service}</p>
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${appointment.status === "Upcoming"
+                                        ? "bg-yellow-100 text-yellow-800"
+                                        : appointment.status === "Completed"
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-red-100 text-red-700"
+                                        }`}>
+                                        {appointment.status}
+                                    </span>
+                                </div>
+
+                                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <p className="text-sm text-gray-500">Date</p>
+                                        <p className="font-medium">{appointment.date}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">Time</p>
+                                        <p className="font-medium">{appointment.time}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">Mode</p>
+                                        <p className="font-medium">{appointment.mode}</p>
+                                    </div>
+                                </div>
+
+                                {appointment.status === "Upcoming" && (
+                                    <div className="mt-6 flex space-x-3">
+                                        <button
+                                            onClick={() => handleAcceptAppointment(appointment.id)}
+                                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+                                        >
+                                            Mark as Completed
+                                        </button>
+                                        <button
+                                            onClick={() => handleCancelAppointment(appointment.id)}
+                                            className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg transition"
+                                        >
+                                            Cancel Appointment
+                                        </button>
+                                        <button
+                                            onClick={() => handleRescheduleAppointment(appointment.id, "2025-03-20", "3:00 PM")}
+                                            className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg transition"
+                                        >
+                                            Reschedule
+                                        </button>
+                                    </div>
+                                )}{appointment.status === "Completed" && (
+                                    <div className="mt-6">
+                                        <button
+                                            onClick={() => navigate('/dietitian-add-client-info')}
+                                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition"
+                                        >
+                                            Add Client Information
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))
+        )
+    );
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4 pt-20 font-sans">
-            <NavBar />
+        <div className="max-w-6xl mx-auto p-6">
+            <DietitianNavBar />
+            <h1 className="text-3xl mt-20 font-bold text-gray-800 mb-8">Appointment Management</h1>
 
-            <main className="container mx-auto max-w-4xl space-y-6">
-                <div className="flex justify-center gap-4 bg-white p-4 rounded-xl shadow-md">
-                    <button
-                        onClick={() => setShowUpcoming(true)}
-                        className={`px-6 py-2 rounded-lg font-medium ${showUpcoming ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"} transition-colors`}
-                    >
-                        Upcoming Appointments
-                    </button>
-                    <button
-                        onClick={() => setShowUpcoming(false)}
-                        className={`px-6 py-2 rounded-lg font-medium ${!showUpcoming ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"} transition-colors`}
-                    >
-                        Appointment History
-                    </button>
-                </div>
+            {/* Tab Navigation */}
+            <div className="flex border-b border-gray-200 mb-6">
+                <button
+                    className={`py-2 px-4 font-medium ${activeTab === "upcoming" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
+                    onClick={() => setActiveTab("upcoming")}
+                >
+                    Upcoming ({upcomingAppointments.length})
+                </button>
+                <button
+                    className={`py-2 px-4 font-medium ${activeTab === "completed" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
+                    onClick={() => setActiveTab("completed")}
+                >
+                    Completed ({completedAppointments.length})
+                </button>
+                <button
+                    className={`py-2 px-4 font-medium ${activeTab === "rejected" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
+                    onClick={() => setActiveTab("rejected")}
+                >
+                    Rejected ({rejectedAppointments.length})
+                </button>
+            </div>
 
-                <section className="bg-white rounded-xl shadow-md p-6">
-                    {isLoading ? (
-                        <div className="flex justify-center items-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-                        </div>
-                    ) : (
-                        <>
-                            {(showUpcoming ? upcomingAppointments : pastAppointments).length === 0 ? (
-                                <div className="text-center py-8 text-gray-500">
-                                    No {showUpcoming ? "upcoming" : "past"} appointments found.
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-1 gap-4">
-                                    {(showUpcoming ? upcomingAppointments : pastAppointments).map(appointment => (
-                                        <div key={appointment.id} className={`border rounded-lg p-4 ${appointment.status === "Upcoming" ? "border-blue-200 bg-blue-50" : "border-gray-200 bg-gray-50"}`}>
-                                            <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                                                <div className="mb-4 md:mb-0">
-                                                    <h3 className="font-bold text-lg text-gray-800">{appointment.service}</h3>
-                                                    <div className="flex items-center mt-2 text-gray-600">
-                                                        <FiUser className="mr-2" />
-                                                        <span>{appointment.client}</span>
-                                                    </div>
-                                                    <div className="flex items-center mt-1 text-gray-600">
-                                                        <FiCalendar className="mr-2" />
-                                                        <span>{appointment.date} at {appointment.time}</span>
-                                                    </div>
-                                                    <div className="flex items-center mt-1 text-gray-600">
-                                                        {appointment.mode === "Online" ? (
-                                                            <FiVideo className="mr-2" />
-                                                        ) : (
-                                                            <FiHome className="mr-2" />
-                                                        )}
-                                                        <span>{appointment.mode} session</span>
-                                                    </div>
-                                                </div>
-
-                                                {appointment.status === "Upcoming" ? (
-                                                    <div className="flex space-x-2 justify-end">
-                                                        <button
-                                                            onClick={() => handleAcceptAppointment(appointment.id)}
-                                                            className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                                                        >
-                                                            <MdDone className="mr-1" /> Complete
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleCancelAppointment(appointment.id)}
-                                                            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                                                        >
-                                                            <MdCancel className="mr-1" /> Cancel
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex flex-col items-end space-y-2">
-                                                        <span className="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-bold rounded-full">
-                                                            Completed
-                                                        </span>
-                                                        <Link
-                                                            to={`/dietitian/client-info/${appointment.clientId}`}
-                                                            className="px-4 py-2 bg-blue-500 text-white text-sm font-bold rounded-lg hover:bg-blue-600 transition-colors"
-                                                        >
-                                                            View Client Details
-                                                        </Link>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </>
-                    )}
-                </section>
-
-                <div className="text-center">
-                    <Link
-                        to="/dietitian-availability"
-                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
-                    >
-                        Manage Availability
-                    </Link>
-                </div>
-            </main>
+            {/* Appointment Cards */}
+            <div className="space-y-4">
+                {activeTab === "upcoming" && renderAppointments(upcomingAppointments, "upcoming")}
+                {activeTab === "completed" && renderAppointments(completedAppointments, "completed")}
+                {activeTab === "rejected" && renderAppointments(rejectedAppointments, "rejected")}
+            </div>
         </div>
     );
-};
-
-export default DietitianAppointments;
+}

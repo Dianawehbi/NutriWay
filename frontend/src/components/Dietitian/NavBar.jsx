@@ -13,8 +13,8 @@ export default function DietitianNavBar() {
 
     const navLinks = [
         { path: "/DietitianDashboard", label: "Home" },
-        { path: "/", label: "Dietitians" },
-        { path: "/AppointmentHistory", label: "Appointment" },
+        { path: "/dietitian-availability", label: "Availability" },
+        { path: "/manage-appointments", label: "Appointment" },
         { path: "/recipes", label: "Recipes" },
         { path: "/logout", label: "Logout" },
     ];

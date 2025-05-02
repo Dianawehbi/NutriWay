@@ -1,177 +1,157 @@
 import React, { useState, useEffect } from "react";
-import { FaTrashAlt, FaUserEdit } from "react-icons/fa"; // Icons for delete and edit actions
-import NavBar from "../../components/Admin/AdminNavBar.jsx"; // Assuming you have a NavBar component
+import { FaTrashAlt, FaUserEdit, FaSearch, FaUser, FaUserMd } from "react-icons/fa";
+import NavBar from "../../components/Admin/AdminNavBar";
 
 const AdminManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState("clients"); // 'clients' or 'dietitians'
+    const [activeTab, setActiveTab] = useState("clients");
+    const [searchTerm, setSearchTerm] = useState("");
 
-    // Fetch users (both dietitians and clients) data - Dummy data for now
     useEffect(() => {
+        // Simulate API call
         const fetchUsers = async () => {
-            // Replace this with real data fetching logic (API call)
-            const fetchedUsers = [
-                { id: 1, name: "John Doe", role: "Client", email: "john@example.com", status: "Active" },
-                { id: 2, name: "Dr. Sarah Lee", role: "Dietitian", email: "sarah@example.com", status: "Pending" },
-                { id: 3, name: "Jane Smith", role: "Client", email: "jane@example.com", status: "Active" },
-                { id: 4, name: "Dr. Mike Ross", role: "Dietitian", email: "mike@example.com", status: "Approved" }
-            ];
-
-            setUsers(fetchedUsers);
-            setLoading(false);
+            setTimeout(() => {
+                setUsers([
+                    { id: 1, name: "John Doe", role: "Client", email: "john@example.com", status: "Active" },
+                    { id: 2, name: "Dr. Sarah Lee", role: "Dietitian", email: "sarah@example.com", status: "Pending" },
+                    { id: 3, name: "Jane Smith", role: "Client", email: "jane@example.com", status: "Active" },
+                    { id: 4, name: "Dr. Mike Ross", role: "Dietitian", email: "mike@example.com", status: "Approved" }
+                ]);
+                setLoading(false);
+            }, 800);
         };
 
         fetchUsers();
     }, []);
 
-    // Handle delete action (for now, just log to console)
     const handleDelete = (id) => {
-        // Here you can make a DELETE request to remove the user
-        console.log(`Deleted user with id: ${id}`);
-        // Update state after deletion (for example purposes, remove from local state)
-        setUsers(users.filter(user => user.id !== id));
+        if (window.confirm("Are you sure you want to delete this user?")) {
+            setUsers(users.filter(user => user.id !== id));
+        }
     };
 
-    // Handle accept action for dietitians
-    const handleAcceptDietitian = (id) => {
-        console.log(`Accepted dietitian with id: ${id}`);
-        setUsers(users.map(user => user.id === id ? { ...user, status: "Approved" } : user));
-    };
+    const filteredUsers = users.filter(user => {
+        const matchesTab = activeTab === "clients" ? user.role === "Client" : user.role === "Dietitian";
+        const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
 
-    // Separate users by role
-    const clients = users.filter(user => user.role === "Client");
-    const dietitians = users.filter(user => user.role === "Dietitian");
-    const pendingDietitians = dietitians.filter(user => user.status === "Pending");
+    const getStatusBadge = (status) => {
+        const statusClasses = {
+            Active: "bg-green-100 text-green-800",
+            Pending: "bg-yellow-100 text-yellow-800",
+            Approved: "bg-blue-100 text-blue-800"
+        };
+        return (
+            <span className={`px-2 py-1 text-xs rounded-full ${statusClasses[status]}`}>
+                {status}
+            </span>
+        );
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
             <NavBar />
-            <div className="p-6 space-y-8 mt-20">
-                {/* User Management Header */}
-                <div className="bg-white p-6 rounded-xl shadow-xl text-center">
-                    <h2 className="text-3xl font-semibold text-gray-700">User Management</h2>
-                    <p className="text-gray-500">Manage all users (Clients and Dietitians)</p>
+            
+            <div className="max-w-6xl mx-auto p-4 md:p-6 mt-20">
+                {/* Header */}
+                <div className="bg-white p-6 rounded-xl shadow-sm text-center mb-8">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-2">User Management</h1>
+                    <p className="text-gray-600">Manage all clients and dietitians</p>
                 </div>
 
-                {/* Pending Dietitians Section */}
-                {pendingDietitians.length > 0 && (
-                    <div className="bg-yellow-100 p-6 rounded-xl shadow-xl mb-8">
-                        <h3 className="text-2xl font-semibold text-gray-700">Dietitians Awaiting Approval</h3>
-                        <div className="space-y-4">
-                            {pendingDietitians.map((user) => (
-                                <div key={user.id} className="bg-white p-4 rounded-lg shadow-lg flex justify-between items-center">
-                                    <div>
-                                        <p className="font-semibold text-gray-700">{user.name}</p>
-                                        <p className="text-gray-500">{user.email}</p>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <button
-                                            onClick={() => handleAcceptDietitian(user.id)}
-                                            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
-                                        >
-                                            Accept
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                {/* Tabs and Search */}
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div className="flex bg-gray-100 p-1 rounded-lg">
+                        <button
+                            onClick={() => setActiveTab("clients")}
+                            className={`flex items-center px-4 py-2 rounded-md ${activeTab === "clients" ? "bg-white shadow" : "text-gray-600"}`}
+                        >
+                            <FaUser className="mr-2" /> Clients
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("dietitians")}
+                            className={`flex items-center px-4 py-2 rounded-md ${activeTab === "dietitians" ? "bg-white shadow" : "text-gray-600"}`}
+                        >
+                            <FaUserMd className="mr-2" /> Dietitians
+                        </button>
                     </div>
-                )}
-
-                {/* Tab Buttons */}
-                <div className="flex justify-center gap-6 mb-8">
-                    <button
-                        onClick={() => setActiveTab("clients")}
-                        className={`px-6 py-2 rounded-md ${activeTab === "clients" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"}`}
-                    >
-                        Clients
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("dietitians")}
-                        className={`px-6 py-2 rounded-md ${activeTab === "dietitians" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"}`}
-                    >
-                        Dietitians
-                    </button>
+                    
+                    <div className="relative w-full md:w-64">
+                        <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search users..."
+                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
 
-                {/* Loading State */}
+                {/* Content */}
                 {loading ? (
-                    <div className="flex justify-center items-center py-8">
-                        <p className="text-xl font-semibold text-gray-500">Loading users...</p>
+                    <div className="flex justify-center items-center py-12">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
                     </div>
                 ) : (
-                    <>
-                        {/* Clients Section */}
-                        {activeTab === "clients" && (
-                            <div>
-                                <h3 className="text-2xl font-semibold text-gray-700 mb-4">Clients</h3>
-                                {clients.length === 0 ? (
-                                    <div className="text-center text-gray-500">
-                                        <p>No clients available to manage.</p>
-                                    </div>
-                                ) : (
-                                    clients.map((user) => (
-                                        <div key={user.id} className="bg-white p-6 rounded-lg shadow-lg flex justify-between items-center mb-4">
-                                            <div className="flex flex-col">
-                                                <p className="font-semibold text-gray-700 text-lg">{user.name}</p>
-                                                <p className="text-gray-500">{user.status}</p>
-                                                <p className="text-gray-400">{user.email}</p>
+                    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                        {filteredUsers.length === 0 ? (
+                            <div className="text-center py-12 text-gray-500">
+                                <p className="text-lg">No {activeTab} found</p>
+                                {searchTerm && (
+                                    <button 
+                                        onClick={() => setSearchTerm("")}
+                                        className="mt-2 text-green-600 hover:underline"
+                                    >
+                                        Clear search
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="divide-y">
+                                {filteredUsers.map(user => (
+                                    <div key={user.id} className="p-4 hover:bg-gray-50 transition-colors">
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="bg-gray-200 rounded-full p-3">
+                                                    {user.role === "Client" ? (
+                                                        <FaUser className="text-gray-600" />
+                                                    ) : (
+                                                        <FaUserMd className="text-gray-600" />
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-semibold text-gray-800">{user.name}</h3>
+                                                    <p className="text-gray-600 text-sm">{user.email}</p>
+                                                    <div className="mt-1">
+                                                        {getStatusBadge(user.status)}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="flex gap-4">
+                                            
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => console.log("Edit", user.id)}
+                                                    className="flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100"
+                                                >
+                                                    <FaUserEdit /> Edit
+                                                </button>
                                                 <button
                                                     onClick={() => handleDelete(user.id)}
-                                                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                                                    className="flex items-center gap-2 bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100"
                                                 >
-                                                    <FaTrashAlt className="inline mr-2" />
-                                                    Delete Account
-                                                </button>
-                                                <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
-                                                    <FaUserEdit className="inline mr-2" />
-                                                    Edit Profile
+                                                    <FaTrashAlt /> Delete
                                                 </button>
                                             </div>
                                         </div>
-                                    ))
-                                )}
-                            </div>
-                        )}
-
-                        {/* Dietitians Section */}
-                        {activeTab === "dietitians" && (
-                            <div>
-                                <h3 className="text-2xl font-semibold text-gray-700 mb-4">Dietitians</h3>
-                                {dietitians.length === 0 ? (
-                                    <div className="text-center text-gray-500">
-                                        <p>No dietitians available to manage.</p>
                                     </div>
-                                ) : (
-                                    dietitians.map((user) => (
-                                        <div key={user.id} className="bg-white p-6 rounded-lg shadow-lg flex justify-between items-center mb-4">
-                                            <div className="flex flex-col">
-                                                <p className="font-semibold text-gray-700 text-lg">{user.name}</p>
-                                                <p className="text-gray-500">{user.status}</p>
-                                                <p className="text-gray-400">{user.email}</p>
-                                            </div>
-                                            <div className="flex gap-4">
-                                                <button
-                                                    onClick={() => handleDelete(user.id)}
-                                                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
-                                                >
-                                                    <FaTrashAlt className="inline mr-2" />
-                                                    Delete Account
-                                                </button>
-                                                <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
-                                                    <FaUserEdit className="inline mr-2" />
-                                                    Edit Profile
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
+                                ))}
                             </div>
                         )}
-                    </>
+                    </div>
                 )}
             </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import DietitianNavBar from '../../../components/Dietitian/NavBar.jsx';
-import DietitianService from "../../../components/profile/dietitian_services.jsx";
-import ProfileSection from '../../../components/Dietitian/profileSection.jsx';
+// import DietitianNavBar from '../../../components/Dietitian/NavBar.jsx';
+// import DietitianService from "../../../components/profile/dietitian_services.jsx";
+// import ProfileSection from '../../../components/Dietitian/profileSection.jsx';
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../../../components/Footer.jsx'
 import axios from 'axios';
@@ -86,7 +86,7 @@ const DietitianProfile = () => {
       <DietitianNavBar role={role} user_id={user_id} dietitian_id={dietitian_id} />
       <div className="min-h-screen flex flex-col items-center p-6 mt-20 font-serif">
 
-        <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} />
+        {/* <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} /> */}
 
         <div className="bg-white shadow-xl rounded-3xl p-8 w-11/12 mt-8">
           <DietitianService services={services} role={role} user_id={user_id} dietitian_id={dietitian_id} />

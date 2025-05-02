@@ -14,8 +14,8 @@ export default function AdminNavBar() {
 
     const navLinks = [
         { path: "/AdminDashboard", label: "Home" },
-        { path: "/admin-manage-appointments", label: "Appointment" },
-        { path: "/recipes", label: "Recipes" },
+        { path: "/manage-appointments", label: "Appointment" },
+        { path: "/profite", label: "Profite" },
         { path: "/logout", label: "Logout" },
     ];
 

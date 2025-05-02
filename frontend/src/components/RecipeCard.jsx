@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { FaTrashAlt, FaUserEdit } from "react-icons/fa"; // Icons for delete and edit actions
-import { useEffect } from 'react';
 import axios from 'axios';
 
 export default function RecipeCard(item) {

@@ -4,7 +4,6 @@ import { FiPlus } from "react-icons/fi";
 export default function EmptyState({ 
   title = "No recipes found", 
   description = "Try adding a new recipe or adjusting your search",
-  showAction = true 
 }) {
   return (
     <div className="text-center py-12">
@@ -15,15 +14,7 @@ export default function EmptyState({
       </div>
       <h3 className="text-lg font-medium text-gray-900 mb-1">{title}</h3>
       <p className="text-gray-500 mb-6">{description}</p>
-      {showAction && (
-        <Link
-          to="/add-recipes"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-        >
-          <FiPlus className="-ml-1 mr-2 h-5 w-5" />
-          Add New Recipe
-        </Link>
-      )}
+    
     </div>
   );
 }

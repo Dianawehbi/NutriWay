@@ -12,7 +12,6 @@ export default function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isSaved, setIsSaved] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +25,6 @@ export default function RecipeDetails() {
         
         if (response.data.success) {
           setRecipe(response.data.recipe);
-          checkIfSaved(response.data.recipe._id);
         }
       } catch (error) {
         setError(error.response?.data?.error || "Failed to fetch recipe details");
@@ -35,30 +33,10 @@ export default function RecipeDetails() {
       }
     };
 
-    const checkIfSaved = async (recipeId) => {
-      // Implement your logic to check if recipe is saved
-      // For example:
-      // const res = await axios.get(`/api/saved-recipes/${recipeId}`);
-      // setIsSaved(res.data.isSaved);
-    };
-
     fetchRecipeDetails();
   }, [id]);
 
-  const handleSaveRecipe = async () => {
-    try {
-      // Implement your save recipe logic
-      // await axios.post(`/api/save-recipe/${recipe._id}`);
-      setIsSaved(!isSaved);
-    } catch (error) {
-      console.error("Error saving recipe:", error);
-    }
-  };
 
-  const handleShareRecipe = () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Recipe link copied to clipboard!");
-  };
 
   if (loading) return <LoadingPage />;
   if (error) return <ErrorPage message={error} />;
@@ -103,23 +81,10 @@ export default function RecipeDetails() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center text-gray-600">
                 <FiClock className="mr-2" />
-                <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
+                <span>prep •  cook</span>
               </div>
               <div className="flex gap-3">
-                <button 
-                  onClick={handleSaveRecipe}
-                  className={`flex items-center gap-1 px-3 py-1 rounded-full ${isSaved ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'}`}
-                >
-                  <FiBookmark />
-                  {isSaved ? 'Saved' : 'Save'}
-                </button>
-                <button 
-                  onClick={handleShareRecipe}
-                  className="flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-600 rounded-full"
-                >
-                  <FiShare2 />
-                  Share
-                </button>
+              
               </div>
             </div>
           </div>

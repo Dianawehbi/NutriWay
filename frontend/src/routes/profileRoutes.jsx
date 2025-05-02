@@ -10,21 +10,25 @@ export const profiles = [
     {
         path: '/dietitianprofile/:id', element:
             <PrivateRoutes>
-                <DietitianProfile />
+                <RoleBaseRoutes requiredRole={["dietitian"]}>
+                    <DietitianProfile />
+                </RoleBaseRoutes>
             </PrivateRoutes>
+
     },
-    // {
-    //     path: '/clientprofile', element:
-    //         <PrivateRoutes>
-    //             <ClientProfile />
-    //         </PrivateRoutes>
-    // },
     // {
     //     path: '/dietitianmanageprofile/:id', element:
     //         <PrivateRoutes>
     //             <DietitianManageProfile />
     //         </PrivateRoutes>
     // },
+    // {
+    //     path: '/clientprofile', element:
+    //         <PrivateRoutes>
+    //             <ClientProfile />
+    //         </PrivateRoutes>
+    // },
+
     // {
     //     path: '/clientmanageprofile', element:
     //         <PrivateRoutes>

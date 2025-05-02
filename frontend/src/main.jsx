@@ -14,7 +14,7 @@ import { dashboardRoutes } from './routes/dashboardRoutes.jsx'
 import { authRoutes } from './routes/authRoutes.jsx'
 import { appoinmentRoutes } from './routes/appointmentRoutes.jsx'
 import { adminRoutes } from './routes/adminRoutes.jsx'
-import { profiles } from './routes/profileRoutes.jsx'
+// import { profiles } from './routes/profileRoutes.jsx'
 
 const baseRoutes = [
   { path: '/', element: <App />, errorElement: <NotFoundPage /> },
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
   ...authRoutes,
   ...appoinmentRoutes,
   ...adminRoutes,
-  ...profiles
+  // ...profiles
 
 ]);
 

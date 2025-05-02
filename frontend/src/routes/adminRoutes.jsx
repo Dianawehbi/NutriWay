@@ -10,12 +10,20 @@ import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx';
 // rather put them in main.jsx (this is more simple and clear)
 export const adminRoutes = [
     {
-        path: '/Profite',
-        element: <Profite />
+        path: '/Profite', element:
+            <PrivateRoutes>
+                <RoleBaseRoutes requiredRole={["admin"]}>
+                    <Profite />
+                </RoleBaseRoutes>
+            </PrivateRoutes>
     },
     {
-        path: '/manage-users',
-        element: <AdminManageUsers />
+        path: '/manage-users', element:
+            <PrivateRoutes>
+                <RoleBaseRoutes requiredRole={["admin"]}>
+                    <AdminManageUsers />
+                </RoleBaseRoutes>
+            </PrivateRoutes>
     },
     {
         path: '/add-service', element:
