@@ -21,9 +21,7 @@ const DietitianDashboard = () => {
             {/* Dashboard Content */}
 
 
-            <div>her i should check the ststus of dietitian  if pendig then
-                display a new page , or other thing
-            </div>
+           
             <div className="p-6 space-y-6 mt-20">
                 <DietitianAvailabilitySection />
                 <DashboardAppointmentsSection />

@@ -3,7 +3,7 @@ import AdminNavBar from "../../components/Admin/AdminNavBar";
 import AdminHeader from "../../components/Admin/AdminHeader";
 import RecipeManager from "../../components/RecipeManager";
 import Statistic from "../../components/Admin/Statistics";
-import AdminApptHome from "../../components/Admin/AdminAptHome";
+import AdminVerifying from "../../components/Admin/AdminVerifying.jsx";
 import Actions from "../../components/Admin/Actions";
 import Footer from "../../components/Footer";
 import { useAuth } from "../../context/authContext";
@@ -17,7 +17,7 @@ const AdminDashboard = () => {
             <AdminHeader />
             <div className="p-6 space-y-6">
                 <Statistic />
-                <AdminApptHome />
+                <AdminVerifying />
                 <RecipeManager />
                 <Actions />
             </div>

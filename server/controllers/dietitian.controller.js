@@ -5,7 +5,6 @@ import Service from "../models/Services.model.js";
 export const updateDietitian = async (req, res) => {
   const { id } = req.params;
   const newDietitian = req.body; // Use consistent casing
-
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -37,6 +36,37 @@ export const updateDietitian = async (req, res) => {
     });
 
   } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error during update of Dietitian profile"
+    });
+  }
+};
+
+export const updateDietitianStatus = async (req, res) => {
+  const { id } = req.params; // This should be dietitian's _id
+  const newDietitian = req.body;
+
+  try {
+    const updatedDietitian = await Dietitian.findByIdAndUpdate(
+      id,
+      newDietitian,
+      { new: true }
+    );
+
+    if (!updatedDietitian) {
+      return res.status(404).json({ success: false, message: "Dietitian not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Dietitian updated successfully",
+      data: {
+        dietitian: updatedDietitian
+      }
+    });
+
+  } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
@@ -45,11 +75,13 @@ export const updateDietitian = async (req, res) => {
   }
 };
 
+
 export const GetDietitianInfo = async (req, res) => {
   try {
     const dietitianUserId = req.query.id;
     // Find dietitian by user_id
     const dietitian = await Dietitian.findOne({ user_id: dietitianUserId });
+
     if (!dietitian) {
       return res.status(400).json({ success: false, message: "Dietitian not found" });
     }
@@ -134,7 +166,6 @@ export const GetDietitianServices = async (req, res) => {
   const { id } = req.params;
 
   try {
-
     const services = await Service.find({
       dietitian: {
         $elemMatch: { dietitian_id: id }

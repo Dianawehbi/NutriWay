@@ -5,16 +5,15 @@ import DietitianProfile from '../pages/Profile/dietitian/Profile.jsx';
 // import ClientInformationPage from '../pages/Profile/client/ClientInformationPage.jsx';
 // import DietPlanPage from '../pages/Profile/client/DietPlanPage.jsx';
 import PrivateRoutes from '../utils/PrivateRoutes.jsx';
-
+import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx';
 export const profiles = [
     {
         path: '/dietitianprofile/:id', element:
             <PrivateRoutes>
-                <RoleBaseRoutes requiredRole={["dietitian"]}>
+                <RoleBaseRoutes requiredRole={["dietitian" , "admin" , "client"]}>
                     <DietitianProfile />
                 </RoleBaseRoutes>
             </PrivateRoutes>
-
     },
     // {
     //     path: '/dietitianmanageprofile/:id', element:

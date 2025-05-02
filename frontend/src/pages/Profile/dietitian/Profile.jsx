@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-// import DietitianNavBar from '../../../components/Dietitian/NavBar.jsx';
+import DietitianNavBar from '../../../components/Dietitian/NavBar.jsx';
 // import DietitianService from "../../../components/profile/dietitian_services.jsx";
-// import ProfileSection from '../../../components/Dietitian/profileSection.jsx';
+import ProfileSection from '../../../components/Dietitian/profileSection.jsx';
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../../../components/Footer.jsx'
 import axios from 'axios';
@@ -23,6 +23,7 @@ const DietitianProfile = () => {
           const res = await axios.get('http://localhost:5000/api/dietitian', {
             params: { id }
           });
+          alert(res)
           if (res.data.success) {
             setDietitian(res.data.dietitian);
             setError(null);
@@ -38,6 +39,7 @@ const DietitianProfile = () => {
         navigate('/login');
       }
     };
+    console.log(dietitian)
 
     fetchDietitianInfo();
   }, [id, navigate]);
@@ -45,10 +47,12 @@ const DietitianProfile = () => {
   useEffect(() => {
     const fetchServices = async () => {
       if (!dietitian?._id) return;
+      alert("ji")
       try {
         const res = await axios.get('http://localhost:5000/api/dietitian/service', {
           params: { id: dietitian._id }
         });
+        console.log(res.data.services)
         if (res.data.success) {
           setServices(res.data.services);
           setError(null);
@@ -65,12 +69,8 @@ const DietitianProfile = () => {
   }, [dietitian]);
 
 
-  if (error) {
-    return <div className="text-center mt-10">{error}</div>;
-  }
-
   if (!dietitian) {
-    return <LoadingPage />;
+    return <div>Failed to fetch dietiitian </div>;
   }
 
   let role, user_id, dietitian_id;
@@ -80,16 +80,15 @@ const DietitianProfile = () => {
     dietitian_id = dietitian.userId;
   }
 
-
   return (
     <div className="bg-gray-100">
       <DietitianNavBar role={role} user_id={user_id} dietitian_id={dietitian_id} />
       <div className="min-h-screen flex flex-col items-center p-6 mt-20 font-serif">
 
-        {/* <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} /> */}
+        <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} />
 
         <div className="bg-white shadow-xl rounded-3xl p-8 w-11/12 mt-8">
-          <DietitianService services={services} role={role} user_id={user_id} dietitian_id={dietitian_id} />
+          {/* <DietitianService services={services} role={role} user_id={user_id} dietitian_id={dietitian_id} /> */}
         </div>
 
 

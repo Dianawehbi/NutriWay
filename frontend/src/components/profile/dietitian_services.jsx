@@ -1,4 +1,29 @@
-export default function DietitianService({ services }) {
+import { useEffect, useState } from "react";
+
+export default function DietitianService({ services, dietitian_id }) {
+  const [allservices, setAllservices] = useState([]);
+
+  useEffect(() => {
+    console.log("its services")
+    const handleService = () => {
+      alert("hi")
+      const ArrayServices = services.map((item) => {
+        const dietitian = item.find((d) => d.dietitian_id === dietitian_id);
+        if (!dietitian) return null;
+        return {
+          _id: item.id,
+          name: item.name,
+          duration: item.duration,
+          price: dietitian.price,
+          mode: dietitian.mode,
+        };
+      }).filter(Boolean); // Removes nulls
+
+      setAllservices(ArrayServices);
+    };
+
+    handleService();
+  }, [services, dietitian_id]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6">
@@ -11,8 +36,8 @@ export default function DietitianService({ services }) {
 
       <div className="space-y-4">
         {services.map((service, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="group p-5 border border-gray-100 rounded-xl hover:border-green-200 hover:bg-green-50 transition-all duration-200 shadow-sm hover:shadow-md"
           >
             <div className="flex justify-between items-start">
