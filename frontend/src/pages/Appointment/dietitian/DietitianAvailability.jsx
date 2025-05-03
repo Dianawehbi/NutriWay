@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { FiCalendar, FiClock, FiPlus, FiMinus } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,29 +7,55 @@ import axios from "axios";
 
 const DietitianAvailability = () => {
   const userId = JSON.parse(localStorage.getItem("user"))._id;
+  const [dietitian_id, setDietitian_id] = useState("");
   const [services, setServices] = useState([]);
   const [availabilities, setAvailabilities] = useState([]);
   const [conflicts, setConflicts] = useState([]);
   const [form, setForm] = useState({ serviceId: "", date: null, startTime: "" });
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchDietitianInfo = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/dietitian", { params: { id: userId } });
-        if (data.success) {
-          setServices(data.dietitian.services || []);
+        const res = await axios.get("http://localhost:5000/api/dietitian", {
+          params: { id: userId },
+        });
+        if (res.data.success) {
+          setDietitian_id(res.data.dietitian._id);
+        } else {
+          console.error("Failed to fetch dietitian info: success = false");
         }
       } catch (err) {
-        console.error("Failed to fetch services:", err);
+        console.error("Failed to fetch dietitian info:", err);
+      }
+    };
+    fetchDietitianInfo();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      if (!dietitian_id) return;
+      try {
+        const res = await axios.get("http://localhost:5000/api/dietitian/service", {
+          params: { id: dietitian_id },
+        });
+        if (res.data.success) {
+          setServices(res.data.services);
+        } else {
+          console.error("Failed to fetch services: success = false");
+        }
+      } catch (err) {
+        console.error("Error fetching services:", err);
       }
     };
     fetchServices();
-  }, [userId]);
+  }, [dietitian_id]);
 
   useEffect(() => {
     const fetchAvailability = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/availability", { params: { id: userId } });
+        const { data } = await axios.get("http://localhost:5000/api/availability", {
+          params: { id: userId },
+        });
         if (data.success) {
           setAvailabilities(data.availabilitySlots || []);
         }
@@ -39,7 +64,7 @@ const DietitianAvailability = () => {
       }
     };
     fetchAvailability();
-  }, [form]);
+  }, [form, userId]);
 
   const handleAddAvailability = async () => {
     const { serviceId, date, startTime } = form;
@@ -48,18 +73,18 @@ const DietitianAvailability = () => {
     const selectedService = services.find(s => s._id === serviceId || s.serviceId === serviceId);
     if (!selectedService) return;
 
-    const duration = selectedService.duration; // assumed in minutes
+    const duration = selectedService.duration;
     const endTime = calculateEndTime(startTime, duration);
 
+    const selectedDietitian = selectedService.dietitian?.find(d => d.deititian_id === dietitian_id);
+    if (!selectedDietitian) return alert("Dietitian not found for this service.");
     const newSlot = {
       dietitian_id: userId,
-      service: {
-        serviceId,
-        name: selectedService.name,
-        price: selectedService.price,
-        mode: selectedService.mode,
-        duration: duration,
-      },
+      serviceId,
+      price: selectedDietitian.price,
+      mode: selectedDietitian.mode,
+      duration,
+      name: selectedService.name,
       date,
       startTime,
       endTime,
@@ -67,20 +92,19 @@ const DietitianAvailability = () => {
     };
 
     const overlapping = checkConflicts(newSlot);
+
     if (overlapping.length > 0) {
       setConflicts(overlapping);
       return alert("Time conflict detected. Please choose another slot.");
     }
 
     try {
-      console.log(newSlot)
       const res = await axios.post("http://localhost:5000/api/availability/add", newSlot);
       if (res.data.success) {
         setForm({ serviceId: "", date: null, startTime: "" });
         setConflicts([]);
         alert("Availability slot saved.");
       }
-
     } catch (err) {
       console.error("Error saving slot:", err);
       alert("Failed to save. Try again.");
@@ -89,14 +113,14 @@ const DietitianAvailability = () => {
 
   const checkConflicts = (newSlot) => {
     return availabilities.filter(slot => {
-      const sameDay = new Date(slot.date).toDateString() === new Date(newSlot.date).toDateString();
-      if (!sameDay) return false;
+      const sameDay = new Date(slot.date).toDateString() == new Date(newSlot.date).toDateString();
 
-      const startA = timeToDate(slot.startTime);
-      const endA = timeToDate(slot.endTime);
+      if (!sameDay) return false;
+      console.log(slot)
+      const startA = timeToDate(slot.start_time);
+      const endA = timeToDate(slot.end_time);
       const startB = timeToDate(newSlot.startTime);
       const endB = timeToDate(newSlot.endTime);
-
       return (
         (startB >= startA && startB < endA) ||
         (endB > startA && endB <= endA) ||
@@ -113,22 +137,17 @@ const DietitianAvailability = () => {
   };
 
   const calculateEndTime = (start, durationMin) => {
+    if (!start) return "";
     const [h, m] = start.split(":").map(Number);
+    if (isNaN(h) || isNaN(m)) return ""; // Return empty if not valid
     const startTime = new Date();
-    startTime.setHours(h, m, 0, 0);
-    const end = new Date(startTime.getTime() + durationMin * 60000);
-    return `${String(end.getHours()).padStart(2, "0")}:${String(end.getMinutes()).padStart(2, "0")}`;
+    startTime.setHours(h, m, 0, 0);  // Set the hours and minutes
+    const endTime = new Date(startTime.getTime() + durationMin * 60000);
+    const endHour = String(endTime.getHours()).padStart(2, "0");
+    const endMinute = String(endTime.getMinutes()).padStart(2, "0");
+    return `${endHour}:${endMinute}`;
   };
 
-  const handleRemoveSlot = async (slotId) => {
-    try {
-      await axios.delete(`/api/availability/${slotId}`);
-      setAvailabilities(availabilities.filter(slot => slot._id !== slotId));
-    } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Could not delete slot.");
-    }
-  };
 
   const formatDate = (date) =>
     new Date(date).toLocaleDateString("en-US", {
@@ -155,14 +174,11 @@ const DietitianAvailability = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 pt-20 font-sans">
       <NavBar />
-
       <main className="max-w-3xl mx-auto space-y-6 mt-6">
-        {/* Availability Form */}
         <section className="bg-white rounded-xl shadow p-6">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
             <FiCalendar className="mr-2" /> Set Availability
           </h2>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Service</label>
@@ -211,7 +227,6 @@ const DietitianAvailability = () => {
           </button>
         </section>
 
-        {/* Display Schedule */}
         <section className="bg-white rounded-xl shadow p-6">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
             <FiClock className="mr-2" /> Your Availability
@@ -221,12 +236,16 @@ const DietitianAvailability = () => {
             <p className="text-center text-gray-500">No slots yet</p>
           ) : (
             <div className="space-y-4">
-              {[...new Set(availabilities.map(slot => new Date(slot.date).toISOString().split("T")[0]))]
-                .sort()
+              {[...new Set(availabilities
+                .filter(slot => slot.is_available) // 🔍 Only include available slots
+                .map(slot => new Date(slot.date).toISOString().split("T")[0])
+              )].sort()
                 .map(dateStr => {
-                  const dailySlots = availabilities.filter(
-                    s => new Date(s.date).toISOString().split("T")[0] === dateStr
-                  ).sort((a, b) => a.startTime.localeCompare(b.startTime));
+                  const dailySlots = availabilities
+                    .filter(s =>
+                      s.is_available && new Date(s.date).toISOString().split("T")[0] === dateStr
+                    )
+                    .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
                   return (
                     <div key={dateStr} className="border rounded-lg">
@@ -237,20 +256,15 @@ const DietitianAvailability = () => {
                         {dailySlots.map(slot => (
                           <li key={slot._id} className="p-3 flex justify-between items-center">
                             <div>
-                              <div className="font-medium">{slot.service?.name}</div>
+                              <div className="font-medium">{slot.name}</div>
                               <div className="text-sm text-gray-600">
-                                {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                                {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
                                 <span className="ml-2 text-gray-500">
-                                  ({formatDuration(slot.service?.duration)})
+                                  ({formatDuration(slot.duration)})
                                 </span>
                               </div>
                             </div>
-                            <button
-                              onClick={() => handleRemoveSlot(slot._id)}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <FiMinus />
-                            </button>
+
                           </li>
                         ))}
                       </ul>
@@ -260,16 +274,6 @@ const DietitianAvailability = () => {
             </div>
           )}
         </section>
-
-        {/* Appointments Link */}
-        <div className="text-center">
-          <Link
-            to="/dietitian-appointments"
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg inline-block"
-          >
-            View Appointments
-          </Link>
-        </div>
       </main>
     </div>
   );

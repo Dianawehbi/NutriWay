@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//her
 const userSchema = mongoose.Schema({
     meal_id: { type: int, required: true, default: true },
     dietitian_id: { type: String, required: true },

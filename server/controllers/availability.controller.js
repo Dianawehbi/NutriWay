@@ -29,21 +29,22 @@ export const GetAvailabilityByDietitianId = async (req, res) => {
 
 export const AddAvailabilityForDietitian = async (req, res) => {
   try {
-    const { dietitian_id, service, date, startTime, endTime, is_available } = req.body;
-
-    if (!dietitian_id || !service || !date || !startTime || !endTime) {
-      return res.status(400).json({ success: false, message: "Please provide all required fields." });
+    const { dietitian_id, name, duration, serviceId, mode, price, date, startTime, endTime, is_available } = req.body;
+    if (!dietitian_id || !serviceId || !date || !startTime || !endTime) {
     }
-    return res.status(200).json({message: "hello dear " })
+
     const newAvailability = new Availability({
       dietitian_id,
-      service,
-      date,
+      serviceId,
+      mode,
+      price,
+      name,
+      duration,
+      date: new Date(date),
       start_time: startTime,
       end_time: endTime,
       is_available,
     });
-
     // Save the availability slot to the database
     const savedAvailability = await newAvailability.save();
 
@@ -53,8 +54,8 @@ export const AddAvailabilityForDietitian = async (req, res) => {
       availability: savedAvailability,
     });
   } catch (err) {
-    console.error("Error adding availability:", err);
-    return res.status(500).json({ success: false, message: "Server error. Try again later." });
+    console.error("Error saving availability:", err);
+    return res.status(500).json({ success: false, message: "Server error. Try again later.", error: err.message });
   }
 };
 

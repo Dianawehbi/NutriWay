@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//her
 const appointmentSchema = new mongoose.Schema({
   dietitian_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Dietitian', required: true },
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

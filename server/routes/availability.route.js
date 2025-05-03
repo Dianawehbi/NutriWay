@@ -3,6 +3,6 @@ import { GetAvailabilityByDietitianId, AddAvailabilityForDietitian } from '../co
 const router = express.Router()
 
 router.get("/", GetAvailabilityByDietitianId);
-router.post("/availability/add", AddAvailabilityForDietitian);
+router.post("/add", AddAvailabilityForDietitian);
 
 export default router;

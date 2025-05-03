@@ -26,7 +26,6 @@ app.use('/api/dietitian', dietitianRouter);
 app.use('/api/services', serviceRouter);
 app.use('/api/availability', availability);
 
-
 // Connect to DB and start server
 connectDB().then(() => {
     app.listen(process.env.PORT, () => {
