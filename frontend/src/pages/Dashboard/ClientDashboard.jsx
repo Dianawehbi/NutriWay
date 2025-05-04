@@ -8,7 +8,17 @@ import Footer from "../../components/Footer";
 import DietitianOverview from "../../components/Client/CaloriesSection";
 import RecipeSection from "../../components/Client/MealSection";
 import Dietitian from "../../components/Client/DietianSection.jsx";
+import { useEffect } from "react";
+
 const ClientDashboard = () => {
+
+    useEffect(() => {
+        const hasReloaded = sessionStorage.getItem('hasReloaded');
+        if (!hasReloaded) {
+            sessionStorage.setItem('hasReloaded', 'true');
+            window.location.reload();
+        }
+    }, []);
     return (
         <div className="h-auto bg-gray-100 flex flex-col items-center justify-center">
             <Header />

@@ -9,6 +9,13 @@ import Footer from "../../components/Footer";
 import { useAuth } from "../../context/authContext";
 
 const AdminDashboard = () => {
+    useEffect(() => {
+        const hasReloaded = sessionStorage.getItem('hasReloaded');
+        if (!hasReloaded) {
+          sessionStorage.setItem('hasReloaded', 'true');
+          window.location.reload();
+        }
+      }, []);
     // const { user } = useAuth()
     //instead of this we will ceate private route and protected route
     return (
