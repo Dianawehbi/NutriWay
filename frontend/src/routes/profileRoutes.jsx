@@ -10,7 +10,7 @@ export const profiles = [
     {
         path: '/dietitianprofile/:id', element:
             <PrivateRoutes>
-                <RoleBaseRoutes requiredRole={["dietitian" , "admin" , "client"]}>
+                <RoleBaseRoutes requiredRole={["dietitian", "admin", "client"]}>
                     <DietitianProfile />
                 </RoleBaseRoutes>
             </PrivateRoutes>
@@ -18,7 +18,9 @@ export const profiles = [
     {
         path: '/dietitianmanageprofile/:id', element:
             <PrivateRoutes>
-                <DietitianManageProfile />
+                <RoleBaseRoutes requiredRole={["dietitian", "admin"]}>
+                    <DietitianManageProfile />
+                </RoleBaseRoutes>
             </PrivateRoutes>
     },
     // {

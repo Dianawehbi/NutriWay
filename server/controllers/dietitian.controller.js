@@ -78,7 +78,7 @@ export const updateDietitianStatus = async (req, res) => {
 
 export const GetDietitianInfo = async (req, res) => {
   try {
-    const dietitianUserId = req.query.id;
+    const dietitianUserId = req.params;
     // Find dietitian by user_id
     const dietitian = await Dietitian.findOne({ user_id: dietitianUserId });
 

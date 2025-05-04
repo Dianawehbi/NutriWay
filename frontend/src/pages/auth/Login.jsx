@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import axios from 'axios'
 import AuthContext, { useAuth } from "../../context/authContext";
+import { useEffect } from "react";
 
 export default function Login() {
 
@@ -10,9 +11,17 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState(null);
-    const {login} = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate()
-    
+    const backgroundPositionsRef = useRef([]);
+
+    useEffect(() => {
+        backgroundPositionsRef.current = Array.from({ length: 10 }).map(() => ({
+            top: `${Math.random() * 85 + 5}%`,
+            left: `${Math.random() * 85 + 5}%`,
+        }));
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -21,20 +30,17 @@ export default function Login() {
                 { email, password }
             );
 
-            // after succesful login we need to store the user information
             if (response.data.success) {
-                localStorage.setItem("token", response.data.token)
-                localStorage.setItem("user",JSON.stringify(response.data.user))
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("user", JSON.stringify(response.data.user));
                 if (response.data.user.role === "admin") {
-                    // it should move to the admin dashboard using navigate
-                    navigate('/AdminDashboard')
+                    navigate('/AdminDashboard');
                 } else if (response.data.user.role === "dietitian") {
-                    // navigate to change the route
-                    navigate('/DietitianDashboard')
+                    navigate('/DietitianDashboard');
                 } else if (response.data.user.role === "client") {
-                    navigate('/clientdashboard')
-                }else{
-                    navigate('/login')
+                    navigate('/clientdashboard');
+                } else {
+                    navigate('/login');
                 }
             }
         } catch (error) {
@@ -50,10 +56,10 @@ export default function Login() {
     const foodIcons = ["🥑", "NutriWay"];
 
     return (
-        <div className=" relative flex min-h-screen items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="relative flex min-h-screen items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 overflow-hidden">
             {/* Animated food icons in background */}
             <div className="absolute inset-0 flex flex-wrap opacity-35 ">
-                {Array.from({ length: 10 }).map((_, i) => (
+                {backgroundPositionsRef.current.map((pos, i) => (
                     <motion.div
                         key={i}
                         initial={{ y: -20, opacity: 1 }}
@@ -66,8 +72,8 @@ export default function Login() {
                         }}
                         className="absolute text-6xl"
                         style={{
-                            top: `${Math.random() * 85 + 5}%`,
-                            left: `${Math.random() * 85 + 5}%`,
+                            top: pos.top,
+                            left: pos.left,
                             padding: "30px",
                         }}
                     >

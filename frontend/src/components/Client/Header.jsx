@@ -69,7 +69,7 @@ export default function Header() {
             whileTap={{ scale: 0.95 }}
             className="bg-green-600 hover:bg-[#AEC78B] text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-transform"
           >
-            <Link to={`/Appointment`}>Make Appointment</Link>
+            <Link to={`/AppointmentBookingPage`}>Make Appointment</Link>
           </motion.button>
         </motion.div>
 

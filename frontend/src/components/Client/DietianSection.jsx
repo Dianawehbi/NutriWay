@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import defaultImg from '../../assets/dietitianphoto.jpg';
+import defaultImg from '../../assets/defaultdietitian.png';
 import axios from 'axios';
 
 export default function Dietitian() {

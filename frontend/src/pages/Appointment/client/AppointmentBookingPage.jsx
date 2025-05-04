@@ -52,30 +52,29 @@ const AppointmentBooking = () => {
         try {
             setLoading(true);
             setError('');
-
             const appointmentData = {
                 availabilityId: selectedSlotId,
                 dietitian_id: selectedSlot.dietitian_id,
                 client_id,
-                date: '',
                 appointmentDate: selectedSlot.date,
                 startTime: selectedSlot.start_time,
                 endTime: selectedSlot.end_time,
-                status: 'scheduled'
+                status: 'upcoming',
             };
             //her
-
+            console.log(appointmentData)
             const { data } = await axios.post(
-                "http://localhost:5000/api/appointments/book",
+                "http://localhost:5000/api/appointment/add",
                 appointmentData
             );
-
+            console.log(data)
             if (data.success) {
                 setSuccess('Appointment booked successfully!');
-                setTimeout(() => navigate('/appointments'), 1500);
+                setTimeout(() => navigate('/AppointmentBookingPage'), 1500);
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Booking failed. Please try again.');
+            console.log(err.response)
         } finally {
             setLoading(false);
         }

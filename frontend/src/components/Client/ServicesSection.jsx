@@ -1,21 +1,23 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
+import slimming from '../../assets/slimming.jpg'
+import fatfreezingimg from '../../assets/fatfreezing.png'
+import dietplanimg from '../../assets/dietplan.jpg'
 const services = [
   {
     title: "Fat Freezing",
     description: "A non-invasive procedure to reduce fat cells and sculpt your body.",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    image: fatfreezingimg
   },
   {
     title: "Slimming Program",
     description: "Personalized slimming programs to help you achieve your ideal weight.",
-    image: "https://images.unsplash.com/photo-1535914254981-b5012eebbd15?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    image: slimming
   },
   {
     title: "Diet Plan & Analysis",
     description: "Customized diet plans and body composition analysis for optimal health.",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    image: dietplanimg
   }
 ];
 
