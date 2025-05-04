@@ -53,7 +53,7 @@ const DietitianAvailability = () => {
   useEffect(() => {
     const fetchAvailability = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/availability", {
+        const { data } = await axios.get("http://localhost:5000/api/availability/id", {
           params: { id: userId },
         });
         if (data.success) {

@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-
-// her
+import User from "./User.model.js";
 const availabilitySchema = new mongoose.Schema({
-    dietitian_id: { type: String, required: true },
+    dietitian_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     serviceId: { type: String, required: true },
     mode: { type: String },
     price: { type: String, required: true },
@@ -16,3 +15,4 @@ const availabilitySchema = new mongoose.Schema({
 );
 const Availability = mongoose.model("Availability", availabilitySchema);
 export default Availability;
+

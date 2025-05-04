@@ -6,7 +6,7 @@ import MakesAppointment from '../pages/Appointment/client/MakesAppointment.jsx'
 import ManageAppointments from '../pages/Appointment/dietitian/DietitianAppointments.jsx'
 import PrivateRoutes from '../utils/PrivateRoutes.jsx'
 import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx'
-
+import AppointmentBookingPage from '../pages/Appointment/client/AppointmentBookingPage.jsx'
 export const appoinmentRoutes = [
     {
         path: '/manage-appointments', element:
@@ -40,6 +40,11 @@ export const appoinmentRoutes = [
         path: '/MakesAppointment', element:
             <PrivateRoutes>
                 <MakesAppointment />
+            </PrivateRoutes>
+    },{
+        path: '/AppointmentBookingPage', element:
+            <PrivateRoutes>
+                <AppointmentBookingPage />
             </PrivateRoutes>
     },
 ]

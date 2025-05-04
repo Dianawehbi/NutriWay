@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import User from "./User.model.js";
+import Availability from "./availability.model.js";
 
 //her
 const appointmentSchema = new mongoose.Schema({
-  dietitian_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Dietitian', required: true },
+  dietitian_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  service_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
   availability_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Availability' },
   date: { type: Date, required: true },
   start_time: { type: String, required: true },
@@ -14,9 +15,6 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['scheduled', 'completed', 'cancelled', 'no-show'], 
     default: 'scheduled' 
   },
-  notes: String,
-  payment_status: { type: String, enum: ['pending', 'paid', 'refunded'], default: 'pending' },
-  meeting_link: String // For virtual appointments
-}, { timestamps: true });
+});
 
 module.exports = mongoose.model('Appointment', appointmentSchema);

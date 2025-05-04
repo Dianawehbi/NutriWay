@@ -1,4 +1,4 @@
-// import ClientDashboard from '../pages/Dashboard/ClientDashboard.jsx';
+import ClientDashboard from '../pages/Dashboard/ClientDashboard.jsx';
 import DietitianDashboard from '../pages/Dashboard/DietitianDashboard.jsx'
 import AdminDashboard from '../pages/Dashboard/AdminDashboard.jsx'
 import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx';
@@ -17,14 +17,14 @@ export const dashboardRoutes = [
         path: '/PendingApproval', element:
             <PendingApproval />
     },
-    // {
-    //     path: '/ClientDashboard', element:
-    //         <PrivateRoutes>
-    //             <RoleBaseRoutes requiredRole={["client"]}>
-    //                 <ClientDashboard />
-    //             </RoleBaseRoutes>
-    //         </PrivateRoutes>
-    // },
+    {
+        path: '/clientdashboard', element:
+            <PrivateRoutes>
+                <RoleBaseRoutes requiredRole={["client"]}>
+                    <ClientDashboard />
+                </RoleBaseRoutes>
+            </PrivateRoutes>
+    },
     {
         path: '/AdminDashboard', element:
             <PrivateRoutes>

@@ -25,6 +25,8 @@ app.use('/api/client', clientRouter);
 app.use('/api/dietitian', dietitianRouter);
 app.use('/api/services', serviceRouter);
 app.use('/api/availability', availability);
+app.use('/api/appointment', availability);
+
 
 // Connect to DB and start server
 connectDB().then(() => {

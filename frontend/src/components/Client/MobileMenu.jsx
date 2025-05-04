@@ -16,9 +16,8 @@ export default function MobileMenu({ onClose }) {
     { path: "/", label: "Home", icon: <MdHome className="text-xl" /> },
     { path: "/profile", label: "Profile", icon: <AiOutlineUser className="text-xl" /> },
     { path: "/diet-plan", label: "Diet Plan", icon: <LuClipboardCheck className="text-xl" /> },
-    { path: "/appointment", label: "Appointment", icon: <IoCalendarNumberOutline className="text-xl" /> },
+    { path: "/AppointmentBooking", label: "Appointment", icon: <IoCalendarNumberOutline className="text-xl" /> },
     { path: "/recipes", label: "Recipes", icon: <GiMeal className="text-xl" /> },
-    { path: "/about", label: "About Us", icon: <IoMdInformationCircleOutline className="text-xl" /> },
     { path: "/logout", label: "Logout", icon: <CiLogin className="text-xl" /> },
   ];
 

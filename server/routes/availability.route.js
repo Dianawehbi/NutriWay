@@ -1,8 +1,9 @@
 import express from 'express';
-import { GetAvailabilityByDietitianId, AddAvailabilityForDietitian } from '../controllers/availability.controller.js';
+import { GetAvailabilityByDietitianId, AddAvailabilityForDietitian , GetAvailability} from '../controllers/availability.controller.js';
 const router = express.Router()
 
-router.get("/", GetAvailabilityByDietitianId);
+router.get("/", GetAvailability);
+router.get("/id", GetAvailabilityByDietitianId);
 router.post("/add", AddAvailabilityForDietitian);
 
 export default router;

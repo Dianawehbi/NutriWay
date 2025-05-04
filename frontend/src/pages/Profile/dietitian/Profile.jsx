@@ -6,14 +6,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../../../components/Footer.jsx'
 import axios from 'axios';
 import LoadingPage from '../../auth/LoadingPage.jsx';
-
+import ClientNavbar from '../../../components/Client/NavBar.jsx';
+import AdminNavBar from '../../../components/Admin/AdminNavBar.jsx';
 const DietitianProfile = () => {
   const [dietitian, setDietitian] = useState(null);
   const [services, setServices] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
-
 
   useEffect(() => {
     const fetchDietitianInfo = async () => {
@@ -70,7 +70,7 @@ const DietitianProfile = () => {
     return <div>Loading ...</div>;
   }
 
-  let role, user_id, dietitian_id , dietitian_main_id;
+  let role, user_id, dietitian_id, dietitian_main_id;
   if (dietitian) {
     role = JSON.parse(localStorage.getItem("user")).role
     user_id = JSON.parse(localStorage.getItem("user"))._id
@@ -80,7 +80,15 @@ const DietitianProfile = () => {
 
   return (
     <div className="bg-gray-100">
-      <DietitianNavBar role={role} dietitian_id={dietitian_id} user_id={user_id}  />
+      {role == "dietitian" &&
+        <DietitianNavBar role={role} dietitian_id={dietitian_id} user_id={user_id} />
+      }
+      {role == "client" &&
+        <ClientNavbar />
+      }
+      {role == "admin" &&
+        <AdminNavBar />
+      }
       <div className="min-h-screen flex flex-col items-center p-6 mt-20 font-serif">
 
         <ProfileSection dietitian={dietitian} role={role} user_id={user_id} dietitian_id={dietitian_id} />

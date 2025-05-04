@@ -1,20 +1,21 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+
 const services = [
   {
     title: "Fat Freezing",
     description: "A non-invasive procedure to reduce fat cells and sculpt your body.",
-    image: "../../assests/slimming.jpg"
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
   },
   {
-    title: "Slimming",
+    title: "Slimming Program",
     description: "Personalized slimming programs to help you achieve your ideal weight.",
-    image: "/images/slimming.png"
+    image: "https://images.unsplash.com/photo-1535914254981-b5012eebbd15?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
   },
   {
-    title: "Diet Plan & Body Composition",
+    title: "Diet Plan & Analysis",
     description: "Customized diet plans and body composition analysis for optimal health.",
-    image: "/images/diet-plan.png"
+    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
   }
 ];
 
@@ -24,31 +25,58 @@ export default function ServicesSection() {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="bg-[#D0DBC2] h-auto w-full px-6 py-6 lg:py-12 m-0 rounded-b-[500px] text-center font-serif"
+      className="bg-gradient-to-b from-[#e1e8d8] to-[#d2e1c5] h-auto w-full px-6 py-12 lg:py-20 rounded-b-[100px] lg:rounded-b-[200px] text-center font-serif"
     >
-      <h2 className="lg:text-5xl text-3xl font-extrabold text-[#234403] mb-12">Our Services</h2>
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-10 max-w-6xl mx-auto">
-        {services.map((service, index) => (
-          <Link to={'/Appointment'}>
-
+      <div className="max-w-7xl mx-auto">
+        <motion.h2 
+          className="text-4xl lg:text-5xl font-extrabold text-gray-600 mb-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+        >
+          Our Premium Services
+        </motion.h2>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 px-4">
+          {services.map((service, index) => (
             <motion.div
               key={index}
-              className="bg-white  p-6 lg:p-10 w-11/12 lg:w-auto rounded-3xl shadow-xl space-x-8 flex flex-row lg:flex-col  items-center text-start lg:text-center transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              whileHover={{ y: -10 }}
             >
-              <div className="w-32 h-32 flex items-center justify-center bg-gradient-to-r rounded-full mb-6 shadow-lg animate-[wiggle_3s_ease-in-out_infinite]">
-                <img src={service.image} alt={service.title} className="w-25 h-25 rounded-full" />
-              </div>
-              <div>
-                <h3 className="text-2xl lg:text-3xl font-semibold text-gray-800">{service.title}</h3>
-                <p className=" lg:text-lg text-gray-600 mt-3 max-w-xs">{service.description}</p>
-              </div>
+              <Link to="/AppointmentBookingPage" className="block h-full">
+                <div className="bg-white h-full p-6 rounded-3xl shadow-lg flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:bg-gray-50">
+                  <div className="relative w-40 h-40 mb-6 rounded-full overflow-hidden shadow-md border-4 border-white">
+                    <motion.img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-full" />
+                  </div>
+                  
+                  <div className="text-center flex-1 flex flex-col">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-3">{service.title}</h3>
+                    <p className="text-gray-600 mb-6 flex-1">{service.description}</p>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="mt-auto"
+                    >
+                      <button className="bg-green-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-[#1a3502] transition-colors">
+                        Book Now
+                      </button>
+                    </motion.div>
+                  </div>
+                </div>
+              </Link>
             </motion.div>
-          </Link>
-
-        ))}
+          ))}
+        </div>
       </div>
     </motion.div>
   );

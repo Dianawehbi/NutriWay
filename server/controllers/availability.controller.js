@@ -1,5 +1,24 @@
 import Availability from "../models/availability.model.js"
 
+export const GetAvailability = async (req, res) => {
+  try {
+    const availabilitySlots = await Availability.find().populate("dietitian_id");
+
+    if (!availabilitySlots) {
+      return res.status(404).json({ success: false, message: "No availability slots found for this dietitian." });
+    }
+
+    // Return the available slots
+    return res.status(200).json({
+      success: true,
+      availabilitySlots,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
 export const GetAvailabilityByDietitianId = async (req, res) => {
   try {
     const { id } = req.query;

@@ -12,13 +12,12 @@ export default function ClientNavbar() {
     const { logout } = useAuth();
 
     const navLinks = [
-        { path: "/", label: "Home" },
-        { path: "/about", label: "About" },
-        { path: "/", label: "Dietitians" },
+        { path: "/clientdashboard", label: "Home" },
+        { path: "/recipes", label: "Recipes" },
     ];
 
     const dropdownItems = [
-        { path: "/AppointmentHistory", label: "Appointment" },
+        { path: "/AppointmentBookingPage", label: "Appointment" },
         { path: "/recipes", label: "Recipes" },
         { path: "/diet-plan", label: "Diet Plan" },
         { path: "/logout", label: "Logout" },
