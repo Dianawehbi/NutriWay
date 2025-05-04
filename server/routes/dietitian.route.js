@@ -5,7 +5,7 @@ const router = express.Router()
 // More specific routes first
 router.get('/all', GetAllDietitiansInfo);                 
 router.put('/update/status/:id', updateDietitianStatus); 
-router.get('/service/:id', GetDietitianServices);             
+router.get('/service/:userId', GetDietitianServices);             
 router.put('/update/:id', updateDietitian);              
 router.get('/:id', GetDietitianInfo);                   
 

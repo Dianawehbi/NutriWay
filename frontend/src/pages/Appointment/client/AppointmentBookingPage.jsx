@@ -30,7 +30,7 @@ const AppointmentBooking = () => {
                     console.log(availableSlots)
                 }
             } catch (err) {
-                console.error("Failed to fetch availability:", err);
+                console.log("Failed to fetch availability:", err);
                 setError('Failed to load available time slots');
             } finally {
                 setLoading(false);
@@ -54,11 +54,7 @@ const AppointmentBooking = () => {
             setError('');
             const appointmentData = {
                 availabilityId: selectedSlotId,
-                dietitian_id: selectedSlot.dietitian_id,
                 client_id,
-                appointmentDate: selectedSlot.date,
-                startTime: selectedSlot.start_time,
-                endTime: selectedSlot.end_time,
                 status: 'upcoming',
             };
             //her
@@ -67,11 +63,21 @@ const AppointmentBooking = () => {
                 "http://localhost:5000/api/appointment/add",
                 appointmentData
             );
-            console.log(data)
             if (data.success) {
                 setSuccess('Appointment booked successfully!');
-                setTimeout(() => navigate('/AppointmentBookingPage'), 1500);
+                try {
+                    const new_avai = { is_available: false };
+                    const response = await axios.put(`http://localhost:5000/api/availability/update/${selectedSlotId}`, new_avai);
+                    console.log(response)
+                    if (response.data.success) {
+                        setError('');
+                        navigate("/AppointmentHistory");
+                    }
+                } catch (err) {
+
+                }
             }
+            // also her we should update availability to be false is_available 
         } catch (err) {
             setError(err.response?.data?.message || 'Booking failed. Please try again.');
             console.log(err.response)
@@ -118,7 +124,7 @@ const AppointmentBooking = () => {
                                         <option value="">Select a time slot</option>
                                         {availabilities.map(slot => (
                                             <option key={slot._id} value={slot._id}>
-                                                {slot.formattedDate} • {slot.start_time}-{slot.end_time} • {slot.dietitian_id.username} • {slot.mode}  • {slot.name}
+                                                {slot.formattedDate} • {slot.start_time}-{slot.end_time} • {slot.dietitian_id.user_id.username} • {slot.mode}  • {slot.serviceId.name}
                                             </option>
                                         ))}
                                     </select>
@@ -148,10 +154,10 @@ const AppointmentBooking = () => {
                                     </div>
                                     <div className="flex items-center mb-2">
                                         <FiUser className="text-gray-400 mr-2" />
-                                        <span>Dietitian: {selectedSlot.dietitian_id?.username || 'N/A'}</span>
+                                        <span>Dietitian: {selectedSlot.dietitian_id.user_id.username || 'N/A'}</span>
                                     </div>
                                     <div className="text-sm text-gray-500">
-                                        {selectedSlot.name} • {selectedSlot.mode}
+                                        {selectedSlot.serviceId.name} • {selectedSlot.mode}
                                     </div>
                                 </div>
                             )}

@@ -32,21 +32,18 @@ const DietitianManageProfile = () => {
     useEffect(() => {
         const fetchDietitian = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/dietitian', { params: { id } });
+                const res = await axios.get(`http://localhost:5000/api/dietitian/${id}`);
+                console.log(res.data.data)
                 if (res.data.success) {
-                    const dietitianData = res.data.dietitian;
-                    const {
-                        username, email, phone, specialization,
-                        experience, certification, education,
-                        profile_img, clinic_address, languages
-                    } = dietitianData;
+                    const dietitianData = res.data.data;
 
                     setFormData({
-                        username, email, phone, specialization,
-                        experience, certification, education,
-                        profile_img,
-                        clinic_address,
-                        languages: languages || []
+                        username: dietitianData.user_id.username,
+                        email: dietitianData.user_id.email,
+                        phone: dietitianData.user_id.phone, 
+                        specialization :  dietitianData.specialization,
+                        profile_img:  dietitianData.profile_img,
+                        clinic_address:  dietitianData.clinic_address,
                     });
 
                     if (clinic_address?.lat && clinic_address?.lng) {

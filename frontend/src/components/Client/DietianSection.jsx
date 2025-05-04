@@ -18,7 +18,7 @@ export default function Dietitian() {
                     setDietitians(approvedDietitians);
                 }
             } catch (err) {
-                console.error("Failed to fetch dietitians:", err);
+                console.log("Failed to fetch dietitians:", err);
             }
         };
         fetchDietitians();

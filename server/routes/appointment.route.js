@@ -1,14 +1,12 @@
 import express from 'express';
-import { addAppointment, getAppointments , updateAppointment } from '../controllers/appointment.controller.js';
+import { addAppointment, getAppointments , updateAppointment ,getAppointmentByClientId} from '../controllers/appointment.controller.js';
 
 const router = express.Router()
 
 router.get('/', getAppointments);
-
-// router.get('/:id', getRecipeById);
-
 router.post('/add', addAppointment);
-
+router.get('/client/:id', getAppointmentByClientId);
+// router.get('/dietitian/:id', getRecipeById);
 router.put('/update/:id' , updateAppointment);
 
 // router.post('/delete/:id', deleteRecipe);

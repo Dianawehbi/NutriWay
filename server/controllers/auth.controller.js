@@ -107,7 +107,7 @@ export const dietitianRegister = async (req, res) => {
         await Promise.all(
             services.map(async (item) => {
                 const update = {
-                    deititian_id: newDietitian._id,
+                    dietitian_id: newDietitian._id,
                     price: item.price,
                     mode: item.mode,
                 };

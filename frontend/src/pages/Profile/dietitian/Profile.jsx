@@ -43,13 +43,12 @@ const DietitianProfile = () => {
   console.log(dietitian);
   useEffect(() => {
     const fetchServices = async () => {
-      if (!dietitian?._id) return;
+      if (!dietitian?.user_id) return;
       try {
-        const res = await axios.get('http://localhost:5000/api/dietitian/service', {
-          params: { id: dietitian._id }
-        });
+        const res = await axios.get(`http://localhost:5000/api/dietitian/service/${dietitian.user_id._id}`);
         // console.log(res.data.services)
         if (res.data.success) {
+          console.log(res.data)
           setServices(res.data.services);
           setError(null);
         } else {
@@ -73,7 +72,7 @@ const DietitianProfile = () => {
   if (dietitian) {
     role = JSON.parse(localStorage.getItem("user")).role
     user_id = JSON.parse(localStorage.getItem("user"))._id
-    dietitian_id = dietitian.userId;
+    dietitian_id = dietitian.user_id._id;
     dietitian_main_id = dietitian._id
   }
 

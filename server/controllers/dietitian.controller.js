@@ -1,7 +1,7 @@
 import User from "../models/User.model.js";
 import Dietitian from "../models/Dietitian.model.js";
 import Service from "../models/Services.model.js";
-
+import mongoose from "mongoose";
 export const updateDietitian = async (req, res) => {
   const { id } = req.params;
   const newDietitian = req.body; // Use consistent casing
@@ -76,26 +76,6 @@ export const updateDietitianStatus = async (req, res) => {
 };
 
 
-// Combine data
-// const combinedData = {
-//   _id: dietitian._id,
-//   userId: user._id,
-//   username: user.username,
-//   email: user.email,
-//   phone: user.phone,
-//   role: user.role,
-//   specialization: dietitian.specialization,
-//   experience: dietitian.experience,
-//   certification: dietitian.certification,
-//   profile_img: dietitian.profile_img,
-//   clinic_address: dietitian.clinic_address,
-//   languages: dietitian.languages,
-//   clientsWorkedWith: dietitian.clientsWorkedWith,
-//   education: dietitian.education,
-//   status: dietitian.status,
-// };
-
-
 export const GetDietitianInfo = async (req, res) => {
   try {
     const dietitianUserId = req.params.id;
@@ -130,24 +110,42 @@ export const GetAllDietitiansInfo = async (req, res) => {
 
 
 export const GetDietitianServices = async (req, res) => {
-  const { id } = req.params.id;
+  const { userId } = req.params;
 
-  //need update
   try {
+    const dietitian = await Dietitian.findOne({ user_id: userId });
+
+    if (!dietitian) {
+      return res.status(404).json({ success: false, message: "Dietitian not found." });
+    }
     const services = await Service.find({
-      dietitian: {
-        $elemMatch: { dietitian_id: id }
-      }
+      "dietitian.dietitian_id": dietitian._id
     });
 
-    if (!services) {
-      return res.status(400).json({ success: false, message: "This dietitian has no services " })
+    if (!services || services.length === 0) {
+      return res.status(400).json({ success: false, message: "This dietitian has no services." });
     }
 
-    return res.status(200).json({ success: true, services });
+    const filteredServices = services.map(service => {
+      const matchedDietitian = service.dietitian.find(
+        d => d.dietitian_id.toString() === dietitian._id.toString()
+      );
+
+      return {
+        _id: service._id,
+        name: service.name,
+        duration: service.duration,
+        dietitian: matchedDietitian
+      };
+    });
+
+    return res.status(200).json({ success: true, services: filteredServices });
 
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server error while fetching dietitians services  ||  " + error });
-
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching dietitian's services",
+      error: error.message
+    });
   }
-}
+};

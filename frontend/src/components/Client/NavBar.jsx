@@ -17,7 +17,8 @@ export default function ClientNavbar() {
     ];
 
     const dropdownItems = [
-        { path: "/AppointmentBookingPage", label: "Appointment" },
+        { path: "/AppointmentBookingPage", label: " Make Appointment" },
+        { path: "/AppointmentHistory", label: "Appointments History " },
         { path: "/recipes", label: "Recipes" },
         { path: "/diet-plan", label: "Diet Plan" },
         { path: "/logout", label: "Logout" },

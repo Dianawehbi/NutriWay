@@ -2,14 +2,10 @@ import Appointment from "../models/Appointment.model.js";
 
 const addAppointment = async (req, res) => {
     try {
-        const { availabilityId, dietitian_id, client_id, appointmentDate, startTime, endTime, status } = req.body;
+        const { availabilityId, client_id, status } = req.body;
         const newAppointment = new Appointment({
-            dietitian_id,
             client_id,
             availability_id: availabilityId,
-            date: appointmentDate,
-            start_time: startTime,
-            end_time: endTime,
             status,
         })
 
@@ -30,7 +26,37 @@ const getAppointments = async (req, res) => {
     }
 }
 
-const getAppointmentById = async (req, res) => {
+const getAppointmentByClientId = async (req, res) => {
+    const { client_id } = req.params;
+
+    try {
+        const appointments = await Appointment.find({ client_id })
+            .populate({
+                path: "availability_id",
+                populate: [
+                    {
+                        path: "dietitian_id",
+                        populate: { path: "user_id", select: "username" }, // populate dietitian's user
+                    },
+                    {
+                        path: "serviceId", // populate service details
+                    },
+                ],
+            });
+
+        if (!appointments || appointments.length === 0) {
+            return res.status(404).json({ success: false, error: "No appointments found" });
+        }
+
+        res.status(200).json({ success: true, appointments });
+    } catch (error) {
+        console.error("Error fetching appointments:", error);
+        res.status(500).json({ success: false, error: "Server error while fetching appointments" });
+    }
+};
+
+
+const getAppointmentByDietitian = async (req, res) => {
     const { id } = req.params;
     try {
         const recipe = await Recipe.findById(id);
@@ -69,5 +95,5 @@ const updateAppointment = async (req, res) => {
 };
 
 
-export { addAppointment, getAppointments , updateAppointment }
+export { addAppointment, getAppointments, updateAppointment, getAppointmentByClientId }
 

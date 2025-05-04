@@ -14,27 +14,10 @@ const DietitianAvailability = () => {
   const [form, setForm] = useState({ serviceId: "", date: null, startTime: "" });
 
   useEffect(() => {
-    const fetchDietitianInfo = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/dietitian", {
-          params: { id: userId },
-        });
-        if (res.data.success) {
-          setDietitian_id(res.data.dietitian._id);
-        } else {
-          console.error("Failed to fetch dietitian info: success = false");
-        }
-      } catch (err) {
-        console.error("Failed to fetch dietitian info:", err);
-      }
-    };
-    fetchDietitianInfo();
-  }, [userId]);
-
-  useEffect(() => {
     const fetchServices = async () => {
-      if (!dietitian_id) return;
+      if (!userId) return;
       try {
+        // her we sent the user id not dietitian_id
         const res = await axios.get(`http://localhost:5000/api/dietitian/service/${userId}`);
         if (res.data.success) {
           setServices(res.data.services);
@@ -46,14 +29,27 @@ const DietitianAvailability = () => {
       }
     };
     fetchServices();
-  }, [dietitian_id]);
+  }, [userId]);
+
+  useEffect(() => {
+    if (services.length > 0) {
+      const firstService = services.find(s => s.dietitian); // Check if dietitian exists
+      if (firstService && firstService.dietitian) {
+        setDietitian_id(firstService.dietitian.dietitian_id);
+      }
+    }
+  }, [services]);
+
 
   useEffect(() => {
     const fetchAvailability = async () => {
+      if (!dietitian_id) return; // Ensure we wait for dietitian_id to be set
+
       try {
         const { data } = await axios.get("http://localhost:5000/api/availability/id", {
-          params: { id: userId },
+          params: { id: dietitian_id },
         });
+
         if (data.success) {
           setAvailabilities(data.availabilitySlots || []);
         }
@@ -62,7 +58,8 @@ const DietitianAvailability = () => {
       }
     };
     fetchAvailability();
-  }, [form, userId]);
+  }, [dietitian_id , form]);
+
 
   const handleAddAvailability = async () => {
     const { serviceId, date, startTime } = form;
@@ -70,25 +67,22 @@ const DietitianAvailability = () => {
 
     const selectedService = services.find(s => s._id === serviceId || s.serviceId === serviceId);
     if (!selectedService) return;
-
+    console.log(services)
     const duration = selectedService.duration;
     const endTime = calculateEndTime(startTime, duration);
 
-    const selectedDietitian = selectedService.dietitian?.find(d => d.deititian_id === dietitian_id);
+    const selectedDietitian = selectedService.dietitian
     if (!selectedDietitian) return alert("Dietitian not found for this service.");
     const newSlot = {
-      dietitian_id: userId,
+      dietitian_id: dietitian_id,
       serviceId,
       price: selectedDietitian.price,
       mode: selectedDietitian.mode,
-      duration,
-      name: selectedService.name,
       date,
       startTime,
       endTime,
       is_available: true,
     };
-
     const overlapping = checkConflicts(newSlot);
 
     if (overlapping.length > 0) {

@@ -26,7 +26,7 @@ export default function ManageAppointments() {
                     setAppointments(response.data.appointments);
                 }
             } catch (error) {
-                console.error("Error fetching appointments:", error.message);
+                console.log("Error fetching appointments:", error.message);
                 setError(error.response?.data?.error || "Failed to load appointments");
             } finally {
                 setLoading(false);
@@ -47,7 +47,7 @@ export default function ManageAppointments() {
                 ));
             }
         } catch (error) {
-            console.error("Error updating appointment:", error.message);
+            console.log("Error updating appointment:", error.message);
             setError(error.response?.data?.error || "Failed to update appointment");
         }
     };

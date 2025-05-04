@@ -4,18 +4,14 @@ import Availability from "./availability.model.js";
 
 //her
 const appointmentSchema = new mongoose.Schema({
-  dietitian_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   availability_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Availability' },
-  date: { type: Date, required: true },
-  start_time: { type: String, required: true },
-  end_time: { type: String, required: true },
   status: {
     type: String,
-    enum: ['upcoming', 'completed', 'rejected', 'no-show'],
+    enum: ['upcoming', 'completed', 'rejected'],
     default: 'upcoming'
   },
-});  
+});
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 export default Appointment;

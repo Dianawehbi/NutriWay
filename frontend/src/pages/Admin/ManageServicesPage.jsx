@@ -29,7 +29,7 @@ const ManageServicesPage = () => {
                 setError(null);
             }
         } catch (err) {
-            console.error("Failed to fetch services:", err);
+            console.log("Failed to fetch services:", err);
             setError("Failed to fetch services. Please try again.");
         } finally {
             setIsLoading(false);
@@ -64,7 +64,7 @@ const ManageServicesPage = () => {
                 fetchServices();
             }
         } catch (err) {
-            console.error("Error updating service:", err);
+            console.log("Error updating service:", err);
             setError(err.response?.data?.error || "Failed to update service");
         }
     };

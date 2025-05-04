@@ -2,7 +2,13 @@ import Availability from "../models/availability.model.js"
 
 export const GetAvailability = async (req, res) => {
   try {
-    const availabilitySlots = await Availability.find().populate("dietitian_id");
+    const availabilitySlots = await Availability.find()
+      .populate("serviceId")
+      .populate({
+        path: 'dietitian_id',
+        populate: { path: 'user_id' }
+      });
+
 
     if (!availabilitySlots) {
       return res.status(404).json({ success: false, message: "No availability slots found for this dietitian." });
@@ -78,3 +84,25 @@ export const AddAvailabilityForDietitian = async (req, res) => {
   }
 };
 
+export const updateAvailability = async (req, res) => {
+  const { id } = req.params;
+  const newAvailability = req.body;
+
+  try {
+      const updatedAvailabilty = await Availability.findByIdAndUpdate(
+          id,
+          newAvailability,
+          { new: true } // to return the updated document
+      );
+
+      if (!updatedAvailabilty) {
+          return res.status(404).json({ success: false, message: "Availability not found" });
+      }
+
+      res.status(200).json({ success: true, availability: updatedAvailabilty });
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Server error" });
+  }
+};
