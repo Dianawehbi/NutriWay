@@ -35,9 +35,7 @@ const DietitianAvailability = () => {
     const fetchServices = async () => {
       if (!dietitian_id) return;
       try {
-        const res = await axios.get("http://localhost:5000/api/dietitian/service", {
-          params: { id: dietitian_id },
-        });
+        const res = await axios.get(`http://localhost:5000/api/dietitian/service/${userId}`);
         if (res.data.success) {
           setServices(res.data.services);
         } else {

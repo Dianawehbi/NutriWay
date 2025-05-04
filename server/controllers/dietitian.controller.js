@@ -76,83 +76,50 @@ export const updateDietitianStatus = async (req, res) => {
 };
 
 
+// Combine data
+// const combinedData = {
+//   _id: dietitian._id,
+//   userId: user._id,
+//   username: user.username,
+//   email: user.email,
+//   phone: user.phone,
+//   role: user.role,
+//   specialization: dietitian.specialization,
+//   experience: dietitian.experience,
+//   certification: dietitian.certification,
+//   profile_img: dietitian.profile_img,
+//   clinic_address: dietitian.clinic_address,
+//   languages: dietitian.languages,
+//   clientsWorkedWith: dietitian.clientsWorkedWith,
+//   education: dietitian.education,
+//   status: dietitian.status,
+// };
+
+
 export const GetDietitianInfo = async (req, res) => {
   try {
-    const dietitianUserId = req.params;
-    // Find dietitian by user_id
-    const dietitian = await Dietitian.findOne({ user_id: dietitianUserId });
+    const dietitianUserId = req.params.id;
+
+    const dietitian = await Dietitian.findOne({ user_id: dietitianUserId }).populate("user_id");
 
     if (!dietitian) {
       return res.status(400).json({ success: false, message: "Dietitian not found" });
     }
 
-    // Find the related user
-    const user = await User.findById(dietitian.user_id);
-    if (!user) {
-      return res.status(400).json({ success: false, message: "User not found" });
-    }
-
-    // Combine data
-    const combinedData = {
-      _id: dietitian._id,
-      userId: user._id,
-      username: user.username,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      specialization: dietitian.specialization,
-      experience: dietitian.experience,
-      certification: dietitian.certification,
-      profile_img: dietitian.profile_img,
-      clinic_address: dietitian.clinic_address,
-      languages: dietitian.languages,
-      clientsWorkedWith: dietitian.clientsWorkedWith,
-      education: dietitian.education,
-      status: dietitian.status,
-    };
-
-    return res.status(200).json({ success: true, dietitian: combinedData });
+    res.status(200).json({ success: true, data: dietitian });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server error while fetching dietitian information  ||  " + error });
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
 
 
 export const GetAllDietitiansInfo = async (req, res) => {
   try {
-    // Find all dietitians
-    const dietitians = await Dietitian.find();
-
-    // Fetch all user info in parallel
-    const combinedData = await Promise.all(
-      dietitians.map(async (dietitian) => {
-        const user = await User.findById(dietitian.user_id);
-        if (!user) return null; // Skip if user not found
-
-        return {
-          _id: dietitian._id,
-          userId: user._id,
-          username: user.username,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          specialization: dietitian.specialization,
-          experience: dietitian.experience,
-          certification: dietitian.certification,
-          profile_img: dietitian.profile_img,
-          clinic_address: dietitian.clinic_address,
-          languages: dietitian.languages,
-          clientsWorkedWith: dietitian.clientsWorkedWith,
-          education: dietitian.education,
-          status: dietitian.status,
-        };
-      })
-    );
-
-    // Filter out null results (if user was not found for some dietitians)
-    const filteredData = combinedData.filter(Boolean);
-
-    return res.status(200).json({ success: true, dietitians: filteredData });
+    const dietitians = await Dietitian.find().populate("user_id");
+    if (!dietitians) {
+      return res.status(400).json({ success: false, message: "Dietitians not found" });
+    }
+    return res.status(200).json({ success: true, dietitians: dietitians });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -163,8 +130,9 @@ export const GetAllDietitiansInfo = async (req, res) => {
 
 
 export const GetDietitianServices = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params.id;
 
+  //need update
   try {
     const services = await Service.find({
       dietitian: {

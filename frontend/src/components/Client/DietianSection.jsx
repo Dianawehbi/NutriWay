@@ -23,6 +23,7 @@ export default function Dietitian() {
         };
         fetchDietitians();
     }, []);
+    console.log(dietitians)
 
     return (
         <div className="flex flex-col items-start mt-4 px-6 pt-4 space-y-4 w-full overflow-hidden">
@@ -39,7 +40,7 @@ export default function Dietitian() {
                 <div className="flex flex-row space-x-4 overflow-auto max-w-full pb-4">
                     {dietitians.map((dietitian) => (
                         <div key={dietitian._id} className="flex-shrink-0 w-64">
-                            <Link to={`/dietitianprofile/${dietitian.userId}`}>
+                            <Link to={`/dietitianprofile/${dietitian.user_id._id}`}>
                                 <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full">
                                     <img
                                         src={dietitian.profile_img || defaultImg}

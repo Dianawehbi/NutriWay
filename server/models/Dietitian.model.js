@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import User from "./User.model.js";
 
 const dietitianSchema = mongoose.Schema({
-  user_id: { type: String, required: true },
+  user_id:  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   specialization: { type: String, required: true },
   experience: { type: String, required: true },
   certification: { type: String, required: true },

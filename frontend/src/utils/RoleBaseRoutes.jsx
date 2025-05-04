@@ -13,11 +13,8 @@ const RoleBaseRoutes = ({ children, requiredRole }) => {
     useEffect(() => {
         const fetchDietitianInfo = async () => {
             try {
-                const { data } = await axios.get("http://localhost:5000/api/dietitian", {
-                    params: { id: user._id },
-                });
-
-                if (data.success && data.dietitian.status === "approved") {
+                const { data } = await axios.get(`http://localhost:5000/api/dietitian/${user._id}`);
+                if (data.success && data.data.status === "approved") {
                     setIsApproved(true);
                 } else {
                     setIsApproved(false);

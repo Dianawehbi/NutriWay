@@ -20,11 +20,9 @@ const DietitianProfile = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user && user._id) {
         try {
-          const res = await axios.get('http://localhost:5000/api/dietitian', {
-            params: { id }
-          });
+          const res = await axios.get(`http://localhost:5000/api/dietitian/${id}`);
           if (res.data.success) {
-            setDietitian(res.data.dietitian);
+            setDietitian(res.data.data);
             setError(null);
           } else {
             console.error("Failed to fetch dietitian info: success = false");
@@ -42,6 +40,7 @@ const DietitianProfile = () => {
     fetchDietitianInfo();
   }, [id, navigate]);
 
+  console.log(dietitian);
   useEffect(() => {
     const fetchServices = async () => {
       if (!dietitian?._id) return;

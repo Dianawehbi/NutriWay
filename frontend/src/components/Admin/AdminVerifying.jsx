@@ -18,13 +18,14 @@ const PendingDietitiansPage = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/dietitian/all");
         if (response.data.success) {
-          const pending = response.data.dietitians.filter((item) => item.status === "pending");
+          console.log(response.data)
+          const pending = response.data.dietitians.filter((item) => item.status == "pending");
           setPendingDietitians(pending);
         } else {
           setError("Failed to fetch dietitians");
         }
       } catch (err) {
-        console.error(err);
+        console.log(err.message);
         setError("Something went wrong");
       } finally {
         setLoading(false);
@@ -56,7 +57,7 @@ const PendingDietitiansPage = () => {
     }
   };
 
-
+  console.log(pendingDietitians)
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
@@ -93,7 +94,7 @@ const PendingDietitiansPage = () => {
                           <CgProfile className="text-green-600 text-xl" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-800">{dietitian.username}</h3>
+                          <h3 className="text-lg font-semibold text-gray-800">{dietitian.user_id.username}</h3>
                           <p className="text-sm text-green-600">{dietitian.specialization}</p>
                         </div>
                         <CgChevronRight className="text-gray-400" />
