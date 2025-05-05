@@ -31,7 +31,7 @@ const AppointmentHistory = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <ClientNavbar />
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-8 mt-18">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Appointment History</h2>
 
         {loading ? (

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { FaVideo, FaMoneyBillWave } from "react-icons/fa";
+import AdminNavBar from "../../components/Admin/AdminNavBar";
 
 export default function ManageAppointments() {
     const [appointments, setAppointments] = useState([]);
@@ -12,6 +13,7 @@ export default function ManageAppointments() {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("upcoming");
     const role = JSON.parse(localStorage.getItem("user")).role
+    const user_id = JSON.parse(localStorage.getItem("user"))._id
 
     const upcomingAppointments = appointments.filter(app => app.status === "upcoming");
     const completedAppointments = appointments.filter(app => app.status === "completed");
@@ -20,11 +22,20 @@ export default function ManageAppointments() {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/appointment');
-
-                if (response.data.success) {
-                    setAppointments(response.data.appointments);
+                if (role == "dietitian") {
+                    const response = await axios.get(`http://localhost:5000/api/appointment/dietitian/${user_id}`);
+                    console.log(response.data.data)
+                    if (response.data.success) {
+                        setAppointments(response.data.data);
+                    }
                 }
+                if (role == "admin") {
+                    const response = await axios.get(`http://localhost:5000/api/appointment`);
+                    if (response.data.success) {
+                        setAppointments(response.data.data);
+                    }
+                }
+
             } catch (error) {
                 console.log("Error fetching appointments:", error.message);
                 setError(error.response?.data?.error || "Failed to load appointments");
@@ -87,7 +98,7 @@ export default function ManageAppointments() {
                         <div className="flex items-start space-x-4">
                             <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
                                 <span className="text-xl font-semibold text-gray-600">
-                                    {appointment.client_id?.username?.charAt(0) || 'C'}
+                                    {appointment.client_id?.username.charAt(0) || 'C'}
                                 </span>
                             </div>
                             <div className="flex-1">
@@ -97,14 +108,14 @@ export default function ManageAppointments() {
                                             {appointment.client_id?.username || 'Client'}
                                         </h3>
                                         <p className="text-blue-600 font-medium">
-                                            {appointment.availability_id?.name || 'Consultation'}
+                                            {appointment.availability_id?.serviceId.name || 'Consultation'}
                                         </p>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${appointment.status === "upcoming"
-                                            ? "bg-yellow-100 text-yellow-800"
-                                            : appointment.status === "completed"
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-red-100 text-red-700"
+                                        ? "bg-yellow-100 text-yellow-800"
+                                        : appointment.status === "completed"
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-red-100 text-red-700"
                                         }`}>
                                         {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
                                     </span>
@@ -114,13 +125,13 @@ export default function ManageAppointments() {
                                     <div>
                                         <p className="text-sm text-gray-500">Date</p>
                                         <p className="font-medium">
-                                            {formatDate(appointment.date)}
+                                            {formatDate(appointment.availability_id?.date)}
                                         </p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Time</p>
                                         <p className="font-medium">
-                                            {appointment.start_time} - {appointment.end_time}
+                                            {appointment.availability_id.start_time} - {appointment.availability_id.end_time}
                                         </p>
                                     </div>
                                     <div>
@@ -199,7 +210,9 @@ export default function ManageAppointments() {
     if (loading) {
         return (
             <div className="max-w-6xl mx-auto p-6">
-                <DietitianNavBar />
+                {role == "dietitian" && <DietitianNavBar />}
+                {role == "admin" && <AdminNavBar />}
+
                 <div className="mt-20 text-center">Loading appointments...</div>
             </div>
         );
@@ -208,7 +221,8 @@ export default function ManageAppointments() {
     if (error) {
         return (
             <div className="max-w-6xl mx-auto p-6">
-                <DietitianNavBar />
+                {role == "dietitian" && <DietitianNavBar />}
+                {role == "admin" && <AdminNavBar />}
                 <div className="mt-20 text-center text-red-500">{error}</div>
             </div>
         );
@@ -216,7 +230,8 @@ export default function ManageAppointments() {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
-            <DietitianNavBar />
+            {role == "dietitian" && <DietitianNavBar />}
+            {role == "admin" && <AdminNavBar />}
             <h1 className="text-3xl mt-20 font-bold text-gray-800 mb-8">Appointment Management</h1>
 
             {/* Tab Navigation */}
