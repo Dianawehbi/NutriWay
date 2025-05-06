@@ -20,7 +20,18 @@ export default function ManageRecipes() {
         dinner: [],
         snacks: [],
     });
-
+    // <button
+    //     onClick={() => console.log("Edit", user.id)}
+    //     className="flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100"
+    // >
+    //     <FaUserEdit /> Edit
+    // </button>
+    // <button
+    //     onClick={() => handleDelete(user.id)}
+    //     className="flex items-center gap-2 bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100"
+    // >
+    //     <FaTrashAlt /> Delete
+    // </button>
     useEffect(() => {
         const fetchRecipes = async () => {
             setLoading(true);
@@ -63,8 +74,8 @@ export default function ManageRecipes() {
 
     const filteredRecipes = (category) => {
         if (searchTerm) {
-            return recipes[category]?.filter(recipe => 
-                recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+            return recipes[category]?.filter(recipe =>
+                recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
             ) || [];
         }
         return recipes[category] || [];
@@ -81,7 +92,7 @@ export default function ManageRecipes() {
     ];
 
     const renderNavBar = () => {
-        switch(user?.role) {
+        switch (user?.role) {
             case "admin": return <AdminNavBar />;
             case "dietitian": return <DietitianNavBar />;
             case "client": return <ClientNavbar />;
@@ -92,7 +103,7 @@ export default function ManageRecipes() {
     return (
         <div className="flex min-h-screen bg-gray-50">
             {renderNavBar()}
-            
+
             <main className="flex-1 p-6 md:p-8 mt-17">
                 {loading ? (
                     <LoadingPage />
@@ -104,7 +115,7 @@ export default function ManageRecipes() {
                                 <h1 className="text-2xl font-bold text-gray-800">Recipe Management</h1>
                                 <p className="text-gray-600">Manage and organize your nutrition recipes</p>
                             </div>
-                            
+
                             {(user?.role === "admin" || user?.role === "dietitian") && (
                                 <Link
                                     to="/add-recipes"
@@ -117,18 +128,17 @@ export default function ManageRecipes() {
 
                         {/* Search and Filter */}
                         <div className="flex flex-col md:flex-row gap-4">
-                          
-                            
+
+
                             <div className="flex overflow-x-auto scrollbar-hide gap-2 pb-2">
                                 {categories.map((category) => (
                                     <button
                                         key={category.id}
                                         onClick={() => setActiveCategory(category.id)}
-                                        className={`px-4 py-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors ${
-                                            activeCategory === category.id
-                                                ? "bg-green-600 text-white"
-                                                : "bg-white text-gray-700 hover:bg-gray-100"
-                                        }`}
+                                        className={`px-4 py-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors ${activeCategory === category.id
+                                            ? "bg-green-600 text-white"
+                                            : "bg-white text-gray-700 hover:bg-gray-100"
+                                            }`}
                                     >
                                         {category.name}
                                     </button>
@@ -140,7 +150,7 @@ export default function ManageRecipes() {
                         {activeCategory === "all" ? (
                             <div className="space-y-8">
                                 {allRecipes.length === 0 ? (
-                                    <EmptyState 
+                                    <EmptyState
                                         title="No recipes found"
                                         description="Try adding a new recipe or adjusting your search"
                                     />

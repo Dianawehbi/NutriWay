@@ -6,7 +6,6 @@ import App from './App.jsx'
 import NotFoundPage from './pages/auth/NotFoundPage.jsx'
 import Login from './pages/auth/Login.jsx'
 import SignUp from './pages/auth/SignUp.jsx'
-import Pages from './pages/pages.jsx'
 
 import AuthContext from './context/authContext.jsx'
 import { recipesRoute } from './routes/recipes.jsx'
@@ -20,7 +19,6 @@ const baseRoutes = [
   { path: '/', element: <App />, errorElement: <NotFoundPage /> },
   { path: '/Login', element: <Login /> },
   { path: '/SignUp', element: <SignUp /> },
-  { path: '/pages', element: <Pages /> }
 ]
 
 // Combine all route groups into a single router

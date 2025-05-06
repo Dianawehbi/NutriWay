@@ -1,48 +1,81 @@
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt, FaUserEdit, FaSearch, FaUser, FaUserMd } from "react-icons/fa";
 import NavBar from "../../components/Admin/AdminNavBar";
+import axios from "axios";
 
 const AdminManageUsers = () => {
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("clients");
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        // Simulate API call
-        const fetchUsers = async () => {
-            setTimeout(() => {
-                setUsers([
-                    { id: 1, name: "John Doe", role: "Client", email: "john@example.com", status: "Active" },
-                    { id: 2, name: "Dr. Sarah Lee", role: "Dietitian", email: "sarah@example.com", status: "Pending" },
-                    { id: 3, name: "Jane Smith", role: "Client", email: "jane@example.com", status: "Active" },
-                    { id: 4, name: "Dr. Mike Ross", role: "Dietitian", email: "mike@example.com", status: "Approved" }
+        const fetchAllUsers = async () => {
+            try {
+                const [clientsRes, dietitiansRes] = await Promise.all([
+                    axios.get("http://localhost:5000/api/client"),       // Clients with user_id populated
+                    axios.get("http://localhost:5000/api/dietitian/all") // Dietitians with user_id populated
                 ]);
+
+                const clients = (clientsRes.data.data || []).map(client => ({
+                    id: client._id,
+                    role: "Client",
+                    name: client.user_id?.username || "N/A",
+                    email: client.user_id?.email || "N/A",
+                    status: "Active", // or from some client-specific field
+                }));
+
+                const dietitians = (dietitiansRes.data.dietitians || []).map(dietitian => ({
+                    id: dietitian._id,
+                    role: "Dietitian",
+                    name: dietitian.user_id?.username || "N/A",
+                    email: dietitian.user_id?.email || "N/A",
+                    status: dietitian.status || "Pending",
+                }));
+
+                setUsers([...clients, ...dietitians]);
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+            } finally {
                 setLoading(false);
-            }, 800);
+            }
         };
 
-        fetchUsers();
+        fetchAllUsers();
     }, []);
 
-    const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this user?")) {
-            setUsers(users.filter(user => user.id !== id));
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:5000/api/auth/delete/${id}`);
+            
+            if (response.data.success) {
+                alert("User deleted successfully!");
+                // Reload the page to reflect the changes
+                window.location.reload();
+            } else {
+                alert("Failed to delete the user. Please try again.");
+            }
+        } catch (error) {
+            console.log("Error deleting user:", error);
+            alert("An error occurred while deleting the user.");
         }
     };
+    
 
     const filteredUsers = users.filter(user => {
         const matchesTab = activeTab === "clients" ? user.role === "Client" : user.role === "Dietitian";
-        const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesTab && matchesSearch;
     });
 
     const getStatusBadge = (status) => {
         const statusClasses = {
             Active: "bg-green-100 text-green-800",
-            Pending: "bg-yellow-100 text-yellow-800",
-            Approved: "bg-blue-100 text-blue-800"
+            pending: "bg-yellow-100 text-yellow-800",
+            approved: "bg-blue-100 text-blue-800",
+            rejected: "bg-red-100 text-red-800"
+
         };
         return (
             <span className={`px-2 py-1 text-xs rounded-full ${statusClasses[status]}`}>
@@ -54,7 +87,7 @@ const AdminManageUsers = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <NavBar />
-            
+
             <div className="max-w-6xl mx-auto p-4 md:p-6 mt-20">
                 {/* Header */}
                 <div className="bg-white p-6 rounded-xl shadow-sm text-center mb-8">
@@ -78,7 +111,7 @@ const AdminManageUsers = () => {
                             <FaUserMd className="mr-2" /> Dietitians
                         </button>
                     </div>
-                    
+
                     <div className="relative w-full md:w-64">
                         <FaSearch className="absolute left-3 top-3 text-gray-400" />
                         <input
@@ -102,7 +135,7 @@ const AdminManageUsers = () => {
                             <div className="text-center py-12 text-gray-500">
                                 <p className="text-lg">No {activeTab} found</p>
                                 {searchTerm && (
-                                    <button 
+                                    <button
                                         onClick={() => setSearchTerm("")}
                                         className="mt-2 text-green-600 hover:underline"
                                     >
@@ -127,11 +160,11 @@ const AdminManageUsers = () => {
                                                     <h3 className="font-semibold text-gray-800">{user.name}</h3>
                                                     <p className="text-gray-600 text-sm">{user.email}</p>
                                                     <div className="mt-1">
-                                                        {getStatusBadge(user.status)}
+                                                        {getStatusBadge(user?.status || "Active")}
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => console.log("Edit", user.id)}

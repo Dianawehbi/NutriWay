@@ -2,7 +2,6 @@ import DietitianProfile from '../pages/Profile/dietitian/Profile.jsx';
 // import ClientProfile from '../pages/Profile/client/Profile.jsx'
 import DietitianManageProfile from '../pages/Profile/dietitian/ManageProfile.jsx';
 // import ClientManageProfile from '../pages/Profile/client/ManageProfile.jsx'
-// import ClientInformationPage from '../pages/Profile/client/ClientInformationPage.jsx';
 // import DietPlanPage from '../pages/Profile/client/DietPlanPage.jsx';
 import PrivateRoutes from '../utils/PrivateRoutes.jsx';
 import RoleBaseRoutes from '../utils/RoleBaseRoutes.jsx';
@@ -34,12 +33,6 @@ export const profiles = [
     //     path: '/clientmanageprofile', element:
     //         <PrivateRoutes>
     //             <ClientManageProfile />
-    //         </PrivateRoutes>
-    // },
-    // {
-    //     path: '/ClientInformationPage', element:
-    //         <PrivateRoutes>
-    //             <ClientInformationPage />
     //         </PrivateRoutes>
     // },
     // {

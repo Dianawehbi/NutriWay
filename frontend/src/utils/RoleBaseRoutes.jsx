@@ -47,7 +47,7 @@ const RoleBaseRoutes = ({ children, requiredRole }) => {
     }
 
     if (error) {
-        return <Navigate to="/PendingApproval" />;
+        return <Navigate to="/ErrorPage" />;  // You can create a dedicated error page
     }
 
     return user ? children : <Navigate to="/login" />;

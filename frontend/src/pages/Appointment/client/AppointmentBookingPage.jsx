@@ -124,7 +124,7 @@ const AppointmentBooking = () => {
                                         <option value="">Select a time slot</option>
                                         {availabilities.map(slot => (
                                             <option key={slot._id} value={slot._id}>
-                                                {slot.formattedDate} • {slot.start_time}-{slot.end_time} • {slot.dietitian_id.user_id.username} • {slot.mode}  • {slot.serviceId.name}
+                                                {slot.formattedDate} • {slot.start_time}-{slot.end_time} • {slot.dietitian_id?.user_id.username} • {slot.mode}  • {slot.serviceId.name}
                                             </option>
                                         ))}
                                     </select>
@@ -154,7 +154,7 @@ const AppointmentBooking = () => {
                                     </div>
                                     <div className="flex items-center mb-2">
                                         <FiUser className="text-gray-400 mr-2" />
-                                        <span>Dietitian: {selectedSlot.dietitian_id.user_id.username || 'N/A'}</span>
+                                        <span>Dietitian: {selectedSlot.dietitian_id?.user_id.username || 'N/A'}</span>
                                     </div>
                                     <div className="text-sm text-gray-500">
                                         {selectedSlot.serviceId.name} • {selectedSlot.mode}

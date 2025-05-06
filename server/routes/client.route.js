@@ -1,10 +1,9 @@
 import express from 'express';
-import {AddClientInfo , GetClientInfo} from '../controllers/client.controller.js'
+import {AddClientInfo , GetClientInfo , GetAllClientInfo} from '../controllers/client.controller.js'
 const router = express.Router()
 
-router.get('/' , GetClientInfo)
-
+router.get('/' , GetAllClientInfo)
 router.post('/client-add-information', AddClientInfo);
-// update / delete / select by id / 
+router.get('/:id' , GetClientInfo)
 
 export default router; 

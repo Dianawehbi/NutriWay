@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import User from "./User.model.js";
 
 const clientSchema = mongoose.Schema({
-    user_id: { type: String, required: true },
-    age: { type: String, required: true },
-    gender: { type: String, required: true },
-    height: { type: String, required: true },
-    weight: { type: String, required: true },
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    age: { type: String },
+    gender: { type: String },
+    height: { type: String },
+    weight: { type: String },
     goal: { type: String },
     activityLevel: { type: String },
     waterIntake: { type: String },

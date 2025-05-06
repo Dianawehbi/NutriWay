@@ -31,43 +31,40 @@ const AddClientInfo = async (req, res) => {
 
 const GetClientInfo = async (req, res) => {
     try {
-        const clientId = req.query.id;
-        
-        const client = await Client.findOne({ user_id: clientId });
+        const clientId = req.params.id;
+
+        if (!clientId) {
+            return res.status(400).json({ success: false, message: "Client ID is required" });
+        }
+
+        const client = await Client.findOne({ user_id: clientId }).populate("user_id");
         if (!client) {
-            return res.status(400).json({ success: false, message: "Client not found" });
+            return res.status(404).json({ success: false, message: "Client not found" });
         }
 
-        const user = await User.findById(client.user_id);
-        if (!user) {
-            return res.status(400).json({ success: false, message: "User not found" });
-        }
-
-        // Combine user and client data into a single object
-        const combinedData = {
-            userId: user._id,
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
-            role: user.role,
-            age: client.age,
-            gender: client.gender,
-            height: client.height,
-            weight: client.weight,
-            goal: client.goal,
-            activityLevel: client.activityLevel,
-            waterIntake: client.waterIntake,
-            dietPlan: client.dietPlan,
-        };
-
-        return res.status(200).json({ success: true, data: combinedData });
+        return res.status(200).json({ success: true, data: client });
 
     } catch (error) {
-        console.error(error.message);
-        return res.status(500).json({ success: false, message: "Server error while Get Client Information" });
+        console.error("GetClientInfo Error:", error.message);
+        return res.status(500).json({ success: false, message: "Server error while getting client information" });
     }
 };
 
+const GetAllClientInfo = async (req, res) => {
+    try {
+
+        const client = await Client.find({}).populate("user_id");
+        if (!client) {
+            return res.status(404).json({ success: false, message: "Client not found" });
+        }
+
+        return res.status(200).json({ success: true, data: client });
+
+    } catch (error) {
+        console.error("GetClientInfo Error:", error.message);
+        return res.status(500).json({ success: false, message: "Server error while getting client information" });
+    }
+};
 
 const updateClientProfile = async (req, res) => {
     // try {
@@ -90,4 +87,4 @@ const updateClientProfile = async (req, res) => {
     // }
 };
 
-export { AddClientInfo, GetClientInfo }
+export { AddClientInfo, GetClientInfo ,GetAllClientInfo}

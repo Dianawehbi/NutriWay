@@ -3,6 +3,7 @@ import User from "../models/User.model.js";
 import bcrypt from 'bcrypt'
 import Dietitian from "../models/Dietitian.model.js";
 import Service from "../models/Services.model.js";
+import Client from '../models/Client.model.js';
 
 export const Login = async (req, res) => {
     try {
@@ -35,37 +36,48 @@ export const Login = async (req, res) => {
 };
 
 export const userRegister = async (req, res) => {
+    let newUser;
     try {
-        const { username, phoneNumber, email, password } = req.body;
-
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email: req.body.email });
         if (existingUser) {
-            return res.status(400).json({ success: false, error: "Email already registered!" });
+            return res.status(400).json({ success: false, error: "Email already registered." });
         }
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-        // Create the new user
-        const newUser = new User({
-            username: username,
-            email: email,
+        newUser = await new User({
+            username: req.body.username,
+            email: req.body.email,
             password: hashedPassword,
-            role: 'client',
-            phone: phoneNumber,
+            phone: req.body.phoneNumber,
+            role: "client"
+        }).save();
+
+        const newClient = new Client({
+            user_id: newUser._id,
+            age: req.body.age || "",
+            gender: req.body.gender || "",
+            height: req.body.height || "",
+            weight: req.body.weight || "",
+            goal: req.body.goal || "",
+            activityLevel: req.body.activityLevel || "",
+            waterIntake: req.body.waterIntake || "",
+            dietPlan: ""
         });
 
-        await newUser.save();
+        await newClient.save();
 
-        return res.status(200).json({
-            success: true, message: "You Have Succesfuly Register"
-        });
+        return res.status(201).json({ success: true, message: "User registered successfully" });
 
-    } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
+    } catch (err) {
+        if (newUser?._id) {
+            await User.findByIdAndDelete(newUser._id);
+        }
+        console.error("User Registration Error:", err);
+        return res.status(500).json({ success: false, error: "Registration failed, user rolled back. " + err.message });
     }
 };
+
 
 export const dietitianRegister = async (req, res) => {
     let newUser;
@@ -130,6 +142,39 @@ export const dietitianRegister = async (req, res) => {
     }
 
 };
+
+export const deleteUser = async (req, res) => {
+    const { id } = req.params;  // The `id` you are passing will be the `dietitian._id` or `client._id`
+    let user;
+    try {
+        // Check and delete from Dietitian
+        const dietitian = await Dietitian.findById(id).populate("user_id");  // Use `findById` instead of `findOne`
+        if (dietitian) {
+            let dietitian_id = dietitian.user_id._id;
+            await Dietitian.findByIdAndDelete(dietitian._id);
+            user = await User.findByIdAndDelete(dietitian_id)
+        }
+
+        // Check and delete from Client
+        const client = await Client.findById(id).populate("user_id");;  // Use `findById` instead of `findOne`
+        if (client) {
+            let client_id = client.user_id._id;
+            await Client.findByIdAndDelete(client._id);
+            user = await User.findByIdAndDelete(client_id)
+        }
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        return res.status(200).json({ success: true, message: "User and related profile deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return res.status(500).json({ success: false, message: "Server error while deleting user." });
+    }
+};
+
+
 
 export const verify = async (req, res) => {
     return res.status(200).json({ success: true, user: req.user })
