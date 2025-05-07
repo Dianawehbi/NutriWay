@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../../components/Admin/AdminNavBar.jsx";
-import { 
-  FaUserMd, 
-  FaUsers, 
-  FaDollarSign,
-  FaChartLine,
-  FaCalendarAlt
+import {
+    FaUserMd,
+    FaUsers,
+    FaDollarSign,
+    FaChartLine,
+    FaCalendarAlt
 } from "react-icons/fa";
-
+import axios from "axios";
 const Profite = () => {
     const [appointmentSales, setAppointmentSales] = useState([]);
     const [totalAppointmentSales, setTotalAppointmentSales] = useState(0);
@@ -16,27 +16,30 @@ const Profite = () => {
     useEffect(() => {
         // Dummy sales data - Replace with real API call
         const fetchSalesData = async () => {
-            const sales = [
-                { type: "Consultation", client: "John Doe", amount: 1, price: 50, date: "2023-05-15" },
-                { type: "Consultation", client: "Jane Smith", amount: 1, price: 60, date: "2023-05-16" },
-                { type: "Consultation", client: "Alex Johnson", amount: 1, price: 55, date: "2023-05-17" },
-                { type: "Consultation", client: "Sarah Williams", amount: 1, price: 65, date: "2023-05-18" },
-            ];
+            try {
+                const response = await axios.get(`http://localhost:5000/api/appointment`);
+                console.log(response.data.data[0])
+                if (response.data.success) {
+                    const appointments = response.data.data;
+                    const appointmentSales = appointments.filter(sale => sale.status === "completed");
+                    setAppointmentSales(appointmentSales);
+                }
 
-            const appointmentSales = sales.filter(sale => sale.type === "Consultation");
-            setAppointmentSales(appointmentSales);
+                // Calculate totals
+                let totalAppointment = 0;
+                let commissionAmount = 0;
 
-            // Calculate totals
-            let totalAppointment = 0;
-            let commissionAmount = 0;
+                appointmentSales.forEach(sale => {
+                    totalAppointment += Number(sale.availability_id.price);
+                    commissionAmount += Number(sale.availability_id.price) * 0.10;
+                });
 
-            appointmentSales.forEach(sale => {
-                totalAppointment += sale.amount * sale.price;
-                commissionAmount += (sale.amount * sale.price) * 0.10;
-            });
+                setTotalAppointmentSales(totalAppointment);
+                setCommission(commissionAmount);
+            } catch (error) {
+                console.log(error)
+            }
 
-            setTotalAppointmentSales(totalAppointment);
-            setCommission(commissionAmount);
         };
 
         fetchSalesData();
@@ -125,16 +128,14 @@ const Profite = () => {
                                     <th className="pb-3 pl-2">Client</th>
                                     <th className="pb-3">Date</th>
                                     <th className="pb-3">Price</th>
-                                    <th className="pb-3 pr-2 text-right">Total</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {appointmentSales.map((sale, index) => (
                                     <tr key={index} className="hover:bg-gray-50">
-                                        <td className="py-3 pl-2">{sale.client}</td>
-                                        <td className="py-3">{new Date(sale.date).toLocaleDateString()}</td>
-                                        <td className="py-3">${sale.price}</td>
-                                        <td className="py-3 pr-2 text-right font-medium">${sale.amount * sale.price}</td>
+                                        <td className="py-3 pl-2">{sale.client_id.username}</td>
+                                        <td className="py-3">{new Date(sale.availability_id.date).toLocaleDateString()}</td>
+                                        <td className="py-3">${sale.availability_id.price}</td>
                                     </tr>
                                 ))}
                             </tbody>
