@@ -47,7 +47,7 @@ const AdminManageUsers = () => {
     const handleDelete = async (id) => {
         try {
             const response = await axios.delete(`http://localhost:5000/api/auth/delete/${id}`);
-            
+
             if (response.data.success) {
                 alert("User deleted successfully!");
                 // Reload the page to reflect the changes
@@ -60,7 +60,7 @@ const AdminManageUsers = () => {
             alert("An error occurred while deleting the user.");
         }
     };
-    
+
 
     const filteredUsers = users.filter(user => {
         const matchesTab = activeTab === "clients" ? user.role === "Client" : user.role === "Dietitian";
@@ -166,12 +166,6 @@ const AdminManageUsers = () => {
                                             </div>
 
                                             <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => console.log("Edit", user.id)}
-                                                    className="flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100"
-                                                >
-                                                    <FaUserEdit /> Edit
-                                                </button>
                                                 <button
                                                     onClick={() => handleDelete(user.id)}
                                                     className="flex items-center gap-2 bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100"

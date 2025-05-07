@@ -10,6 +10,7 @@ export default function ClientNavbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { logout } = useAuth();
+    const user = JSON.parse(localStorage.getItem("user"))
 
     const navLinks = [
         { path: "/clientdashboard", label: "Home" },
@@ -91,7 +92,7 @@ export default function ClientNavbar() {
                 {/* User Actions */}
                 <div className="flex items-center space-x-4">
                     <Link
-                        to="/user-profile"
+                        to={`/user-profile/${user._id}`}
                         className="p-2 text-gray-700 hover:text-green-700 transition-colors duration-300"
                         aria-label="User Profile"
                     >

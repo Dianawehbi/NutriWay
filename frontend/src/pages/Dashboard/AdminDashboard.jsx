@@ -6,6 +6,7 @@ import Statistic from "../../components/Admin/Statistics";
 import AdminVerifying from "../../components/Admin/AdminVerifying.jsx";
 import Actions from "../../components/Admin/Actions";
 import Footer from "../../components/Footer";
+import Dietitian from "../../components/Client/DietianSection.jsx";
 import { useAuth } from "../../context/authContext";
 
 const AdminDashboard = () => {
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
                 <Statistic />
                 <AdminVerifying />
                 <RecipeManager />
+                <Dietitian/>
                 <Actions />
             </div>
             <Footer />

@@ -98,9 +98,7 @@ export default function RecipeDetails() {
                 Ingredients
               </h2>
               <ul className="space-y-2">
-                {recipe.ingredients.split(/[-_]/)
-                  .filter(item => item.trim() !== '')
-                  .map((item, index) => (
+                {recipe.ingredients.map((item, index) => (
                     <li key={index} className="flex items-start">
                       <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full mt-2 mr-2"></span>
                       <span className="text-gray-700">{item.trim()}</span>
