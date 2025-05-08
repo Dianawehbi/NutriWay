@@ -7,6 +7,7 @@ import clientRouter from './routes/client.route.js'
 import serviceRouter from './routes/service.route.js'
 import dietitianRouter from './routes/dietitian.route.js'
 import availability from './routes/availability.route.js'
+import bodycomposition from './routes/bodycomposition.route.js'
 import AppointmentRouter from './routes/appointment.route.js'
 import cors from 'cors';
 
@@ -26,6 +27,7 @@ app.use('/api/dietitian', dietitianRouter);
 app.use('/api/services', serviceRouter);
 app.use('/api/availability', availability);
 app.use('/api/appointment', AppointmentRouter);
+app.use('/api/bodycomposition', bodycomposition);
 
 // Connect to DB and start server
 connectDB().then(() => {

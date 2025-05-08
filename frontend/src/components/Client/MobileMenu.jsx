@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { 
+import {
   MdHome,
   MdOutlineShoppingCart,
   MdOutlineClose
@@ -10,8 +10,11 @@ import { LuClipboardCheck } from "react-icons/lu";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { GiMeal } from "react-icons/gi";
 import { CiLogin } from "react-icons/ci";
+import { useAuth } from "../../context/authContext";
 
 export default function MobileMenu({ onClose }) {
+  const { logout } = useAuth();
+
   const menuItems = [
     { path: "/", label: "Home", icon: <MdHome className="text-xl" /> },
     { path: "/profile", label: "Profile", icon: <AiOutlineUser className="text-xl" /> },
@@ -19,6 +22,7 @@ export default function MobileMenu({ onClose }) {
     { path: "/AppointmentBooking", label: "Appointment", icon: <IoCalendarNumberOutline className="text-xl" /> },
     { path: "/recipes", label: "Recipes", icon: <GiMeal className="text-xl" /> },
     { path: "/logout", label: "Logout", icon: <CiLogin className="text-xl" /> },
+
   ];
 
   return (
@@ -26,7 +30,7 @@ export default function MobileMenu({ onClose }) {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-green-50">
         <span className="text-2xl font-bold text-green-700">NutriWay</span>
-        <button 
+        <button
           onClick={onClose}
           className="p-1 text-gray-500 hover:text-green-700 transition-colors"
           aria-label="Close menu"
@@ -37,17 +41,30 @@ export default function MobileMenu({ onClose }) {
 
       {/* Menu Items */}
       <nav className="p-2">
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={onClose}
-            className="flex items-center p-3 my-1 rounded-lg hover:bg-green-50 hover:text-green-700 transition-colors duration-200"
-          >
-            <span className="mr-3">{item.icon}</span>
-            <span className="font-medium">{item.label}</span>
-          </Link>
-        ))}
+
+        {menuItems.map((item) =>
+          item.label != "Logout" ? (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className="flex items-center p-3 my-1 rounded-lg hover:bg-green-50 hover:text-green-700 transition-colors duration-200"
+            >
+              <span className="mr-3">{item.icon}</span>
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          ) : (
+            <button
+              key={item.path}
+              onClick={() => {
+                logout();
+              }}
+              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              {item.label}
+            </button>
+          ))
+        }
       </nav>
 
       {/* Footer/Cart */}

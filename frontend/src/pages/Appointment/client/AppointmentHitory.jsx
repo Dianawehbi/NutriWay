@@ -13,7 +13,6 @@ const AppointmentHistory = () => {
     const fetchAppointments = async () => {
       try {
         setLoading(true);
-        alert(client_id)
         const { data } = await axios.get(`http://localhost:5000/api/appointment/client/${client_id}`);
         console.log(data);
         if (data.success) {

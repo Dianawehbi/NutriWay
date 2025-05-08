@@ -31,7 +31,7 @@ export default function Dietitian() {
                 <h2 className="text-2xl text-[#234403] font-bold">Meet Our Dietitians</h2>
                 <p className="text-gray-600">Certified nutrition experts ready to help you</p>
             </div>
-            
+
             {dietitians.length === 0 ? (
                 <div className="w-full text-center py-8">
                     <p className="text-gray-500">No dietitians available at the moment</p>
@@ -54,8 +54,7 @@ export default function Dietitian() {
                                         <h3 className="text-lg font-semibold text-black">{dietitian.username}</h3>
                                         <p className="text-gray-600 text-sm">{dietitian.specialization}</p>
                                         <div className="flex items-center mt-2">
-                                            <span className="text-yellow-500">★</span>
-                                            <span className="text-gray-500 text-xs ml-1">5+ years experience</span>
+                                            <span className="text-gray-500 text-xs ml-1">{dietitian.experience}+ years experience</span>
                                         </div>
                                     </div>
                                 </div>

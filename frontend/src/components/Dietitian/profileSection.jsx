@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ProfileSection({ dietitian, role, user_id, dietitian_id }) {
     const navigate = useNavigate();
+
     return (
         <div className="bg-white shadow-lg w-11/12 mt-8 rounded-3xl overflow-hidden mx-auto transition-all duration-300 hover:shadow-xl">
             <div className="flex flex-col lg:flex-row">
@@ -27,7 +28,7 @@ export default function ProfileSection({ dietitian, role, user_id, dietitian_id 
                     </div>
 
                     <h2 className="mt-6 text-2xl font-bold text-gray-800">
-                        {dietitian.username || "Dietitian"}
+                        {dietitian.user_id.username || "Dietitian"}
                     </h2>
                     <p className="text-green-600 font-medium mt-1">
                         {dietitian.certification}

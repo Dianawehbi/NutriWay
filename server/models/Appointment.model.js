@@ -6,11 +6,7 @@ import Availability from "./availability.model.js";
 const appointmentSchema = new mongoose.Schema({
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   availability_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Availability' },
-  status: {
-    type: String,
-    enum: ['upcoming', 'completed', 'rejected'],
-    default: 'upcoming'
-  },
+  status: { type: String, enum: ['upcoming', 'completed', 'rejected'], default: 'upcoming' },
 });
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);

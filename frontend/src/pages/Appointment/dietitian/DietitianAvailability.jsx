@@ -162,7 +162,7 @@ const DietitianAvailability = () => {
     const m = minutes % 60;
     return `${h ? `${h}h ` : ""}${m ? `${m}m` : ""}`;
   };
-
+console.log(availabilities)
   return (
     <div className="min-h-screen bg-gray-50 p-4 pt-20 font-sans">
       <NavBar />
@@ -248,11 +248,11 @@ const DietitianAvailability = () => {
                         {dailySlots.map(slot => (
                           <li key={slot._id} className="p-3 flex justify-between items-center">
                             <div>
-                              <div className="font-medium">{slot.name}</div>
+                              <div className="font-medium">{slot.serviceId.name}</div>
                               <div className="text-sm text-gray-600">
                                 {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
                                 <span className="ml-2 text-gray-500">
-                                  ({formatDuration(slot.duration)})
+                                  ({formatDuration(slot.serviceId.duration)})
                                 </span>
                               </div>
                             </div>

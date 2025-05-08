@@ -133,9 +133,9 @@ const Profite = () => {
                             <tbody className="divide-y divide-gray-100">
                                 {appointmentSales.map((sale, index) => (
                                     <tr key={index} className="hover:bg-gray-50">
-                                        <td className="py-3 pl-2">{sale.client_id.username}</td>
-                                        <td className="py-3">{new Date(sale.availability_id.date).toLocaleDateString()}</td>
-                                        <td className="py-3">${sale.availability_id.price}</td>
+                                        <td className="py-3 pl-2">{sale.client_id?.username}</td>
+                                        <td className="py-3">{new Date(sale.availability_id?.date).toLocaleDateString()}</td>
+                                        <td className="py-3">${sale.availability_id?.price}</td>
                                     </tr>
                                 ))}
                             </tbody>

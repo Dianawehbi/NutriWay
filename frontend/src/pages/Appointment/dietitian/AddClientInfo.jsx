@@ -1,25 +1,32 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import DietitianNavBar from "../../../components/Dietitian/NavBar";
+import axios from "axios";
+
 const DietitianAddClientInfoPage = () => {
+  const dietitian_id = JSON.parse(localStorage.getItem("user"))._id;
+  const client_id = useParams();
   const [clientInfo, setClientInfo] = useState({
+    client_id: client_id.id,
+    dietitian_id: dietitian_id,
     weight: 70,
-    fats: 20,
+    fat: 20,
     water: 50,
     bmi: "normal",
-    muscles: 30,
+    muscle: 30,
     includeMealPlan: false, // New state for optional meal plan
-    weeklyMealPlan: Array(7).fill({
+    weeklyMealPlan: Array.from({ length: 7 }, () => ({
       breakfast: "",
       lunch: "",
       dinner: "",
       snack: "",
-    }),
+    })),    
   });
 
+  const navigate = useNavigate();
   const handleChange = (e, key, dayIndex, mealType) => {
     if (dayIndex !== undefined && mealType !== undefined) {
       // Handle meal plan changes
@@ -42,22 +49,33 @@ const DietitianAddClientInfoPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const dataToSubmit = { ...clientInfo };
-    if (!clientInfo.includeMealPlan) {
-      delete dataToSubmit.weeklyMealPlan;
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const dataToSubmit = { ...clientInfo };
+      if (!clientInfo.includeMealPlan) {
+        delete dataToSubmit.weeklyMealPlan;
+      }
+      console.log(dataToSubmit)
+      console.log("Client Information Submitted:", dataToSubmit);
+      const response = await axios.post('http://localhost:5000/api/bodycomposition/add' , dataToSubmit)
+      if (response.data.success) {
+        console.log(response.data)
+        navigate('/manage-appointments')
+      } else {
+        alert("Failed to Save Client Information !!");
+      }
+    } catch (err) {
+      console.log(err)
     }
-    console.log("Client Information Submitted:", dataToSubmit);
-    // Reset form logic here
   };
 
   return (
     <div>
-      <DietitianNavBar/>
+      <DietitianNavBar />
       <div className=" mx-auto p-4 bg-gray-50">
         {/* Header */}
-       
+
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-20 bg-white p-6 rounded-xl shadow-sm">
           {/* Health Metrics Section */}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   FaRuler, FaTint, FaRunning, FaAppleAlt, FaUser, FaEnvelope,
-  FaBirthdayCake, FaVenusMars, FaCalendarAlt, FaClipboardList
+  FaBirthdayCake, FaVenusMars, FaCalendarAlt, FaClipboardList, FaWeight
 } from "react-icons/fa";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
@@ -13,10 +13,45 @@ import axios from "axios";
 
 const ClientProfile = () => {
   const [user, setUser] = useState(null);
-  const [weightData, setWeightData] = useState([]);
-  const [bmiData, setBmiData] = useState([]);
+  const [bodyComposition, setBodyComposition] = useState([]);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+
+  const ProfileDetail = ({ icon, label, value }) => (
+    <div className="flex items-center gap-2">
+      <span className="text-blue-500">{icon}</span>
+      <div>
+        <p className="text-sm text-gray-500">{label}</p>
+        <p className="font-medium">{value}</p>
+      </div>
+    </div>
+  );
+  
+  const QuickAction = ({ title, description, buttonText, color, link }) => {
+    const colorMap = {
+      blue: 'bg-blue-100 text-blue-800',
+      green: 'bg-green-100 text-green-800',
+      red: 'bg-red-100 text-red-800'
+    };
+
+    const buttonColor = {
+      blue: 'bg-blue-500 hover:bg-blue-600',
+      green: 'bg-green-500 hover:bg-green-600',
+      red: 'bg-red-500 hover:bg-red-600'
+    };
+
+    return (
+      <div className={`${colorMap[color]} p-5 rounded-xl flex flex-col h-full`}>
+        <h3 className="text-xl font-semibold mb-2">{title}</h3>
+        <p className="mb-4 flex-1">{description}</p>
+        <Link to={link}>
+          <button className={`${buttonColor[color]} text-white px-4 py-2 rounded-lg w-full transition-colors`}>
+            {buttonText}
+          </button>
+        </Link>
+      </div>
+    );
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,8 +67,36 @@ const ClientProfile = () => {
       }
     };
 
+    const fetBodyData = async () => {
+      try {
+        const userResponse = await axios.get(`http://localhost:5000/api/bodycomposition/${id}`);
+        if (userResponse.data.success) {
+          setBodyComposition(userResponse.data.bodyComposition);
+        }
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    }
+    fetBodyData();
     fetchData();
   }, [id]);
+
+  // Format body composition data for charts
+  const formatChartData = (data) => {
+    return data.map(item => ({
+      date: new Date(item.date).toLocaleDateString(),
+      weight: parseFloat(item.weight),
+      bmi: item.bmi,
+      fat: parseFloat(item.fat),
+      muscle: parseFloat(item.muscle),
+      water: parseFloat(item.water)
+    }));
+  };
+
+  // Get latest body composition
+  const latestComposition = bodyComposition.length > 0
+    ? bodyComposition[bodyComposition.length - 1]
+    : null;
 
   if (loading) {
     return (
@@ -82,21 +145,73 @@ const ClientProfile = () => {
           </div>
         </section>
 
+        {/* Body Composition Overview */}
+        {latestComposition && (
+          <section className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Current Body Composition</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              <HealthStat
+                icon={<FaWeight className="text-blue-500 text-3xl" />}
+                label="Weight"
+                value={`${latestComposition.weight} kg`}
+              />
+              <HealthStat
+                icon={<FaRunning className="text-blue-500 text-3xl" />}
+                label="BMI"
+                value={latestComposition.bmi}
+                status={latestComposition.bmi}
+              />
+              <HealthStat
+                icon={<FaAppleAlt className="text-blue-500 text-3xl" />}
+                label="Body Fat"
+                value={`${latestComposition.fat}%`}
+              />
+              <HealthStat
+                icon={<FaTint className="text-blue-500 text-3xl" />}
+                label="Water"
+                value={`${latestComposition.water}%`}
+              />
+            </div>
+          </section>
+        )}
+
         {/* Health Metrics */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <MetricChart
             title="Weight Trend"
-            data={weightData}
+            data={formatChartData(bodyComposition)}
             dataKey="weight"
             color="#22c55e"
             emptyMessage="No weight data available"
+            unit="kg"
           />
           <MetricChart
-            title="BMI Trend"
-            data={bmiData}
-            dataKey="bmi"
+            title="Body Fat Trend"
+            data={formatChartData(bodyComposition)}
+            dataKey="fat"
             color="#ef4444"
-            emptyMessage="No BMI data available"
+            emptyMessage="No body fat data available"
+            unit="%"
+          />
+        </section>
+
+        {/* Additional Metrics */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <MetricChart
+            title="Muscle Mass Trend"
+            data={formatChartData(bodyComposition)}
+            dataKey="muscle"
+            color="#3b82f6"
+            emptyMessage="No muscle mass data available"
+            unit="%"
+          />
+          <MetricChart
+            title="Water Percentage Trend"
+            data={formatChartData(bodyComposition)}
+            dataKey="water"
+            color="#06b6d4"
+            emptyMessage="No water data available"
+            unit="%"
           />
         </section>
 
@@ -119,7 +234,7 @@ const ClientProfile = () => {
               description="Book a session with your dietitian"
               buttonText="Book Now"
               color="blue"
-              link="/Appointment"
+              link="/AppointmentBookingPage"
             />
             <QuickAction
               title="Appointment History"
@@ -133,7 +248,7 @@ const ClientProfile = () => {
               description="See your current and past diet plans"
               buttonText="View Plans"
               color="red"
-              link="/DietPlan"
+              link="/diet-plan"
             />
           </div>
         </section>
@@ -142,28 +257,30 @@ const ClientProfile = () => {
   );
 };
 
-// Components
-const ProfileDetail = ({ icon, label, value }) => (
-  <div className="flex items-center gap-2">
-    <span className="text-blue-500">{icon}</span>
-    <div>
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="font-medium">{value}</p>
-    </div>
-  </div>
-);
+// Updated HealthStat component to handle status indicators
+const HealthStat = ({ icon, label, value, status }) => {
+  const getStatusColor = (status) => {
+    if (!status) return '';
+    if (status === 'underweight') return 'text-yellow-500';
+    if (status === 'normal') return 'text-green-500';
+    if (status === 'overweight') return 'text-orange-500';
+    if (status === 'obese') return 'text-red-500';
+    return '';
+  };
 
-const HealthStat = ({ icon, label, value }) => (
-  <div className="bg-blue-50 p-5 rounded-xl flex items-center gap-4 hover:shadow-md transition-shadow">
-    <div className="bg-white p-3 rounded-full shadow-sm">{icon}</div>
-    <div>
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-xl font-bold">{value}</p>
+  return (
+    <div className="bg-blue-50 p-5 rounded-xl flex items-center gap-4 hover:shadow-md transition-shadow">
+      <div className="bg-white p-3 rounded-full shadow-sm">{icon}</div>
+      <div>
+        <p className="text-gray-500 text-sm">{label}</p>
+        <p className={`text-xl font-bold ${getStatusColor(status)}`}>{value}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-const MetricChart = ({ title, data, dataKey, color, emptyMessage }) => (
+// Updated MetricChart component to handle units
+const MetricChart = ({ title, data, dataKey, color, emptyMessage, unit }) => (
   <div className="bg-white rounded-2xl shadow-lg p-6">
     <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
     {data && data.length > 0 ? (
@@ -171,9 +288,11 @@ const MetricChart = ({ title, data, dataKey, color, emptyMessage }) => (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="month" tick={{ fill: '#6b7280' }} />
+            <XAxis dataKey="date" tick={{ fill: '#6b7280' }} />
             <YAxis tick={{ fill: '#6b7280' }} />
             <Tooltip
+              formatter={(value) => [`${value} ${unit}`, dataKey]}
+              labelFormatter={(value) => `Date: ${value}`}
               contentStyle={{
                 backgroundColor: '#ffffff',
                 border: '1px solid #e5e7eb',
@@ -200,30 +319,6 @@ const MetricChart = ({ title, data, dataKey, color, emptyMessage }) => (
   </div>
 );
 
-const QuickAction = ({ title, description, buttonText, color, link }) => {
-  const colorMap = {
-    blue: 'bg-blue-100 text-blue-800',
-    green: 'bg-green-100 text-green-800',
-    red: 'bg-red-100 text-red-800'
-  };
-
-  const buttonColor = {
-    blue: 'bg-blue-500 hover:bg-blue-600',
-    green: 'bg-green-500 hover:bg-green-600',
-    red: 'bg-red-500 hover:bg-red-600'
-  };
-
-  return (
-    <div className={`${colorMap[color]} p-5 rounded-xl flex flex-col h-full`}>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="mb-4 flex-1">{description}</p>
-      <Link to={link}>
-        <button className={`${buttonColor[color]} text-white px-4 py-2 rounded-lg w-full transition-colors`}>
-          {buttonText}
-        </button>
-      </Link>
-    </div>
-  );
-};
+// ... (keep the other components the same)
 
 export default ClientProfile;

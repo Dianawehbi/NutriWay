@@ -34,7 +34,7 @@ export const GetAvailabilityByDietitianId = async (req, res) => {
     }
 
     // Fetch availability slots for the given dietitian_id
-    const availabilitySlots = await Availability.find({ dietitian_id: id });
+    const availabilitySlots = await Availability.find({ dietitian_id: id }).populate("serviceId");
 
     if (!availabilitySlots) {
       return res.status(404).json({ success: false, message: "No availability slots found for this dietitian." });
