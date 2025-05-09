@@ -1,2 +1,5 @@
 # NutriWay
-NutriWay is a website that allows users to book appointments with a dietitian, shop for healthy products, and explore nutritious recipes. Built with HTML, CSS, JavaScript, and React, this project aims to provide a seamless experience for users looking to improve their health through proper nutrition. 
+NutriWay is a full-stack web application built using the MERN stack (MongoDB, Express.js, React.js, and Node.js).
+Its main purpose is to facilitate and support a healthy lifestyle.
+Dietitians can add services and manage their availability.
+Clients can book appointments, track their body composition history, and more
