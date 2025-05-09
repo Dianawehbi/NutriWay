@@ -16,7 +16,7 @@ const ClientProfile = () => {
   const [bodyComposition, setBodyComposition] = useState([]);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
-
+  console.log(bodyComposition)
   const ProfileDetail = ({ icon, label, value }) => (
     <div className="flex items-center gap-2">
       <span className="text-blue-500">{icon}</span>
@@ -87,7 +87,7 @@ const ClientProfile = () => {
       date: new Date(item.date).toLocaleDateString(),
       weight: parseFloat(item.weight),
       bmi: item.bmi,
-      fat: parseFloat(item.fat),
+      fat: item.fat,
       muscle: parseFloat(item.muscle),
       water: parseFloat(item.water)
     }));

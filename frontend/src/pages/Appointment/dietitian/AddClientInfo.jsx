@@ -13,10 +13,10 @@ const DietitianAddClientInfoPage = () => {
     client_id: client_id.id,
     dietitian_id: dietitian_id,
     weight: 70,
-    fat: 20,
+    fat: "20",
     water: 50,
     bmi: "normal",
-    muscle: 30,
+    muscle: "30",
     includeMealPlan: false, // New state for optional meal plan
     weeklyMealPlan: Array.from({ length: 7 }, () => ({
       breakfast: "",
@@ -87,9 +87,9 @@ const DietitianAddClientInfoPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 { label: "Weight (kg)", key: "weight", min: 30, max: 150, unit: "kg" },
-                { label: "Body Fat %", key: "fats", min: 5, max: 50, unit: "%" },
+                { label: "Body Fat %", key: "fat", min: 5, max: 50, unit: "%" },
                 { label: "Water %", key: "water", min: 30, max: 80, unit: "%" },
-                { label: "Muscle %", key: "muscles", min: 10, max: 60, unit: "%" },
+                { label: "Muscle %", key: "muscle", min: 10, max: 60, unit: "%" },
               ].map((metric) => (
                 <div key={metric.key} className="space-y-2">
                   <label className="block text-lg font-medium text-gray-700">

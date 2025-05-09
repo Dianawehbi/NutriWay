@@ -12,14 +12,12 @@ const bodySchema = mongoose.Schema({
     bmi: { type: String, required: true },
     weight: { type: String, required: true },
     includeMealPlan: { type: Boolean, required: true },
-    weeklyMealPlan: [
-        {
-            breakfast: { type: String, default: "" },
-            lunch: { type: String, default: "" },
-            dinner: { type: String, default: "" },
-            snack: { type: String, default: "" }
-        }
-    ],
+    weeklyMealPlan: [{
+        breakfast: { type: String, default: "" },
+        lunch: { type: String, default: "" },
+        dinner: { type: String, default: "" },
+        snack: { type: String, default: "" }
+    }],
     date: { type: Date, default: Date.now }
 })
 

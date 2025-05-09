@@ -19,6 +19,7 @@ const ClientDashboard = () => {
             window.location.reload();
         }
     }, []);
+
     return (
         <div className="h-auto bg-gray-100 flex flex-col items-center justify-center">
             <Header />

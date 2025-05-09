@@ -97,6 +97,11 @@ const DietitianRegistration = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!passwordRegex.test(formData.password)) {
+            alert("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+            return;
+        }
         if (formData.services.length === 0) {
             alert("Please add at least one service.");
             return;
